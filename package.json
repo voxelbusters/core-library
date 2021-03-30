@@ -1,0 +1,8 @@
+{
+  "name": "com.voxelbusters.core-library",
+  "displayName": "Core Library",
+  "version": "1.0.0",
+  "unity": "2018.3",
+  "description": "",
+  "dependencies": {}
+}
