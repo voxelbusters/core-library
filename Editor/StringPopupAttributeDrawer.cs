@@ -34,7 +34,7 @@ namespace VoxelBusters.CoreLibrary.Editor
                 selectedIndex           = EditorGUI.Popup(position, label.text, selectedIndex, options);
 
                 // assign value
-                property.stringValue    = (selectedIndex == -1) ? options[0] : options[selectedIndex];
+                property.stringValue    = (selectedIndex == -1) ? string.Empty : options[selectedIndex];
             }
             else
             {
