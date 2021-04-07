@@ -72,6 +72,7 @@ namespace VoxelBusters.EssentialKit.Editor
                     // create add request, incase if package is not installed
                     if (!packageInstalled)
                     {
+                        Debug.LogFormat("[VoxelBusters] Creating request to add package {0}", m_package);
                         m_addPackageRequest     = Client.Add(m_package);
                     }
                     else
