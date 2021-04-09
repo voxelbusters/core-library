@@ -3,7 +3,7 @@
     "displayName": "Core Library",
     "version": "1.0.0",
     "unity": "2018.3",
-    "description": "",
+    "description": "Core Library is a foundation library that provides useful datatypes, design patterns and utility methods.",
     "keywords": [ "voxelbusters", "unity", "core-library"],
     "license": "MIT",
     "author": {
