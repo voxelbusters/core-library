@@ -8,6 +8,8 @@ namespace VoxelBusters.CoreLibrary.Editor
 {
     public static class UnityEditorUtility
     {
+        #region Static methods
+
         public static bool ShowFoldableHeader(string prefKeyName, string content, string tooltip = null)
         {
             bool isExpanded     = EditorGUILayout.Foldout(EditorPrefs.GetBool(prefKeyName, false), new GUIContent(content, tooltip));
@@ -33,6 +35,8 @@ namespace VoxelBusters.CoreLibrary.Editor
         {
             return EditorPrefs.GetBool("editor-is-dirty", false);
         }
+
+        #endregion
 
         #region Mask field methods
 
