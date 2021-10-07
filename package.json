@@ -1,7 +1,7 @@
 {
     "name": "com.voxelbusters.corelibrary",
     "displayName": "Core Library",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "unity": "2018.3",
     "description": "Core Library is a foundation library that provides useful datatypes, design patterns and utility methods.",
     "keywords": [ "voxelbusters", "unity", "core-library"],

@@ -15,8 +15,8 @@ namespace VoxelBusters.CoreLibrary.Editor
             EditorGUI.BeginProperty(position, label, property);
 
             // draw property
-            var valueRect   = new Rect(position.x, position.y, position.width - 50, position.height);
-            var buttonRect  = new Rect(position.xMax - 45, position.y, 45, position.height);
+            var     valueRect   = new Rect(position.x, position.y, position.width - 50, position.height);
+            var     buttonRect  = new Rect(position.xMax - 45, position.y, 45, position.height);
 
             EditorGUI.PropertyField(valueRect, property, label);
             if (GUI.Button(buttonRect, new GUIContent("Select")))
@@ -32,10 +32,10 @@ namespace VoxelBusters.CoreLibrary.Editor
             
         private void OpenFolderBrowser(SerializedProperty property)
         {
-            var value   = EditorUtility.OpenFolderPanel("Select folder", property.stringValue, string.Empty);
+            var     value       = EditorUtility.OpenFolderPanel("Select folder", IOServices.GetAbsolutePath(property.stringValue), string.Empty);
             if (!string.IsNullOrEmpty(value))
             {
-                property.stringValue    = value;
+                property.stringValue    = ((FolderBrowserAttribute)attribute).UsesRelativePath ? IOServices.GetRelativePath(IOServices.GetAbsolutePath(""), value) : value;
                 UnityEditorUtility.SetIsEditorDirty(true);
             }
         }

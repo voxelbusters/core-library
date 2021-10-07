@@ -33,10 +33,10 @@ namespace VoxelBusters.CoreLibrary.Editor
             
         private void OpenFileBrowser(SerializedProperty property)
         {
-            var value   = EditorUtility.OpenFilePanel("Select file", property.stringValue, ((FileBrowserAttribute)attribute).Extension);
+            var value   = EditorUtility.OpenFilePanel("Select file", IOServices.GetAbsolutePath(property.stringValue), ((FileBrowserAttribute)attribute).Extension);
             if (!string.IsNullOrEmpty(value))
             {
-                property.stringValue    = value;
+                property.stringValue    = ((FileBrowserAttribute)attribute).UsesRelativePath ? IOServices.GetRelativePath(IOServices.GetAbsolutePath(""), value) : value;
                 UnityEditorUtility.SetIsEditorDirty(true);
             }
         }

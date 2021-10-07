@@ -8,16 +8,19 @@ namespace VoxelBusters.CoreLibrary
     {
         #region Properties
 
+        public bool UsesRelativePath { get; private set; }
+
         public string Extension { get; private set; }
 
         #endregion
 
         #region Constructors
 
-        public FileBrowserAttribute(string extension = null)
+        public FileBrowserAttribute(bool usesRelativePath, string extension = null)
         {
             // set properties
-            Extension = extension;
+            UsesRelativePath    = usesRelativePath;
+            Extension           = extension;
         }
 
         #endregion
