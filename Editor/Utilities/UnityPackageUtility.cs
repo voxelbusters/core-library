@@ -11,6 +11,11 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         private static string GetPackageFullPathInternal(string package)
         {
+            string  assetPath   = "Assets/" + package;
+            if (IOServices.DirectoryExists(assetPath))
+            {
+                return assetPath;
+            }
             return "Packages/" + package;
         }
 
