@@ -70,7 +70,7 @@ namespace VoxelBusters.CoreLibrary
             // format value if required
             if (false == path.StartsWith("file")
 #if UNITY_ANDROID
-                || false == path.StartsWith("jar:file")
+                && false == path.StartsWith("jar:file")
 #endif
                )
             {
