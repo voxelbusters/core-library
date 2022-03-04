@@ -12,6 +12,8 @@ namespace VoxelBusters.CoreLibrary
 
         public static string Version { get { return "1.0.0"; } }
 
+        public static string DefaultInstallPath { get { return "Assets/Plugins/VoxelBusters/" + PackageName; } }
+
         #endregion
     }
 }

@@ -9,43 +9,53 @@ namespace VoxelBusters.CoreLibrary.Editor
     {
         #region Static methods
 
-        private static string GetPackageFullPathInternal(string package)
+        private static string GetPackageFullPathInternal(string package, string customInstallPath)
         {
-            string  assetPath   = "Assets/" + package;
-            if (IOServices.DirectoryExists(assetPath))
+            string  installPathInAssets = GetDefaultOrCustomInstallPathInAssets(package: package, customInstallPath: customInstallPath);
+            if (IOServices.DirectoryExists(installPathInAssets))
             {
-                return assetPath;
+                return installPathInAssets;
             }
             return "Packages/" + package;
+        }
+
+        private static string GetDefaultOrCustomInstallPathInAssets(string package, string customInstallPath)
+        {
+            return customInstallPath ?? ("Assets/" + package);
         }
 
         #endregion
 
         #region Public methods
 
-        public static string GetPackagePath(string package)
+        public static bool IsInstalledInAssets(string package, string customInstallPath = null)
         {
-            return GetPackageFullPathInternal(package);
+            return IOServices.DirectoryExists(GetDefaultOrCustomInstallPathInAssets(package: package, customInstallPath: customInstallPath));
         }
 
-        public static string GetEditorResourcesPath(string package)
+        public static string GetPackagePath(string package, string customInstallPath = null)
         {
-            return GetPackagePath(package) + "/EditorResources";
+            return GetPackageFullPathInternal(package: package, customInstallPath: customInstallPath);
         }
 
-        public static string GetResourcesPath(string package)
+        public static string GetEditorResourcesPath(string package, string customInstallPath = null)
         {
-            return GetPackagePath(package) + "/Resources";
+            return GetPackagePath(package: package, customInstallPath: customInstallPath) + "/EditorResources";
         }
 
-        public static string GetEditorScriptsPath(string package)
+        public static string GetResourcesPath(string package, string customInstallPath = null)
         {
-            return GetPackagePath(package) + "/Editor";
+            return GetPackagePath(package: package, customInstallPath: customInstallPath) + "/Resources";
         }
 
-        public static string GetRuntimeScriptsPath(string package)
+        public static string GetEditorScriptsPath(string package, string customInstallPath = null)
         {
-            return GetPackagePath(package) + "/Runtime";
+            return GetPackagePath(package: package, customInstallPath: customInstallPath) + "/Editor";
+        }
+
+        public static string GetRuntimeScriptsPath(string package, string customInstallPath = null)
+        {
+            return GetPackagePath(package: package, customInstallPath: customInstallPath) + "/Runtime";
         }
 
         #endregion
