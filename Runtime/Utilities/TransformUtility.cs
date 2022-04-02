@@ -24,11 +24,24 @@ namespace VoxelBusters.CoreLibrary
 
         public static void RemoveAllChilds(this Transform parent)
         {
+            RemoveChildren(parent);
+        }
+
+        public static void RemoveChildren(this Transform parent)
+        {
             var     children    = GetImmediateChildren(parent);
             for (int iter = 0; iter < children.Length; iter++)
             {
                 Object.Destroy(children[iter].gameObject);
             }
+        }
+
+        public static bool RemoveChild(this Transform parent, int index)
+        {
+            if ((index < 0) || (index >= parent.childCount)) return false;
+
+            Object.Destroy(parent.GetChild(index).gameObject);
+            return true;
         }
 
         #endregion

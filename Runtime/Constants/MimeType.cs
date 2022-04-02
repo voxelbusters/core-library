@@ -33,6 +33,9 @@ namespace VoxelBusters.CoreLibrary
         /// <summary> The MIME value used to determine Adobe® PDF documents. (Readonly)</summary>
         public  const   string      kPDF                = "application/pdf";
 
+        /// <summary> The MIME value used to determine mp4 video. (Readonly)</summary>
+        public  const   string      kMP4Video           = "video/mp4";
+
         #endregion
     }
 }
