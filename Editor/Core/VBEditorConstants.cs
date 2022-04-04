@@ -8,7 +8,7 @@ namespace VoxelBusters.CoreLibrary.Editor
     {
         #region Constants
 
-        public static string Copyrights { get { return "Copyright © 2020 Voxel Busters Interactive LLP."; } }
+        public static string Copyrights { get { return "Copyright © 2022 Voxel Busters Interactive LLP."; } }
          
         #endregion
     }
