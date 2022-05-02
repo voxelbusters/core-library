@@ -191,14 +191,7 @@ namespace VoxelBusters.CoreLibrary.Editor
 
                 // show internal properties
                 EditorGUI.indentLevel++;
-                if (enabledProperty != null)
-                {
-                    DrawSettingsInternalProperties(property);
-                }
-                else
-                {
-                    DrawControlInternalProperties(property);
-                }
+                DrawChildProperties(property, skipProperties: "m_isEnabled");
                 propertyMeta?.OnAfterPropertyDraw(property);
                 EditorGUI.indentLevel--;
 
@@ -225,7 +218,7 @@ namespace VoxelBusters.CoreLibrary.Editor
 
             // draw selectable rect
             var     selectableRect      = new Rect(rect.x, rect.y, rect.width - 100f, rect.height);
-            if (DrawTransparentButton(selectableRect, string.Empty))
+            if (DrawTransparentButton(selectableRect))
             {
                 isSelected              = OnPropertyGroupHeaderSelect(property);
             }
@@ -250,54 +243,45 @@ namespace VoxelBusters.CoreLibrary.Editor
             return isSelected;
         }
 
-        private void DrawSettingsInternalProperties(SerializedProperty settingsProperty)
-        {
-            // move pointer to first element
-            var     currentProperty  = settingsProperty.Copy();
-            currentProperty.NextVisible(enterChildren: true);
-            var     endProperty      = settingsProperty.GetEndProperty();
-
-            // start iterating through the properties
-            while (currentProperty.NextVisible(enterChildren: false))
-            {
-                if (SerializedProperty.EqualContents(currentProperty, endProperty))
-                {
-                    break;
-                }
-                EditorGUILayout.PropertyField(currentProperty, true);
-            }
-        }
-
-        private void DrawControlInternalProperties(SerializedProperty property)
+        protected void DrawChildProperties(SerializedProperty property, string prefix = null, params string[] skipProperties)
         {
             // move pointer to first element
             var     currentProperty  = property.Copy();
             var     endProperty      = default(SerializedProperty);
 
             // start iterating through the properties
-            bool    firstTime   = true;
+            bool    firstTime       = true;
             while (currentProperty.NextVisible(enterChildren: firstTime))
             {
                 if (firstTime)
                 {
-                    endProperty = property.GetEndProperty();
-                    firstTime   = false;
+                    endProperty      = property.GetEndProperty();
+                    firstTime        = false;
                 }
-                if (SerializedProperty.EqualContents(currentProperty, endProperty))
+                if (SerializedProperty.EqualContents(currentProperty, endProperty) ||
+                    ((skipProperties != null) && System.Array.Exists(skipProperties, (item) => string.Equals(item, currentProperty.name))))
                 {
                     break;
                 }
-                EditorGUILayout.PropertyField(currentProperty, true);
+
+                if (prefix != null)
+                {
+                    EditorGUILayout.PropertyField(currentProperty, new GUIContent($"{prefix} {currentProperty.displayName}", currentProperty.tooltip), true);
+                }
+                else
+                {
+                    EditorGUILayout.PropertyField(currentProperty, true);
+                }
             }
         }
 
-        protected bool DrawTransparentButton(Rect rect, string label)
+        protected bool DrawTransparentButton(Rect rect, string label = "")
         {
             var     originalColor   = GUI.color;
             try
             {
                 GUI.color   = Color.clear;
-                return GUI.Button(rect, string.Empty);
+                return GUI.Button(rect, label);
             }
             finally
             {
