@@ -6,7 +6,7 @@ using VoxelBusters.CoreLibrary;
 
 namespace VoxelBusters.CoreLibrary.Editor.NativePlugins
 {
-	public partial class NativeFeatureExporterSettings
+	public partial class NativePluginsExporterSettings
 	{
 		[Serializable]
 		public class IosPlatformProperties

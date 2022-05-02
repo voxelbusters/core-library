@@ -8,11 +8,11 @@ using System.Collections.Generic;
 namespace VoxelBusters.CoreLibrary.Editor.NativePlugins
 {
 	[Serializable]
-	public partial class NativeFeatureExporterSettings : ScriptableObject
+	public partial class NativePluginsExporterSettings : ScriptableObject
 	{
-		#region Fields
+        #region Fields
 
-		[SerializeField]
+        [SerializeField]
 		private     bool			        m_isEnabled			= true;
 		
         [SerializeField, FormerlySerializedAs("m_iOSSettings")]
@@ -20,7 +20,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins
 
 		#endregion
 
-		#region Properties
+        #region Properties
 
 		public bool IsEnabled
 		{
@@ -51,7 +51,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins
 
         #region Static methods
 
-        public static NativeFeatureExporterSettings[] FindAllExporters(bool includeInactive = false)
+        public static NativePluginsExporterSettings[] FindAllExporters(bool includeInactive = false)
         {
             var     directory   = new DirectoryInfo(Application.dataPath);
             var     files       = directory.GetFiles("*.asset" , SearchOption.AllDirectories);
@@ -62,17 +62,17 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins
             });
 
             // filter assets
-            var     exporters   = new List<NativeFeatureExporterSettings>();
+            var     exporters   = new List<NativePluginsExporterSettings>();
             foreach (string path in assetPaths)
             {
                 var     scriptableObject        = AssetDatabase.LoadAssetAtPath<ScriptableObject>(path);
-                if (scriptableObject is NativeFeatureExporterSettings)
+                if (scriptableObject is NativePluginsExporterSettings)
                 {
                     // add to list
-                    var     nativeFeatureExporter   = (NativeFeatureExporterSettings)scriptableObject;
-                    if (includeInactive || nativeFeatureExporter.IsEnabled)
+                    var     exporterSettings    = (NativePluginsExporterSettings)scriptableObject;
+                    if (includeInactive || exporterSettings.IsEnabled)
                     {
-                        exporters.Add(nativeFeatureExporter);
+                        exporters.Add(exporterSettings);
                     }
                 }
             }

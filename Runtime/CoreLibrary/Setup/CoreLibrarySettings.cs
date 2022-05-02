@@ -8,17 +8,13 @@ namespace VoxelBusters.CoreLibrary
     {
         #region Static fields
 
-        private     static      UnityPackageDefinition      s_package           = new UnityPackageDefinition(
-            name: "com.voxelbusters.corelibrary",
-            displayName: "Core Library",
-            version: "1.0.0",
-            defaultInstallPath: $"Assets/com.voxelbusters.corelibrary");
+        private     static      UnityPackageDefinition      s_package;
 
         #endregion
 
         #region Static properties
 
-        public static UnityPackageDefinition Package
+        internal static UnityPackageDefinition Package
         {
             get
             {
@@ -28,7 +24,7 @@ namespace VoxelBusters.CoreLibrary
                         name: "com.voxelbusters.corelibrary",
                         displayName: "Core Library",
                         version: "1.0.0",
-                        defaultInstallPath: $"Assets/com.voxelbusters.corelibrary");
+                        defaultInstallPath: $"Assets/Plugins/VoxelBusters/CoreLibrary");
                 }
                 return s_package;
             }

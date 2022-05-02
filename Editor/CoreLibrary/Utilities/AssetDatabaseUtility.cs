@@ -39,6 +39,35 @@ namespace VoxelBusters.CoreLibrary.Editor
             AssetDatabase.CreateAsset(asset, assetPath);
         }
 
+        public static T CreateScriptableObject<T>(string assetPath, System.Action<T> onInit = null) where T : ScriptableObject
+        {
+            var     instance    = ScriptableObject.CreateInstance<T>();
+            onInit?.Invoke(instance);
+
+            // create file
+            CreateAssetAtPath(instance, assetPath);
+            AssetDatabase.Refresh();
+
+            return instance;
+        }
+
+        public static T LoadScriptableObject<T>(string assetPath, System.Action<T> onLoad = null, System.Func<System.Exception> throwErrorFunc = null) where T : ScriptableObject
+        {
+            var     instance    = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+            if (instance)
+            {
+                onLoad?.Invoke(instance);
+                return instance;
+            }
+
+            if (throwErrorFunc != null)
+            {
+                throw throwErrorFunc();
+            }
+
+            return null;
+        }
+
         #endregion
     }
 }

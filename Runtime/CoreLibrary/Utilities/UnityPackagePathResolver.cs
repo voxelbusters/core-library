@@ -18,7 +18,7 @@ namespace VoxelBusters.CoreLibrary
         {
             if (IsSupported())
             {
-                return  IsInstalledWithinAssets(package) ? package.DefaultInstallPath : $"package/{package.Name}";
+                return  IsInstalledWithinAssets(package) ? package.DefaultInstallPath : package.UpmInstallPath;
             }
             return null;
         }
@@ -38,9 +38,19 @@ namespace VoxelBusters.CoreLibrary
             return CombinePath(pathA: GetInstallPath(package), pathB: "EditorResources");
         }
 
+        public static string GetMutableResourcesPath(this UnityPackageDefinition package)
+        {
+            return package.MutableResourcesPath;
+        }
+
         public static string GetImmutableResourcesPath(this UnityPackageDefinition package)
         {
             return CombinePath(pathA: GetInstallPath(package), pathB: "Resources");
+        }
+
+        public static string GetPackageResourcesPath(this UnityPackageDefinition package)
+        {
+            return CombinePath(pathA: GetInstallPath(package), pathB: "PackageResources");
         }
 
         public static string GetFullPath(this UnityPackageDefinition package, string relativePath)
@@ -50,7 +60,7 @@ namespace VoxelBusters.CoreLibrary
 
         public static string GetMutableResourceRelativePath(this UnityPackageDefinition package, string name)
         {
-            return CombinePath(pathA: package.MutableResourceRelativePath, pathB: name);
+            return CombinePath(pathA: package.MutableResourcesRelativePath, pathB: name);
         }
 
         private static bool IsSupported() => Application.isEditor;

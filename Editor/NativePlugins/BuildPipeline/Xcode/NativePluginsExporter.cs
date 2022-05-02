@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEditor.iOS.Xcode;
 using UnityEngine;
@@ -12,12 +13,15 @@ using VoxelBusters.CoreLibrary.NativePlugins;
 
 namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 {
-    [InitializeOnLoad]
-    public static class NativeFeatureExportProcess
+    public class NativePluginsExporter : IPostprocessBuildWithReport
     {
         #region Constants
 
-        private static readonly string[]    ignoreFileExtensions    = new string[]
+        private const string                kBaseExporterName       = "Base";
+
+        private const string                kPluginPath             = "VoxelBusters/NativePlugins/";
+
+        private static readonly string[]    kIgnoreFileExtensions   = new string[]
         {
             ".meta", 
             ".pdf",
@@ -27,13 +31,11 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             ".cs",
         };
 
-        private static readonly string      kPluginPath              = "VoxelBusters/NativePlugins/";
-
         #endregion
 
         #region Fields
 
-        private     static  NativeFeatureExporterSettings[]     s_activeExporters       = null;
+        private     static  NativePluginsExporterSettings[]     s_activeExporters       = null;
 
         private     static  string                              s_projectPath           = null;
 
@@ -43,51 +45,43 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
         
         #endregion
 
-        #region Constructors
+        #region IPostprocessBuildWithReport implementation
 
-        static NativeFeatureExportProcess()
+        public int callbackOrder => int.MaxValue;
+
+        public void OnPostprocessBuild(BuildReport report)
         {
-            // unregister from events
-            BuildProcessReporter.OnPostprocessBuild    -= OnPostprocessBuild;
-
-            // register for events
-            BuildProcessReporter.OnPostprocessBuild    += OnPostprocessBuild;
-        }
-
-        #endregion
-
-        #region Callback methods
-
-        public static void OnPostprocessBuild(BuildReport report)
-        {
-            if (report.summary.platform == BuildTarget.iOS ||
-                report.summary.platform == BuildTarget.tvOS)
+            if ((report.summary.platform != BuildTarget.iOS) &&
+                (report.summary.platform != BuildTarget.tvOS))
             {
-                // set properties
-                s_activeExporters       = NativeFeatureExporterSettings.FindAllExporters(includeInactive: !NativeFeatureUnitySettingsBase.CanToggleFeatureUsageState());
-                s_projectPath           = report.summary.outputPath;
-                s_librarySearchPaths    = new List<string>();
-                s_frameworkSearchPaths  = new List<string>();
-
-                // execute tasks
-                PrepareForExport();
-                UpdateMacroDefinitions();
-                UpdatePBXProject();
-
-                // reset properties
-                s_activeExporters       = null;
-                s_projectPath           = null;
-                s_librarySearchPaths    = null;
-                s_frameworkSearchPaths  = null;
+                return;
             }
+
+            // execute tasks
+            Init(projectPath: report.summary.outputPath);
+            UpdateMacroDefinitions();
+            UpdatePBXProject();
         }
 
         #endregion
 
         #region Private static methods
 
-        private static void PrepareForExport()
+        private static void Init(string projectPath)
         {
+            // update base exporter state
+            var     exporters           = NativePluginsExporterSettings.FindAllExporters(includeInactive: true);
+            var     baseExporter        = Array.Find(exporters, (item) => string.Equals(item.name, kBaseExporterName));
+            baseExporter.IsEnabled      = Array.Exists(exporters, (item) => (item != baseExporter) && item.IsEnabled);
+
+            // set properties
+            var     canToggleFeatures   = NativeFeatureUnitySettingsBase.CanToggleFeatureUsageState();
+            s_activeExporters           = Array.FindAll(exporters, (item) => item.IsEnabled || !canToggleFeatures);
+            s_projectPath               = projectPath;
+            s_librarySearchPaths        = new List<string>();
+            s_frameworkSearchPaths      = new List<string>();
+            
+            // remove old directory
             string  pluginExportPath    = Path.Combine(s_projectPath, kPluginPath);
             IOServices.DeleteDirectory(pluginExportPath);
         }
@@ -95,9 +89,9 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
         private static string GetProjectTarget(PBXProject project)
         {
 #if UNITY_2019_3_OR_NEWER
-                return project.GetUnityFrameworkTargetGuid();
+            return project.GetUnityFrameworkTargetGuid();
 #else
-                return project.TargetGuidByName(PBXProject.GetUnityTargetName());
+            return project.TargetGuidByName(PBXProject.GetUnityTargetName());
 #endif
         }
 
@@ -366,9 +360,10 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             return folder.GetFiles().Where((fileInfo) =>
             {
                 string  fileExtension   = fileInfo.Extension;
-                return !Array.Exists(ignoreFileExtensions, (ignoreExt) => string.Equals(fileExtension, ignoreExt, StringComparison.InvariantCultureIgnoreCase));
+                return !Array.Exists(kIgnoreFileExtensions, (ignoreExt) => string.Equals(fileExtension, ignoreExt, StringComparison.InvariantCultureIgnoreCase));
             }).ToArray();
-        } 
+        }
+
         #endregion
     }
 }

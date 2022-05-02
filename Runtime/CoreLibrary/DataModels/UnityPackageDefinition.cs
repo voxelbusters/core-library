@@ -17,9 +17,11 @@ namespace VoxelBusters.CoreLibrary
 
         public string DefaultInstallPath { get; private set; }
 
-        public string MutableResourcePath { get; private set; }
+        public string UpmInstallPath { get; private set; }
 
-        public string MutableResourceRelativePath { get; private set; }
+        public string MutableResourcesPath { get; private set; }
+
+        public string MutableResourcesRelativePath { get; private set; }
 
         #endregion
 
@@ -27,15 +29,16 @@ namespace VoxelBusters.CoreLibrary
 
         public UnityPackageDefinition(string name, string displayName,
             string version, string defaultInstallPath = null,
-            string mutableResourcePath = "Assets/Resources", string mutableResourceRelativePath = "")
+            string mutableResourcesPath = "Assets/Resources")
         {
             // set properties
-            Name                        = name;
-            DisplayName                 = displayName;
-            Version                     = version;
-            DefaultInstallPath          = defaultInstallPath ?? $"Assets/{Name}";
-            MutableResourcePath         = mutableResourcePath;
-            MutableResourceRelativePath = mutableResourceRelativePath;
+            Name                            = name;
+            DisplayName                     = displayName;
+            Version                         = version;
+            DefaultInstallPath              = defaultInstallPath ?? $"Assets/{Name}";
+            UpmInstallPath                  = $"Packages/{Name}";
+            MutableResourcesPath            = mutableResourcesPath;
+            MutableResourcesRelativePath    = mutableResourcesPath.Replace("Assets/Resources", "").TrimStart('/');
         }
 
         #endregion
