@@ -25,7 +25,10 @@ namespace VoxelBusters.CoreLibrary.Editor
         {
             EnsureInitialized();
 
-            AddDefineToCollection(definesCollection: s_addDefinesCollection, define: define, targetGroups: targetGroups ?? s_supportedTargetGroups);
+            AddDefineToCollection(
+                definesCollection: s_addDefinesCollection,
+                define: define,
+                targetGroups: GetBuildTargetGroupsOrDefault(targetGroups));
             UpdateDefineSymbolsDelayed();
         }
 
@@ -33,7 +36,10 @@ namespace VoxelBusters.CoreLibrary.Editor
         {
             EnsureInitialized();
 
-            AddDefineToCollection(definesCollection: s_removeDefinesCollection, define: define, targetGroups: targetGroups ?? s_supportedTargetGroups);
+            AddDefineToCollection(
+                definesCollection: s_removeDefinesCollection,
+                define: define,
+                targetGroups: GetBuildTargetGroupsOrDefault(targetGroups));
             UpdateDefineSymbolsDelayed();
         }
 
@@ -44,14 +50,28 @@ namespace VoxelBusters.CoreLibrary.Editor
             // set properties
             s_addDefinesCollection      = new Dictionary<BuildTargetGroup, List<string>>();
             s_removeDefinesCollection   = new Dictionary<BuildTargetGroup, List<string>>();
+            s_supportedTargetGroups     = GetSupportedBuildTargetGroups();
+        }
 
-            var     targetValues        = System.Enum.GetValues(typeof(BuildTargetGroup));
-            var     iter                = 0;
-            s_supportedTargetGroups     = new BuildTargetGroup[targetValues.Length];
-            foreach (var item in System.Enum.GetValues(typeof(BuildTargetGroup)))
+        private static BuildTargetGroup[] GetSupportedBuildTargetGroups()
+        {
+            var     newList     = new List<BuildTargetGroup>();
+            foreach (BuildTarget buildTarget in System.Enum.GetValues(typeof(BuildTarget)))
             {
-                s_supportedTargetGroups[iter++] = (BuildTargetGroup)item;
+                var     buildTargetGroup    = BuildPipeline.GetBuildTargetGroup(buildTarget);
+                if (BuildPipeline.IsBuildTargetSupported(buildTargetGroup, buildTarget))
+                {
+                    newList.AddUnique(buildTargetGroup);
+                }
             }
+            return newList.ToArray();
+        }
+
+        private static BuildTargetGroup[] GetBuildTargetGroupsOrDefault(BuildTargetGroup[] targetGroups)
+        {
+            return ((targetGroups == null) || (targetGroups.Length == 0))
+                ? s_supportedTargetGroups
+                : targetGroups;
         }
 
         private static void AddDefineToCollection(Dictionary<BuildTargetGroup, List<string>> definesCollection, string define, BuildTargetGroup[] targetGroups)
@@ -59,6 +79,11 @@ namespace VoxelBusters.CoreLibrary.Editor
             // add define symbol for all the specified target groups
             foreach (var group in targetGroups)
             {
+                if (!System.Array.Exists(s_supportedTargetGroups, (item) => (item == group)))
+                {
+                    continue;
+                }
+
                 if (!definesCollection.TryGetValue(group, out List<string> groupDefines))
                 {
                     var     newDefines  = new List<string>();
