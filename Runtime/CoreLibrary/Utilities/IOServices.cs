@@ -226,18 +226,18 @@ namespace VoxelBusters.CoreLibrary
 
         #region Hybrid methods
 
-        public static void DeleteFileOrFolder(string path)
+        public static void DeleteFileOrDirectory(string path, bool throwError = false)
         {
             var     fileInfo    = new FileInfo(path);
             if (fileInfo.Exists)
             {
                 if ((fileInfo.Attributes & FileAttributes.Directory) != 0)
                 {
-                    Directory.Delete(path, true);
+                    DeleteDirectory(path, true, throwError);
                 }
                 else
                 {
-                    File.Delete(path);
+                    DeleteFile(path, throwError);
                 }
             }
         }

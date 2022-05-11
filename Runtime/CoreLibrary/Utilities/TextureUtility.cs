@@ -113,7 +113,7 @@ namespace VoxelBusters.CoreLibrary
             IOServices.CreateDirectory(directory);
 
             // delete existing file
-            IOServices.DeleteFileOrFolder(filePath);
+            IOServices.DeleteFileOrDirectory(filePath);
 
             // start Capturing
             ScreenCapture.CaptureScreenshot(fileName);
