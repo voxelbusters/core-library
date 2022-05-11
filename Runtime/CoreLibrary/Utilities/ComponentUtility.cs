@@ -17,6 +17,34 @@ namespace VoxelBusters.CoreLibrary
             return component;
         }
 
+        public static TBase AddUniqueComponent<TBase>(this GameObject gameObject, System.Type type) where TBase : Component
+        {
+            // remove components except the specified type 
+            var     components      = gameObject.GetComponents<TBase>();
+            var     targetComponent = default(TBase);
+            foreach (var item in components)
+            {
+                if (item.GetType() == type)
+                {
+                    targetComponent = item;
+                    continue;
+                }
+                Object.DestroyImmediate(item);
+            }
+
+            // create a new instance if component does not exist
+            if (type != null)
+            {
+                return (targetComponent != null)
+                    ? targetComponent
+                    : gameObject.AddComponent(type) as TBase;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public static T GetComponentInPredecessor<T>(this MonoBehaviour monoBehaviour) where T : Component
         {
             var     parentTransform     = monoBehaviour.transform.parent;

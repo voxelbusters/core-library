@@ -161,6 +161,11 @@ namespace VoxelBusters.CoreLibrary
             return uniquePath;
         }
 
+        public static string GenerateFileName(string prefix, string extension)
+        {
+            return $"{prefix}_{DateTime.Now:yyyyMMddHHmmssfff}.{extension}";
+        }
+
         #endregion
 
         #region File operations
