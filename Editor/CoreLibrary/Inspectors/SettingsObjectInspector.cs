@@ -7,6 +7,14 @@ namespace VoxelBusters.CoreLibrary.Editor
 {
     public abstract class SettingsObjectInspector : UnityEditor.Editor
     {
+        #region Constants
+
+        private     static  readonly    ButtonInfo[]            s_emptyButtonArray          = new ButtonInfo[0];
+
+        private     static  readonly    PropertyGroupInfo[]     s_emptyPropertyGroupArray   = new PropertyGroupInfo[0];
+
+        #endregion
+
         #region Fields
 
         private     string                  m_productName;
@@ -105,9 +113,9 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         protected virtual InspectorDrawStyle GetDrawStyle() => InspectorDrawStyle.Default;
 
-        protected virtual ButtonInfo[] GetTopBarButtons() => new ButtonInfo[0];
+        protected virtual ButtonInfo[] GetTopBarButtons() => s_emptyButtonArray;
 
-        protected virtual PropertyGroupInfo[] GetPropertyGroups() => new PropertyGroupInfo[0];
+        protected virtual PropertyGroupInfo[] GetPropertyGroups() => s_emptyPropertyGroupArray;
 
         #endregion
 
@@ -177,7 +185,7 @@ namespace VoxelBusters.CoreLibrary.Editor
         protected virtual void DrawFooter()
         { }
 
-        private void DrawPropertyGroup(PropertyGroupInfo propertyGroup)
+        protected void DrawPropertyGroup(PropertyGroupInfo propertyGroup)
         {
             var     property        = propertyGroup.Reference;
             EditorGUILayout.BeginVertical(GroupBackgroundStyle);
@@ -187,10 +195,9 @@ namespace VoxelBusters.CoreLibrary.Editor
                 var     enabledProperty     = property.FindPropertyRelative("m_isEnabled");
 
                 // update gui state
-                GUI.enabled     = (enabledProperty == null || enabledProperty.boolValue);
+                GUI.enabled     = (enabledProperty == null) || enabledProperty.boolValue;
 
                 // display child properties
-                EditorGUI.indentLevel++;
                 if (propertyGroup.OnDrawChildProperties != null)
                 {
                     propertyGroup.OnDrawChildProperties(property);
@@ -199,7 +206,6 @@ namespace VoxelBusters.CoreLibrary.Editor
                 {
                     DrawChildProperties(property, skipProperties: "m_isEnabled");
                 }
-                EditorGUI.indentLevel--;
 
                 // reset gui state
                 GUI.enabled     = oldGUIState;
@@ -214,7 +220,7 @@ namespace VoxelBusters.CoreLibrary.Editor
             GUI.Box(rect, GUIContent.none, HeaderStyle);
 
             // draw foldable control
-            bool    isSelected          = property == m_activePropertyGroup;
+            bool    isSelected          = (property == m_activePropertyGroup);
             var     foldOutRect         = new Rect(rect.x, rect.y, 50f, rect.height);
             EditorGUI.LabelField(foldOutRect, isSelected ? "-" : "+", HeaderFoldoutStyle);
 
@@ -226,7 +232,7 @@ namespace VoxelBusters.CoreLibrary.Editor
             var     selectableRect      = new Rect(rect.x, rect.y, rect.width - 100f, rect.height);
             if (DrawTransparentButton(selectableRect))
             {
-                isSelected              = OnPropertyGroupHeaderSelect(property);
+                isSelected              = OnPropertyGroupSelect(property);
             }
 
             // draw toggle button
@@ -249,34 +255,49 @@ namespace VoxelBusters.CoreLibrary.Editor
             return isSelected;
         }
 
-        protected void DrawChildProperties(SerializedProperty property, string prefix = null, params string[] skipProperties)
+        protected void DrawChildProperties(SerializedProperty property, string prefix = null, bool indent = true, params string[] skipProperties)
         {
-            // move pointer to first element
-            var     currentProperty  = property.Copy();
-            var     endProperty      = default(SerializedProperty);
-
-            // start iterating through the properties
-            bool    firstTime       = true;
-            while (currentProperty.NextVisible(enterChildren: firstTime))
+            try
             {
-                if (firstTime)
+                if (indent)
                 {
-                    endProperty      = property.GetEndProperty();
-                    firstTime        = false;
-                }
-                if (SerializedProperty.EqualContents(currentProperty, endProperty) ||
-                    ((skipProperties != null) && System.Array.Exists(skipProperties, (item) => string.Equals(item, currentProperty.name))))
-                {
-                    break;
+                    EditorGUI.indentLevel++;
                 }
 
-                if (prefix != null)
+                // move pointer to first element
+                var     currentProperty  = property.Copy();
+                var     endProperty      = default(SerializedProperty);
+
+                // start iterating through the properties
+                bool    firstTime       = true;
+                while (currentProperty.NextVisible(enterChildren: firstTime))
                 {
-                    EditorGUILayout.PropertyField(currentProperty, new GUIContent($"{prefix} {currentProperty.displayName}", currentProperty.tooltip), true);
+                    if (firstTime)
+                    {
+                        endProperty      = property.GetEndProperty();
+                        firstTime        = false;
+                    }
+                    if (SerializedProperty.EqualContents(currentProperty, endProperty) ||
+                        ((skipProperties != null) && System.Array.Exists(skipProperties, (item) => string.Equals(item, currentProperty.name))))
+                    {
+                        break;
+                    }
+
+                    if (prefix != null)
+                    {
+                        EditorGUILayout.PropertyField(currentProperty, new GUIContent($"{prefix} {currentProperty.displayName}", currentProperty.tooltip), true);
+                    }
+                    else
+                    {
+                        EditorGUILayout.PropertyField(currentProperty, true);
+                    }
                 }
-                else
+            }
+            finally
+            {
+                if (indent)
                 {
-                    EditorGUILayout.PropertyField(currentProperty, true);
+                    EditorGUI.indentLevel--;
                 }
             }
         }
@@ -298,6 +319,12 @@ namespace VoxelBusters.CoreLibrary.Editor
         #endregion
 
         #region Private methods
+
+        protected void EnsureChangesAreSerialized()
+        {
+            serializedObject.ApplyModifiedProperties();
+            serializedObject.Update();
+        }
 
         private void EnsureStylesAreLoaded()
         {
@@ -347,7 +374,7 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         #region Callback methods
 
-        private bool OnPropertyGroupHeaderSelect(SerializedProperty property)
+        protected bool OnPropertyGroupSelect(SerializedProperty property)
         {
             var     lastActiveProperty  = m_activePropertyGroup;
             if (m_activePropertyGroup == null)
@@ -366,9 +393,9 @@ namespace VoxelBusters.CoreLibrary.Editor
             }
 
             // update reference
+            lastActiveProperty.isExpanded       = false;
             m_activePropertyGroup               = property;
             m_activePropertyGroup.isExpanded    = true;
-            lastActiveProperty.isExpanded       = false;
 
             return true;
         }
