@@ -177,11 +177,11 @@ namespace VoxelBusters.CoreLibrary.Editor
         protected virtual void DrawFooter()
         { }
 
-        private void DrawPropertyGroup(PropertyGroupInfo propertyMeta)
+        private void DrawPropertyGroup(PropertyGroupInfo propertyGroup)
         {
-            var     property        = propertyMeta.Reference;
+            var     property        = propertyGroup.Reference;
             EditorGUILayout.BeginVertical(GroupBackgroundStyle);
-            if (DrawControlHeader(property, propertyMeta.DisplayName))
+            if (DrawControlHeader(property, propertyGroup.DisplayName))
             {
                 bool    oldGUIState         = GUI.enabled;
                 var     enabledProperty     = property.FindPropertyRelative("m_isEnabled");
@@ -189,10 +189,16 @@ namespace VoxelBusters.CoreLibrary.Editor
                 // update gui state
                 GUI.enabled     = (enabledProperty == null || enabledProperty.boolValue);
 
-                // show internal properties
+                // display child properties
                 EditorGUI.indentLevel++;
-                DrawChildProperties(property, skipProperties: "m_isEnabled");
-                propertyMeta?.OnAfterPropertyDraw(property);
+                if (propertyGroup.OnDrawChildProperties != null)
+                {
+                    propertyGroup.OnDrawChildProperties(property);
+                }
+                else
+                {
+                    DrawChildProperties(property, skipProperties: "m_isEnabled");
+                }
                 EditorGUI.indentLevel--;
 
                 // reset gui state
@@ -302,27 +308,27 @@ namespace VoxelBusters.CoreLibrary.Editor
             }
 
             // bg style
-            GroupBackgroundStyle          = new GUIStyle("HelpBox");
+            GroupBackgroundStyle            = new GUIStyle("HelpBox");
             var     bgOffset                = GroupBackgroundStyle.margin;
             bgOffset.bottom                 = 5;
-            GroupBackgroundStyle.margin   = bgOffset;
+            GroupBackgroundStyle.margin     = bgOffset;
 
             // header style
-            HeaderStyle                   = new GUIStyle("PreButton");
-            HeaderStyle.fixedHeight       = 0;
+            HeaderStyle                     = new GUIStyle("PreButton");
+            HeaderStyle.fixedHeight         = 0;
 
             // foldout style
-            HeaderFoldoutStyle            = new GUIStyle("WhiteBoldLabel");
-            HeaderFoldoutStyle.fontSize   = 20;
-            HeaderFoldoutStyle.alignment  = TextAnchor.MiddleLeft;
+            HeaderFoldoutStyle              = new GUIStyle("WhiteBoldLabel");
+            HeaderFoldoutStyle.fontSize     = 20;
+            HeaderFoldoutStyle.alignment    = TextAnchor.MiddleLeft;
 
             // label style
-            HeaderLabelStyle              = new GUIStyle("WhiteBoldLabel");
-            HeaderLabelStyle.fontSize     = 12;
-            HeaderLabelStyle.alignment    = TextAnchor.MiddleLeft;
+            HeaderLabelStyle                = new GUIStyle("WhiteBoldLabel");
+            HeaderLabelStyle.fontSize       = 12;
+            HeaderLabelStyle.alignment      = TextAnchor.MiddleLeft;
 
             // enabled style
-            HeaderToggleStyle             = new GUIStyle("InvisibleButton");
+            HeaderToggleStyle               = new GUIStyle("InvisibleButton");
         }
 
         private void LoadAssets()
@@ -410,18 +416,19 @@ namespace VoxelBusters.CoreLibrary.Editor
 
             public string DisplayName { get; private set; }
 
-            public System.Action<SerializedProperty> OnAfterPropertyDraw { get; private set; }
+            public System.Action<SerializedProperty> OnDrawChildProperties { get; private set; }
 
             #endregion
 
             #region Constructors
 
-            public PropertyGroupInfo(SerializedProperty reference, string displayName, System.Action<SerializedProperty> onAfterPropertyDraw)
+            public PropertyGroupInfo(SerializedProperty reference, string displayName,
+                System.Action<SerializedProperty> onDrawChildProperties = null)
             {
                 // set properties
-                Reference           = reference;
-                DisplayName         = displayName;
-                OnAfterPropertyDraw = onAfterPropertyDraw;
+                Reference                   = reference;
+                DisplayName                 = displayName;
+                OnDrawChildProperties       = onDrawChildProperties;
             }
 
             #endregion
