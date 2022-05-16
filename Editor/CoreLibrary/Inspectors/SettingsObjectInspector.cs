@@ -204,7 +204,7 @@ namespace VoxelBusters.CoreLibrary.Editor
                 }
                 else
                 {
-                    DrawChildProperties(property, skipProperties: "m_isEnabled");
+                    DrawChildProperties(property, ignoreProperties: "m_isEnabled");
                 }
 
                 // reset gui state
@@ -255,7 +255,8 @@ namespace VoxelBusters.CoreLibrary.Editor
             return isSelected;
         }
 
-        protected void DrawChildProperties(SerializedProperty property, string prefix = null, bool indent = true, params string[] skipProperties)
+        protected void DrawChildProperties(SerializedProperty property, string prefix = null,
+            bool indent = true, params string[] ignoreProperties)
         {
             try
             {
@@ -277,12 +278,18 @@ namespace VoxelBusters.CoreLibrary.Editor
                         endProperty      = property.GetEndProperty();
                         firstTime        = false;
                     }
-                    if (SerializedProperty.EqualContents(currentProperty, endProperty) ||
-                        ((skipProperties != null) && System.Array.Exists(skipProperties, (item) => string.Equals(item, currentProperty.name))))
+                    if (SerializedProperty.EqualContents(currentProperty, endProperty))
                     {
                         break;
                     }
 
+                    // exclude specified properties
+                    if ((ignoreProperties != null) && System.Array.Exists(ignoreProperties, (item) => string.Equals(item, currentProperty.name)))
+                    {
+                        continue;
+                    }
+
+                    // display the property
                     if (prefix != null)
                     {
                         EditorGUILayout.PropertyField(currentProperty, new GUIContent($"{prefix} {currentProperty.displayName}", currentProperty.tooltip), true);
