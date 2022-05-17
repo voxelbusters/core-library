@@ -323,6 +323,28 @@ namespace VoxelBusters.CoreLibrary.Editor
             }
         }
 
+        protected void DrawHelpbox(string title, string description, System.Action drawFuc)
+        {
+            GUILayout.BeginVertical(GroupBackgroundStyle);
+            GUILayout.Label(title, EditorStyles.boldLabel);
+            GUILayout.Label(description);
+            drawFuc();
+            GUILayout.EndVertical();
+        }
+
+        protected void DrawHelpbox(string title, string description, string actionLabel, System.Action onClick)
+        {
+            DrawHelpbox(title: title,
+                description: description,
+                drawFuc: () =>
+                {
+                    if (GUILayout.Button(actionLabel))
+                    {
+                        onClick?.Invoke();
+                    }
+                });
+        }
+
         #endregion
 
         #region Private methods
