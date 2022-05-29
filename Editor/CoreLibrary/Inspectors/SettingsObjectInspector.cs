@@ -230,7 +230,7 @@ namespace VoxelBusters.CoreLibrary.Editor
 
             // draw selectable rect
             var     selectableRect      = new Rect(rect.x, rect.y, rect.width - 100f, rect.height);
-            if (DrawTransparentButton(selectableRect))
+            if (EditorLayoutUtility.TransparentButton(selectableRect))
             {
                 isSelected              = OnPropertyGroupSelect(property);
             }
@@ -307,42 +307,6 @@ namespace VoxelBusters.CoreLibrary.Editor
                     EditorGUI.indentLevel--;
                 }
             }
-        }
-
-        protected bool DrawTransparentButton(Rect rect, string label = "")
-        {
-            var     originalColor   = GUI.color;
-            try
-            {
-                GUI.color   = Color.clear;
-                return GUI.Button(rect, label);
-            }
-            finally
-            {
-                GUI.color   = originalColor;
-            }
-        }
-
-        protected void DrawHelpbox(string title, string description, System.Action drawFuc)
-        {
-            GUILayout.BeginVertical(GroupBackgroundStyle);
-            GUILayout.Label(title, EditorStyles.boldLabel);
-            GUILayout.Label(description);
-            drawFuc();
-            GUILayout.EndVertical();
-        }
-
-        protected void DrawHelpbox(string title, string description, string actionLabel, System.Action onClick)
-        {
-            DrawHelpbox(title: title,
-                description: description,
-                drawFuc: () =>
-                {
-                    if (GUILayout.Button(actionLabel))
-                    {
-                        onClick?.Invoke();
-                    }
-                });
         }
 
         #endregion

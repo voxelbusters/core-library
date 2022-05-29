@@ -22,6 +22,11 @@ namespace VoxelBusters.CoreLibrary
     /// <summary>
     /// Generic callback definition for operations.
     /// </summary>
+    public delegate void ErrorCallback(Error error);
+
+    /// <summary>
+    /// Generic callback definition for operations.
+    /// </summary>
     public delegate void EventCallback<TResult>(TResult result, Error error);
 
     public class CallbackDispatcher : PrivateSingletonBehaviour<CallbackDispatcher>
