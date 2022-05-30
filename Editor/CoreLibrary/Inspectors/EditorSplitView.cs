@@ -11,13 +11,11 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         private		SplitDirection		m_direction;
 
-		private		float				m_normalizedPosition;
+		private		float				m_splitRatio;
 
 		private		bool				m_resize;
 
 		private		Vector2				m_firstContainerScrollPos;
-
-		private		Vector2				m_secondContainerScroller;
 
 		private		Rect				m_availableRect;
 
@@ -27,8 +25,8 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         private EditorSplitView(SplitDirection direction, float splitRatio)
 		{
-			m_normalizedPosition	= splitRatio;
-			m_direction				= direction;
+			m_splitRatio	= splitRatio;
+			m_direction		= direction;
 		}
 
 		#endregion
@@ -51,71 +49,74 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         public void BeginArea()
 		{
-			Rect	tempRect;
+			Rect	tempRect		= Rect.zero;
 			if (m_direction == SplitDirection.Horizontal)
 			{
-				tempRect	= EditorGUILayout.BeginHorizontal();
+				tempRect			= EditorGUILayout.BeginHorizontal();
 			}
-			else
+			else if (m_direction == SplitDirection.Vertical)
 			{
-				tempRect	= EditorGUILayout.BeginVertical();
+				tempRect			= EditorGUILayout.BeginVertical();
 			}
 			if (tempRect.width > 0.0f)
 			{
 				m_availableRect		= tempRect;
 			}
 
-			BeginContainer(ref m_firstContainerScrollPos, isFirst: true);
+			BeginContainer();
+			if (m_direction == SplitDirection.Horizontal)
+			{
+				m_firstContainerScrollPos	= EditorGUILayout.BeginScrollView(m_firstContainerScrollPos, GUILayout.Width(m_availableRect.width * m_splitRatio));
+			}
+			else if (m_direction == SplitDirection.Vertical)
+			{
+				m_firstContainerScrollPos	= EditorGUILayout.BeginScrollView(m_firstContainerScrollPos, GUILayout.Height(m_availableRect.height * m_splitRatio));
+			}
 		}
 
 		public void Split()
 		{
+			// firstly mark that first container has ended
+			EditorGUILayout.EndScrollView();
 			EndContainer();
-			ResizeFirstView();
-			BeginContainer(ref m_secondContainerScroller, isFirst: false);
+			ResizeFirstContainer();
+
+			// initiate rendering second container
+			BeginContainer();
 		}
 
 		public void EndArea()
 		{
 			EndContainer();
+
 			if (m_direction == SplitDirection.Horizontal)
 			{
 				EditorGUILayout.EndHorizontal();
 			}
-			else
+			else if (m_direction == SplitDirection.Vertical)
 			{
 				EditorGUILayout.EndVertical();
 			}
 		}
 
-		public void ResetFirstContainerScroller()
+		private Rect BeginContainer()
 		{
-			m_firstContainerScrollPos	= Vector2.zero;
-		}
-
-		public void ResetSecondContainerScroller()
-		{
-			m_firstContainerScrollPos	= Vector2.zero;
-		}
-
-		private void BeginContainer(ref Vector2 scrollPos, bool isFirst)
-		{
-			float	normalizedSize	= isFirst ? m_normalizedPosition : (1f - m_normalizedPosition);
 			if (m_direction == SplitDirection.Horizontal)
 			{
-				EditorGUILayout.BeginVertical();
-				scrollPos	= EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Width(m_availableRect.width * normalizedSize));
+				return EditorGUILayout.BeginVertical();
 			}
 			else if (m_direction == SplitDirection.Vertical)
 			{
-				EditorGUILayout.BeginHorizontal();
-				scrollPos	= EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Height(m_availableRect.height * normalizedSize));
+				return EditorGUILayout.BeginHorizontal();
+			}
+			else
+			{
+				return Rect.zero;
 			}
 		}
 
 		private void EndContainer()
 		{
-			EditorGUILayout.EndScrollView();
 			if (m_direction == SplitDirection.Horizontal)
 			{
 				EditorGUILayout.EndVertical();
@@ -126,18 +127,18 @@ namespace VoxelBusters.CoreLibrary.Editor
 			}
 		}
 
-		private void ResizeFirstView()
+		private void ResizeFirstContainer()
 		{
 			Rect resizeHandleRect;
 			if (m_direction == SplitDirection.Horizontal)
 			{
-				resizeHandleRect	= new Rect(m_availableRect.width * m_normalizedPosition, m_availableRect.y, 1f, m_availableRect.height);
+				resizeHandleRect	= new Rect(m_availableRect.width * m_splitRatio, m_availableRect.y, 1f, m_availableRect.height);
 			}
 			else
 			{
-				resizeHandleRect	= new Rect(m_availableRect.x, m_availableRect.height * m_normalizedPosition, m_availableRect.width, 1f);
+				resizeHandleRect	= new Rect(m_availableRect.x, m_availableRect.height * m_splitRatio, m_availableRect.width, 1f);
 			}
-			EditorGUI.DrawRect(resizeHandleRect, new Color(0.15f, 0.15f, 0.15f, 1f));
+			EditorGUI.DrawRect(resizeHandleRect, CustomEditorStyles.BorderColor);
 			if (m_direction == SplitDirection.Horizontal)
 			{
 				EditorGUIUtility.AddCursorRect(resizeHandleRect, MouseCursor.ResizeHorizontal);
@@ -155,11 +156,11 @@ namespace VoxelBusters.CoreLibrary.Editor
 			{
 				if (m_direction == SplitDirection.Horizontal)
 				{
-					m_normalizedPosition	= Event.current.mousePosition.x / m_availableRect.width;
+					m_splitRatio	= Event.current.mousePosition.x / m_availableRect.width;
 				}
 				else
 				{
-					m_normalizedPosition	= Event.current.mousePosition.y / m_availableRect.height;
+					m_splitRatio	= Event.current.mousePosition.y / m_availableRect.height;
 				}
 			}
 			if (Event.current.type == EventType.MouseUp)

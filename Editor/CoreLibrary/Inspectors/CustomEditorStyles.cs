@@ -25,6 +25,8 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         public static GUIStyle ItemBackground { get; private set; }
 
+        public static Color BorderColor { get; private set; }
+
         #endregion
 
         #region Constructors
@@ -39,6 +41,7 @@ namespace VoxelBusters.CoreLibrary.Editor
             Button              = CreateStyle(original: "Button",                  fontSize: 14);
             Link                = CreateStyle(original: EditorStyles.linkLabel,    fontSize: 12);
             ItemBackground      = new GUIStyle("AnimItemBackground");
+            BorderColor         = new Color(0.15f, 0.15f, 0.15f, 1f);
         }
 
         #endregion

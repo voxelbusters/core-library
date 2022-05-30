@@ -57,6 +57,21 @@ namespace VoxelBusters.CoreLibrary.Editor
                 style: style);
         }
 
+        public static void BeginBottomBar(Color? borderColor = null, params GUILayoutOption[] options)
+        {
+            var     bottomBarRect   = EditorGUILayout.BeginHorizontal(options);
+            bottomBarRect.height    = 1f;
+            if (borderColor != null)
+            {
+                EditorGUI.DrawRect(bottomBarRect, borderColor.Value);
+            }
+        }
+
+        public static void EndBottomBar()
+        {
+            EditorGUILayout.EndHorizontal();
+        }
+
         #endregion
     }
 }
