@@ -315,6 +315,7 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         protected void EnsureChangesAreSerialized()
         {
+            EditorUtility.SetDirty(target);
             serializedObject.ApplyModifiedProperties();
             serializedObject.Update();
         }
