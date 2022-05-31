@@ -21,9 +21,13 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         public static GUIStyle Button { get; private set; }
 
+        public static GUIStyle InvisibleButton { get; private set; }
+
         public static GUIStyle Link { get; private set; }
 
         public static GUIStyle ItemBackground { get; private set; }
+
+        public static GUIStyle GroupBackground { get; private set; }
 
         public static Color BorderColor { get; private set; }
 
@@ -33,39 +37,54 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         static CustomEditorStyles()
         {
-            Heading1            = CreateStyle(original: EditorStyles.boldLabel,    fontSize: 18);
-            Heading2            = CreateStyle(original: EditorStyles.boldLabel,    fontSize: 16);
-            Heading3            = CreateStyle(original: EditorStyles.boldLabel,    fontSize: 14);
-            Normal              = CreateStyle(original: EditorStyles.label,        fontSize: 14);
-            Options             = CreateStyle(original: EditorStyles.label,        fontSize: 12);
-            Button              = CreateStyle(original: "Button",                  fontSize: 14);
-            Link                = CreateStyle(original: EditorStyles.linkLabel,    fontSize: 12);
-            ItemBackground      = new GUIStyle("AnimItemBackground");
-            BorderColor         = new Color(0.15f, 0.15f, 0.15f, 1f);
-        }
-
-        #endregion
-
-        #region Static methods
-
-        private static GUIStyle CreateStyle(GUIStyle original, Font font = null,
-            int fontSize = -1, bool wordWrap = true,
-            bool richText = true)
-        {
-            var      style  = new GUIStyle(original)
+            Heading1                = new GUIStyle(EditorStyles.boldLabel)
             {
-                wordWrap        = wordWrap,
-                richText        = richText,
+                fontSize            = 18,
+                wordWrap            = true,
+                richText            = true,
+                alignment           = TextAnchor.MiddleLeft,
             };
-            if (font != null)
+            Heading2                = new GUIStyle(EditorStyles.boldLabel)
             {
-                style.font      = font;
-            }
-            if (fontSize != -1)
+                fontSize            = 16,
+                wordWrap            = true,
+                richText            = true,
+                alignment           = TextAnchor.MiddleLeft,
+            };
+            Heading3                = new GUIStyle(EditorStyles.boldLabel)
             {
-                style.fontSize  = fontSize;
-            }
-            return style;
+                fontSize            = 14,
+                wordWrap            = true,
+                richText            = true,
+                alignment           = TextAnchor.MiddleLeft,
+            };
+            Normal                  = new GUIStyle(EditorStyles.label)
+            {
+                fontSize            = 14,
+                wordWrap            = true,
+                richText            = true,
+            };
+            Options                 = new GUIStyle(EditorStyles.label)
+            {
+                fontSize            = 12,
+                wordWrap            = true,
+                richText            = true,
+            };
+            Button                  = new GUIStyle("Button")
+            {
+                fontSize            = 14,
+            };
+            InvisibleButton         = new GUIStyle("InvisibleButton");
+            Link                    = new GUIStyle("LinkLabel")
+            {
+                fontSize            = 12,
+                wordWrap            = true,
+                richText            = true,
+            };
+            ItemBackground          = new GUIStyle("AnimItemBackground");
+            GroupBackground         = new GUIStyle("HelpBox");
+            GroupBackground.margin  = new RectOffset(GroupBackground.margin.left, GroupBackground.margin.right, GroupBackground.margin.top, 5);
+            BorderColor             = new Color(0.15f, 0.15f, 0.15f, 1f);
         }
 
         #endregion

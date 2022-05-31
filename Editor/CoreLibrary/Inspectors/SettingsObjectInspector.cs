@@ -42,15 +42,11 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         #region Properties
 
-        protected GUIStyle GroupBackgroundStyle { get; private set; }
-
-        protected GUIStyle HeaderStyle { get; private set; }
+        protected GUIStyle HeaderButtonStyle { get; private set; }
 
         protected GUIStyle HeaderFoldoutStyle { get; private set; }
 
         protected GUIStyle HeaderLabelStyle { get; private set; }
-
-        protected GUIStyle HeaderToggleStyle { get; private set; }
 
         #endregion
 
@@ -123,7 +119,7 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         protected virtual void DrawTopBar()
         {
-            GUILayout.BeginHorizontal(GroupBackgroundStyle);
+            GUILayout.BeginHorizontal(CustomEditorStyles.GroupBackground);
 
             // logo section
             GUILayout.BeginVertical();
@@ -134,9 +130,9 @@ namespace VoxelBusters.CoreLibrary.Editor
 
             // product info
             GUILayout.BeginVertical();
-            GUILayout.Label(m_productName, "HeaderLabel");
-            GUILayout.Label(m_productVersion, "MiniLabel");
-            GUILayout.Label("Copyright © 2022 Voxel Busters Interactive LLP.", "MiniLabel");
+            GUILayout.Label(m_productName, CustomEditorStyles.Heading1);
+            GUILayout.Label(m_productVersion, CustomEditorStyles.Normal);
+            GUILayout.Label("Copyright © 2022 Voxel Busters Interactive LLP.", CustomEditorStyles.Options);
             GUILayout.EndVertical();
 
             GUILayout.FlexibleSpace();
@@ -188,7 +184,7 @@ namespace VoxelBusters.CoreLibrary.Editor
         protected void DrawPropertyGroup(PropertyGroupInfo propertyGroup)
         {
             var     property        = propertyGroup.Reference;
-            EditorGUILayout.BeginVertical(GroupBackgroundStyle);
+            EditorGUILayout.BeginVertical(CustomEditorStyles.GroupBackground);
             if (DrawControlHeader(property, propertyGroup.DisplayName))
             {
                 bool    oldGUIState         = GUI.enabled;
@@ -217,7 +213,7 @@ namespace VoxelBusters.CoreLibrary.Editor
         {
             // draw rect
             var     rect                = EditorGUILayout.GetControlRect(false, 30f);
-            GUI.Box(rect, GUIContent.none, HeaderStyle);
+            GUI.Box(rect, GUIContent.none, HeaderButtonStyle);
 
             // draw foldable control
             bool    isSelected          = (property == m_activePropertyGroup);
@@ -240,7 +236,7 @@ namespace VoxelBusters.CoreLibrary.Editor
             if ((enabledProperty != null) /*&& NativeFeatureUnitySettingsBase.CanToggleFeatureUsageState()*/)
             {
                 Rect    toggleRect                  = new Rect(rect.xMax - 64f, rect.y, 64f, 25f);
-                if (GUI.Button(toggleRect, enabledProperty.boolValue ? m_toggleOnIcon : m_toggleOffIcon, HeaderToggleStyle))
+                if (GUI.Button(toggleRect, enabledProperty.boolValue ? m_toggleOnIcon : m_toggleOffIcon, CustomEditorStyles.InvisibleButton))
                 {
                     enabledProperty.boolValue       = !enabledProperty.boolValue;
 
@@ -323,33 +319,25 @@ namespace VoxelBusters.CoreLibrary.Editor
         private void EnsureStylesAreLoaded()
         {
             // check whether styles are already loaded
-            if (null != GroupBackgroundStyle)
+            if (null != HeaderButtonStyle) return;
+
+            // set custom style properties
+            HeaderButtonStyle   = new GUIStyle("PreButton")
             {
-                return;
-            }
-
-            // bg style
-            GroupBackgroundStyle            = new GUIStyle("HelpBox");
-            var     bgOffset                = GroupBackgroundStyle.margin;
-            bgOffset.bottom                 = 5;
-            GroupBackgroundStyle.margin     = bgOffset;
-
-            // header style
-            HeaderStyle                     = new GUIStyle("PreButton");
-            HeaderStyle.fixedHeight         = 0;
-
-            // foldout style
-            HeaderFoldoutStyle              = new GUIStyle("WhiteBoldLabel");
-            HeaderFoldoutStyle.fontSize     = 20;
-            HeaderFoldoutStyle.alignment    = TextAnchor.MiddleLeft;
-
-            // label style
-            HeaderLabelStyle                = new GUIStyle("WhiteBoldLabel");
-            HeaderLabelStyle.fontSize       = 12;
-            HeaderLabelStyle.alignment      = TextAnchor.MiddleLeft;
-
-            // enabled style
-            HeaderToggleStyle               = new GUIStyle("InvisibleButton");
+                fixedHeight     = 0,
+                fontSize        = 20,
+                alignment       = TextAnchor.MiddleLeft,
+            };
+            HeaderFoldoutStyle  = new GUIStyle("WhiteBoldLabel")
+            {
+                fontSize        = 20,
+                alignment       = TextAnchor.MiddleLeft,
+            };
+            HeaderLabelStyle    = new GUIStyle("WhiteBoldLabel")
+            {
+                fontSize        = 20,
+                alignment       = TextAnchor.MiddleLeft,
+            };
         }
 
         private void LoadAssets()

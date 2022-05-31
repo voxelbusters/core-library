@@ -11,7 +11,8 @@ namespace VoxelBusters.CoreLibrary
 
         public static bool IsInstalledWithinAssets(this UnityPackageDefinition package)
         {
-            return IOServices.DirectoryExists(package.DefaultInstallPath);
+            return IOServices.DirectoryExists(package.DefaultInstallPath) &&
+                IOServices.FileExists($"{package.DefaultInstallPath}/package.json");
         }
 
         public static string GetInstallPath(this UnityPackageDefinition package)
