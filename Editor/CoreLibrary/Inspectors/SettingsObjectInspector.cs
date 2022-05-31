@@ -217,12 +217,12 @@ namespace VoxelBusters.CoreLibrary.Editor
 
             // draw foldable control
             bool    isSelected          = (property == m_activePropertyGroup);
-            var     foldOutRect         = new Rect(rect.x, rect.y, 50f, rect.height);
-            EditorGUI.LabelField(foldOutRect, isSelected ? "-" : "+", HeaderFoldoutStyle);
+            var     foldOutRect         = new Rect(rect.x + 5f, rect.y, 50f, rect.height);
+            EditorGUI.LabelField(foldOutRect, isSelected ? "-" : "+", CustomEditorStyles.Heading3);
 
             // draw label 
-            var     labelRect           = new Rect(rect.x + 25f, rect.y, rect.width - 100f, rect.height);
-            EditorGUI.LabelField(labelRect, displayName, HeaderLabelStyle);
+            var     labelRect           = new Rect(rect.x + 20f, rect.y, rect.width - 100f, rect.height);
+            EditorGUI.LabelField(labelRect, displayName, CustomEditorStyles.Heading3);
 
             // draw selectable rect
             var     selectableRect      = new Rect(rect.x, rect.y, rect.width - 100f, rect.height);
