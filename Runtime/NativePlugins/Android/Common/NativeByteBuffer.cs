@@ -10,26 +10,27 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.Android
     {
         #region Fields
 
-        private const string kClassName = "com.voxelbusters.android.essentialkit.common.ByteBuffer";
+        private const string kClassName = "java.nio.ByteBuffer";
         private byte[] m_cachedBytes;
 
         #endregion
 
-
-        public NativeByteBuffer(byte[] array) : base(kClassName,
-#if UNITY_2019_1_OR_NEWER
-            array.toSBytes()
-#else
-            array
-#endif
-            )
-        {
-            Debug.Log("Creating from byte array : " + array);
-        }
-
         public NativeByteBuffer(AndroidJavaObject androidJavaObject) : base(kClassName, androidJavaObject)
         {
-            Debug.Log("Creating from android native object : " + androidJavaObject.GetRawObject());
+#if NATIVE_PLUGINS_DEBUG_ENABLED
+            DebugLogger.Log("Creating from android native object : " + androidJavaObject.GetRawObject());
+#endif
+        }
+
+        public static NativeByteBuffer Wrap(byte[] array)
+        {
+            return Wrap(array.ToSBytes());
+        }
+
+        public static NativeByteBuffer Wrap(sbyte[] data)
+        {
+            NativeByteBuffer nativeByteBuffer = new NativeByteBuffer(CreateFromStatic(kClassName, "wrap", data));
+            return nativeByteBuffer;
         }
 
         public byte[] GetBytes()
@@ -39,10 +40,9 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.Android
 
             if(m_cachedBytes == null)
             {
-                DebugLogger.Log("Started getting bytes...");
 #if UNITY_2019_1_OR_NEWER
-                sbyte[] sbyteArray = Call<sbyte[]>("getBytes");
-                Debug.Log("Successfully fetched get bytes...");
+                sbyte[] sbyteArray = Call<sbyte[]>("array");
+                DebugLogger.Log("Successfully fetched get bytes...");
                 if (sbyteArray != null)
                 {
                     int length = sbyteArray.Length;
@@ -50,12 +50,14 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.Android
                     Buffer.BlockCopy(sbyteArray, 0, m_cachedBytes, 0, length);
                 }
 #else
-                m_cachedBytes = Call<byte[]>("getBytes");
+                m_cachedBytes = Call<byte[]>("array");
 #endif
             }
 
             return m_cachedBytes;
         }
+
+        
     }
 }
 #endif

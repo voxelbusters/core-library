@@ -50,6 +50,12 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.Android
         }
 #endif
 
+        public static AndroidJavaObject CreateFromStatic(string className, string methodName, params object[] args)
+        {
+            AndroidJavaClass cls = new AndroidJavaClass(className);
+            AndroidJavaObject androidJavaObject = cls.CallStatic<AndroidJavaObject>(methodName, args);
+            return androidJavaObject;
+        }
 
         public bool IsNull()
         {

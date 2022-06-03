@@ -9,7 +9,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.Android
 {
     public static class Utility
     {
-        public static sbyte[] toSBytes(this byte[] from)
+        public static sbyte[] ToSBytes(this byte[] from)
         {
             if (from == null)
                 return null;

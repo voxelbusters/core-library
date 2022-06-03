@@ -9,3 +9,6 @@
 [assembly: InternalsVisibleTo("VoxelBusters.EssentialKit.iOSModule")]
 [assembly: InternalsVisibleTo("VoxelBusters.EssentialKit.AndroidModule")]
 [assembly: InternalsVisibleTo("VoxelBusters.EssentialKit.SimulatorModule")]
+
+[assembly: InternalsVisibleTo("VoxelBusters.EasyMLKit")]
+[assembly: InternalsVisibleTo("VoxelBusters.EasyMLKit.Editor")]

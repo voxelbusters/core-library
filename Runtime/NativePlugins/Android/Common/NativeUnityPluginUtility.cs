@@ -10,6 +10,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.Android
         private static AndroidJavaObject    s_context           = null;
         private static NativeContext        s_nativeContext     = null;
         private static NativeActivity       s_nativeActivity    = null;
+        private static NativeViewGroup      s_decorRootView         = null;
 
         /*private static Dictionary<string, AndroidJavaObject> sSingletonInstances = new Dictionary<string, AndroidJavaObject>();
 
@@ -108,6 +109,20 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.Android
             return list.ToArray();
         }
 
+        public static NativeViewGroup GetDecorRootView()
+        {
+            if(s_decorRootView == null)
+            {
+                AndroidJavaObject activity = GetUnityActivity();
+                AndroidJavaObject window = activity.Call<AndroidJavaObject>("getWindow");
+                AndroidJavaObject decorView = window.Call<AndroidJavaObject>("getDecorView");
+                AndroidJavaObject rootView = decorView.Call<AndroidJavaObject>("getRootView");
+                s_decorRootView = new NativeViewGroup(rootView);
+            }
+
+            return s_decorRootView;
+        }
+
         private static AndroidJavaObject GetUnityActivity()
         {
             if (s_context == null)
@@ -117,6 +132,8 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.Android
             }
             return s_context;
         }
+
+        //Get root view group
     }
 }
 #endif

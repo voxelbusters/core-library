@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary.NativePlugins
 {
@@ -20,6 +19,24 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         {
             get;
             set;
+        }
+
+        public T[] GetStructArray<T>() where T : struct
+        {
+            T[] structArray = new T[Length];
+            int structSize = Marshal.SizeOf(typeof(T));
+
+            for(int i=0; i<Length; i++)
+            {
+                structArray[i] = MarshalUtility.PtrToStructure<T>(new IntPtr(Pointer.ToInt64() + (i * structSize)));
+            }
+            return structArray;
+        }
+
+        public string[] GetStringArray()
+        {
+            //Marshal ptr to array
+            return MarshalUtility.CreateStringArray(Pointer, Length);
         }
 
         #endregion

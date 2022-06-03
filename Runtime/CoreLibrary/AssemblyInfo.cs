@@ -9,3 +9,6 @@
 [assembly: InternalsVisibleTo("VoxelBusters.CoreLibrary.Editor.NativePlugins")]
 [assembly: InternalsVisibleTo("VoxelBusters.EssentialKit.Editor")]
 [assembly: InternalsVisibleTo("VoxelBusters.ReportingKit.Editor")]
+
+[assembly: InternalsVisibleTo("VoxelBusters.EasyMLKit")]
+[assembly: InternalsVisibleTo("VoxelBusters.EasyMLKit.Editor")]
