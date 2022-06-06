@@ -163,13 +163,13 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
         private static string GetExportGroupPath(NativePluginsExporterSettings exporterSettings, string prefixPath)
         {
             string  groupPath               = prefixPath;
-            bool    usesNestedHeierarchy    = true;
+            bool    usesNestedHierarchy    = true;
             if (exporterSettings.Group != null)
             {
                 groupPath                  += exporterSettings.Group.Name + "/";
-                usesNestedHeierarchy        = exporterSettings.Group.UsesNestedHeierarchy;
+                usesNestedHierarchy        = exporterSettings.Group.UsesNestedHeierarchy;
             }
-            if (usesNestedHeierarchy)
+            if (usesNestedHierarchy)
             {
                 groupPath                  += exporterSettings.name + "/";
             }
