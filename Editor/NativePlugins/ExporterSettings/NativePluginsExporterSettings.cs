@@ -7,27 +7,33 @@ using System.Collections.Generic;
 
 namespace VoxelBusters.CoreLibrary.Editor.NativePlugins
 {
-	[Serializable]
+    [Serializable, CreateAssetMenu(fileName = "NativePluginsExporterSettings", menuName = "VoxelBusters/NativePluginsExporterSettings", order = 0)]
 	public partial class NativePluginsExporterSettings : ScriptableObject
 	{
         #region Fields
 
         [SerializeField]
-		private     bool			        m_isEnabled			= true;
+        private     NativePluginsExporterGroup  m_group;
+
+        [SerializeField]
+		private     bool			            m_isEnabled			= true;
 		
         [SerializeField, FormerlySerializedAs("m_iOSSettings")]
-		private	    IosPlatformProperties   m_iosProperties		= new IosPlatformProperties();
+		private	    IosPlatformProperties       m_iosProperties		= new IosPlatformProperties();
 
 		#endregion
 
         #region Properties
 
+        public NativePluginsExporterGroup Group
+        {
+            get { return m_group; }
+            set { m_group   = value; }
+        }
+
 		public bool IsEnabled
 		{
-			get 
-			{ 
-				return m_isEnabled; 
-			}
+            get { return m_isEnabled; }
 			set 
 			{ 
 				m_isEnabled = value; 
@@ -37,14 +43,8 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins
 
 		public IosPlatformProperties IosProperties
         {
-			get 
-			{ 
-				return m_iosProperties; 
-			}
-			set 
-			{ 
-				m_iosProperties = value; 
-			}
+            get { return m_iosProperties; }
+            set { m_iosProperties   = value; }
 		}
 
         #endregion

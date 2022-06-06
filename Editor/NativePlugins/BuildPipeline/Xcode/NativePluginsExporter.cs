@@ -19,7 +19,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 
         private const string                kBaseExporterName       = "Base";
 
-        private const string                kPluginPath             = "VoxelBusters/NativePlugins/";
+        private const string                kPluginRelativePath     = "VoxelBusters/";
 
         private static readonly string[]    kIgnoreFileExtensions   = new string[]
         {
@@ -82,7 +82,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             s_frameworkSearchPaths      = new List<string>();
             
             // remove old directory
-            string  pluginExportPath    = Path.Combine(s_projectPath, kPluginPath);
+            string  pluginExportPath    = Path.Combine(s_projectPath, kPluginRelativePath);
             IOServices.DeleteDirectory(pluginExportPath);
         }
 
@@ -112,9 +112,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                 string  exporterFilePath    = Path.GetFullPath(AssetDatabase.GetAssetPath(featureExporter));
                 string  exporterFolder      = Path.GetDirectoryName(exporterFilePath);
                 var     iOSSettings         = featureExporter.IosProperties;
-
-                string  exporterName        = featureExporter.name;
-                string  exporterGroup       = kPluginPath + exporterName + "/";
+                string  exporterGroup       = GetExportGroupPath(exporterSettings: featureExporter, prefixPath: kPluginRelativePath);
 
                 // add files
                 foreach (var fileInfo in iOSSettings.Files)
@@ -160,7 +158,23 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 
             // add entitlements
             AddEntitlements(project);
-        }  
+        }
+
+        private static string GetExportGroupPath(NativePluginsExporterSettings exporterSettings, string prefixPath)
+        {
+            string  groupPath               = prefixPath;
+            bool    usesNestedHeierarchy    = true;
+            if (exporterSettings.Group != null)
+            {
+                groupPath                  += exporterSettings.Group.Name + "/";
+                usesNestedHeierarchy        = exporterSettings.Group.UsesNestedHeierarchy;
+            }
+            if (usesNestedHeierarchy)
+            {
+                groupPath                  += exporterSettings.name + "/";
+            }
+            return groupPath;
+        }
 
         private static void AddEntitlements(PBXProject project)
         {
