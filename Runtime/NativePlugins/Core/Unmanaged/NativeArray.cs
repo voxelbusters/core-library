@@ -24,14 +24,23 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         public T[] GetStructArray<T>() where T : struct
         {
             T[] structArray = new T[Length];
-            int structSize = Marshal.SizeOf(typeof(T));
 
-            for(int i=0; i<Length; i++)
+            if (Pointer == IntPtr.Zero)
             {
-                structArray[i] = MarshalUtility.PtrToStructure<T>(new IntPtr(Pointer.ToInt64() + (i * structSize)));
+                return null;
+            }
+
+            // copy data to managed array
+            var managedArray = new IntPtr[Length];
+            Marshal.Copy(Pointer, managedArray, 0, Length);
+
+            for (int i = 0; i < Length; i++)
+            {
+                structArray[i] = MarshalUtility.PtrToStructure<T>(managedArray[i]);
             }
             return structArray;
         }
+
 
         public string[] GetStringArray()
         {
