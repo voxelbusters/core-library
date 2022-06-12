@@ -10,12 +10,6 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
     {
         #region Properties
 
-        public IntPtr Pointer
-        {
-            get;
-            set;
-        }
-
         public int Code
         {
             get;
@@ -29,5 +23,11 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         }
 
         #endregion
+
+        public NativeError(int code, IntPtr description)
+        {
+            Code = code;
+            Description = MarshalUtility.ToString(description);
+        }
     }
 }
