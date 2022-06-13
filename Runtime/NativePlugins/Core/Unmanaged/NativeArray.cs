@@ -23,12 +23,12 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 
         public T[] GetStructArray<T>() where T : struct
         {
-            T[] structArray = new T[Length];
-
             if (Pointer == IntPtr.Zero)
             {
                 return null;
             }
+
+            T[] structArray = new T[Length];
 
             // copy data to managed array
             var managedArray = new IntPtr[Length];
