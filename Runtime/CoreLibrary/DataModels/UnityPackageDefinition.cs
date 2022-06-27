@@ -7,6 +7,12 @@ namespace VoxelBusters.CoreLibrary
     [System.Serializable]
     public class UnityPackageDefinition
     {
+        #region Fields
+
+        private     string  m_persistentDataRelativePath;
+
+        #endregion
+
         #region Properties
 
         public string Name { get; private set; }
@@ -23,13 +29,31 @@ namespace VoxelBusters.CoreLibrary
 
         public string MutableResourcesRelativePath { get; private set; }
 
+        public string PersistentDataRelativePath
+        {
+            get
+            {
+                EnsurePersistentDataPathExists();
+                return m_persistentDataRelativePath;
+            }
+        }
+
+        public string PersistentDataPath
+        {
+            get
+            {
+                EnsurePersistentDataPathExists();
+                return GetPersistentDataPathInternal();
+            }
+        }
+
         #endregion
 
         #region Constructors
 
         public UnityPackageDefinition(string name, string displayName,
             string version, string defaultInstallPath = null,
-            string mutableResourcesPath = "Assets/Resources")
+            string mutableResourcesPath = "Assets/Resources", string persistentDataRelativePath = null)
         {
             // set properties
             Name                            = name;
@@ -39,6 +63,22 @@ namespace VoxelBusters.CoreLibrary
             UpmInstallPath                  = $"Packages/{Name}";
             MutableResourcesPath            = mutableResourcesPath;
             MutableResourcesRelativePath    = mutableResourcesPath.Replace("Assets/Resources", "").TrimStart('/');
+            m_persistentDataRelativePath    = persistentDataRelativePath ?? $"VoxelBusters/{string.Join("", displayName.Split(' '))}";
+        }
+
+        #endregion
+
+        #region Private methods
+
+        private void EnsurePersistentDataPathExists()
+        {
+            var     fullPath    = GetPersistentDataPathInternal();
+            IOServices.CreateDirectory(fullPath, overwrite: false);
+        }
+
+        private string GetPersistentDataPathInternal()
+        {
+            return IOServices.CombinePath(Application.persistentDataPath, m_persistentDataRelativePath);
         }
 
         #endregion
