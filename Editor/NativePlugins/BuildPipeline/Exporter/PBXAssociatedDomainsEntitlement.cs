@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace VoxelBusters.CoreLibrary.Editor.NativePlugins
+namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 {
     [Serializable]
     public class PBXAssociatedDomainsEntitlement

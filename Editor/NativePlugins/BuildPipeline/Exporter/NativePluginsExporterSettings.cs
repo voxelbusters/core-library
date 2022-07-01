@@ -5,7 +5,7 @@ using UnityEditor;
 using System.IO;
 using System.Collections.Generic;
 
-namespace VoxelBusters.CoreLibrary.Editor.NativePlugins
+namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 {
     [Serializable, CreateAssetMenu(fileName = "NativePluginsExporterSettings", menuName = "VoxelBusters/NativePluginsExporterSettings", order = 0)]
 	public partial class NativePluginsExporterSettings : ScriptableObject

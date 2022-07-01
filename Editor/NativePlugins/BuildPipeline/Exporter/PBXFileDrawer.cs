@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace VoxelBusters.CoreLibrary.Editor.NativePlugins
+namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 {
     [CustomPropertyDrawer(typeof(PBXFile))]
     public class PBXFileDrawer : PropertyDrawer 

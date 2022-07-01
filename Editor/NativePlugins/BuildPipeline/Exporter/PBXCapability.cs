@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace VoxelBusters.CoreLibrary.Editor.NativePlugins
+namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 {
     [Serializable]
     public class PBXCapability

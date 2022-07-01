@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace VoxelBusters.CoreLibrary.Editor.NativePlugins
+namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 {
     [CreateAssetMenu(fileName = "NativePluginsExporterGroup", menuName = "VoxelBusters/NativePluginsExporterGroup", order = 0)]
     public class NativePluginsExporterGroup : ScriptableObject

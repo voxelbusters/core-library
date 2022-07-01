@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using VoxelBusters.CoreLibrary;
 
-namespace VoxelBusters.CoreLibrary.Editor.NativePlugins
+namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 {
 	public partial class NativePluginsExporterSettings
 	{

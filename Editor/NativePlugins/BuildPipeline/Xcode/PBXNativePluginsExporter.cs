@@ -13,11 +13,9 @@ using VoxelBusters.CoreLibrary.NativePlugins;
 
 namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 {
-    public class NativePluginsExporter : IPostprocessBuildWithReport
+    public class PBXNativePluginsExporter : NativePluginsExporter, IPostprocessBuildWithReport
     {
         #region Constants
-
-        private const string                kBaseExporterName       = "Base";
 
         private const string                kPluginRelativePath     = "VoxelBusters/";
 
@@ -35,56 +33,39 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 
         #region Fields
 
-        private     static  NativePluginsExporterSettings[]     s_activeExporters       = null;
+        private     List<string>        m_librarySearchPaths    = null;
 
-        private     static  string                              s_projectPath           = null;
+        private     List<string>        m_frameworkSearchPaths  = null;
 
-        private     static  List<string>                        s_librarySearchPaths    = null;
-
-        private     static  List<string>                        s_frameworkSearchPaths  = null;
-        
         #endregion
 
-        #region IPostprocessBuildWithReport implementation
+        #region Base class methods
 
-        public int callbackOrder => int.MaxValue;
-
-        public void OnPostprocessBuild(BuildReport report)
+        protected override bool CanExportPlugins(BuildTarget target)
         {
-            if ((report.summary.platform != BuildTarget.iOS) &&
-                (report.summary.platform != BuildTarget.tvOS))
-            {
-                return;
-            }
+            return (BuildTarget.iOS == target) || (BuildTarget.tvOS == target);
+        }
 
-            // execute tasks
-            Init(projectPath: report.summary.outputPath);
+        protected override void OnExportPlugins()
+        {
+            base.OnExportPlugins();
+
+            // set properties
+            m_librarySearchPaths        = new List<string>();
+            m_frameworkSearchPaths      = new List<string>();
+            
+            // remove old directory
+            string  pluginExportPath    = Path.Combine(ProjectPath, kPluginRelativePath);
+            IOServices.DeleteDirectory(pluginExportPath);
+
+            // complete actions
             UpdateMacroDefinitions();
             UpdatePBXProject();
         }
 
         #endregion
 
-        #region Private static methods
-
-        private static void Init(string projectPath)
-        {
-            // update base exporter state
-            var     exporters           = NativePluginsExporterSettings.FindAllExporters(includeInactive: true);
-            var     baseExporter        = Array.Find(exporters, (item) => string.Equals(item.name, kBaseExporterName));
-            baseExporter.IsEnabled      = Array.Exists(exporters, (item) => (item != baseExporter) && item.IsEnabled);
-
-            // set properties
-            var     canToggleFeatures   = NativeFeatureUnitySettingsBase.CanToggleFeatureUsageState();
-            s_activeExporters           = Array.FindAll(exporters, (item) => item.IsEnabled || !canToggleFeatures);
-            s_projectPath               = projectPath;
-            s_librarySearchPaths        = new List<string>();
-            s_frameworkSearchPaths      = new List<string>();
-            
-            // remove old directory
-            string  pluginExportPath    = Path.Combine(s_projectPath, kPluginRelativePath);
-            IOServices.DeleteDirectory(pluginExportPath);
-        }
+        #region Static methods
 
         private static string GetProjectTarget(PBXProject project)
         {
@@ -95,18 +76,22 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 #endif
         }
 
-        private static void UpdatePBXProject()
+        #endregion
+
+        #region Private methods
+
+        private void UpdatePBXProject()
         {
             DebugLogger.Log("[XcodeBuildProcess] Linking native files.");
 
             // open project file for editing
-            string  projectFilePath     = PBXProject.GetPBXProjectPath(s_projectPath);
+            string  projectFilePath     = PBXProject.GetPBXProjectPath(ProjectPath);
             var     project             = new PBXProject();
             project.ReadFromFile(projectFilePath);
             string  targetGuid          = GetProjectTarget(project);
 
             // read exporter settings for adding native files 
-            foreach (var featureExporter in s_activeExporters)
+            foreach (var featureExporter in ActiveExporters)
             {
                 Debug.Log("Is Feature enabled : " + featureExporter.name + " " + featureExporter.IsEnabled);
                 string  exporterFilePath    = Path.GetFullPath(AssetDatabase.GetAssetPath(featureExporter));
@@ -142,13 +127,13 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             }
 
             // add header search paths
-            foreach (string path in s_librarySearchPaths)
+            foreach (string path in m_librarySearchPaths)
             {
                 project.AddLibrarySearchPath(targetGuid, FormatFilePathInProject(path));
             }
 
             // add framework search paths
-            foreach (string path in s_frameworkSearchPaths)
+            foreach (string path in m_frameworkSearchPaths)
             {
                 project.AddFrameworkSearchPath(targetGuid, FormatFilePathInProject(path));
             }
@@ -160,14 +145,14 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             AddEntitlements(project);
         }
 
-        private static string GetExportGroupPath(NativePluginsExporterSettings exporterSettings, string prefixPath)
+        private string GetExportGroupPath(NativePluginsExporterSettings exporterSettings, string prefixPath)
         {
             string  groupPath               = prefixPath;
-            bool    usesNestedHierarchy    = true;
+            bool    usesNestedHierarchy     = true;
             if (exporterSettings.Group != null)
             {
                 groupPath                  += exporterSettings.Group.Name + "/";
-                usesNestedHierarchy        = exporterSettings.Group.UsesNestedHeierarchy;
+                usesNestedHierarchy         = exporterSettings.Group.UsesNestedHeierarchy;
             }
             if (usesNestedHierarchy)
             {
@@ -176,10 +161,10 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             return groupPath;
         }
 
-        private static void AddEntitlements(PBXProject project)
+        private void AddEntitlements(PBXProject project)
         {
             // create capability manager
-            string  projectFilePath     = PBXProject.GetPBXProjectPath(s_projectPath);
+            string  projectFilePath     = PBXProject.GetPBXProjectPath(ProjectPath);
 #if UNITY_2019_3_OR_NEWER
             var     capabilityManager   = new ProjectCapabilityManager(projectFilePath, "ios.entitlements", null, project.GetUnityMainTargetGuid());
 #else
@@ -187,7 +172,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 #endif
 
             // add required capability
-            foreach (var featureExporter in s_activeExporters)
+            foreach (var featureExporter in ActiveExporters)
             {
                 if (!featureExporter.IsEnabled)
                     continue;
@@ -228,10 +213,10 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             capabilityManager.WriteToFile();
         }
 
-        private static void UpdateMacroDefinitions()
+        private void UpdateMacroDefinitions()
         {
             var     requiredMacros  = new List<string>();
-            foreach (var featureExporter in s_activeExporters)
+            foreach (var featureExporter in ActiveExporters)
             {
                 var     macros      = featureExporter.IosProperties.Macros;
                 if (macros == null || macros.Length == 0)
@@ -250,7 +235,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             PreprocessorDirectives.WriteMacros(requiredMacros.ToArray());
         }
 
-        private static void AddFileToProject(PBXProject project, string sourceFilePath, string targetGuid, string parentGroup, string[] compileFlags)
+        private void AddFileToProject(PBXProject project, string sourceFilePath, string targetGuid, string parentGroup, string[] compileFlags)
         {
             // convert relative path to absolute path
             if (!Path.IsPathRooted(sourceFilePath))
@@ -260,7 +245,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 
             // copy file to the target folder
             string  fileName            = Path.GetFileName(sourceFilePath);
-            string  destinationFolder   = IOServices.CombinePath(s_projectPath, parentGroup);
+            string  destinationFolder   = IOServices.CombinePath(ProjectPath, parentGroup);
             string  destinationFilePath = CopyFileToProject(sourceFilePath, destinationFolder);
             DebugLogger.Log(string.Format("[NativePluginsExportManager] Adding file {0} to project.", fileName));
 
@@ -280,7 +265,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             }
         }
 
-        private static void AddFolderToProject(PBXProject project, string sourceFolder, string targetGuid, string parentGroup, string[] compileFlags)
+        private void AddFolderToProject(PBXProject project, string sourceFolder, string targetGuid, string parentGroup, string[] compileFlags)
         {
             // check whether given folder is valid
             var     sourceFolderInfo    = new DirectoryInfo(sourceFolder);
@@ -303,7 +288,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             }
         }
 
-        private static string CopyFileToProject(string filePath, string targetFolder)
+        private string CopyFileToProject(string filePath, string targetFolder)
         {
 #if NATIVE_PLUGINS_DEBUG
             return filePath;
@@ -325,18 +310,18 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 #endif
         }
 
-        private static string GetFilePathInProject(string path, string parentFolder, string parentGroup)
+        private string GetFilePathInProject(string path, string parentFolder, string parentGroup)
         {
 #if NATIVE_PLUGINS_DEBUG
             return path;
 #else
             string  relativePath        = IOServices.GetRelativePath(parentFolder, path);
-            string  destinationFolder   = IOServices.CombinePath(s_projectPath, parentGroup);
+            string  destinationFolder   = IOServices.CombinePath(ProjectPath, parentGroup);
             return IOServices.CombinePath(destinationFolder, relativePath);
 #endif
         }
 
-        private static string FormatFilePathInProject(string path, bool rooted = true)
+        private string FormatFilePathInProject(string path, bool rooted = true)
         {
 #if NATIVE_PLUGINS_DEBUG
             return path;
@@ -346,30 +331,30 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                 return path;
             }
 
-            string  relativePathToProject   = IOServices.GetRelativePath(s_projectPath, path);
+            string  relativePathToProject   = IOServices.GetRelativePath(ProjectPath, path);
             return rooted ? Path.Combine("$(SRCROOT)", relativePathToProject) : relativePathToProject;
 #endif
         }
 
-        private static void CacheLibrarySearchPath(string path)
+        private void CacheLibrarySearchPath(string path)
         {
             string  directoryPath   = Path.GetDirectoryName(path);
-            if (!s_librarySearchPaths.Contains(directoryPath))
+            if (!m_librarySearchPaths.Contains(directoryPath))
             {
-                s_librarySearchPaths.Add(directoryPath);
+                m_librarySearchPaths.Add(directoryPath);
             }
         }
 
-        private static void CacheFrameworkSearchPath(string path)
+        private void CacheFrameworkSearchPath(string path)
         {
             string  directoryPath   = Path.GetDirectoryName(path);
-            if (!s_frameworkSearchPaths.Contains(directoryPath))
+            if (!m_frameworkSearchPaths.Contains(directoryPath))
             {
-                s_frameworkSearchPaths.Add(directoryPath);
+                m_frameworkSearchPaths.Add(directoryPath);
             }
         }
 
-        private static FileInfo[] FindFiles(DirectoryInfo folder)
+        private FileInfo[] FindFiles(DirectoryInfo folder)
         {
             return folder.GetFiles().Where((fileInfo) =>
             {

@@ -11,7 +11,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
     {
         #region Constants
 
-        private static  string  s_configFilePath    = NativePluginsPackageLayout.IosPluginPath + "/NPConfig.h";
+        private     static      string      s_configFilePath    = NativePluginsPackageLayout.IosPluginPath + "/NPConfig.h";
 
         #endregion
 
@@ -19,7 +19,10 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 
         public static void WriteMacros(string[] macros)
         {
-            // find marker definition
+            // Check whether config file exists
+            if (!IOServices.FileExists(s_configFilePath)) return;
+
+            // Find marker definition
             string  content     = IOServices.ReadFile(s_configFilePath);
             var     lines       = content.Split('\n');
             int     pragmaIndex = Array.FindIndex(lines, (item) => item.StartsWith("#pragma", StringComparison.InvariantCultureIgnoreCase));
@@ -29,7 +32,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                 return;
             }
 
-            // copy contents existing before marker definition
+            // Copy contents existing before marker definition
             var     newLines    = new List<string>();
             for (int iter = 0; iter <= pragmaIndex; iter++)
             {
@@ -37,14 +40,14 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             }
             newLines.Add("");
 
-            // add specified macro symbols
+            // Add specified macro symbols
             for (int uIter = 0; uIter < macros.Length; uIter++)
             {
                 var     definition  = string.Format("#define {0} 1", macros[uIter]);
                 newLines.Add(definition);
             }
 
-            // write new contents to file
+            // Write new contents to file
             IOServices.CreateFile(s_configFilePath, string.Join("\n", newLines.ToArray()));
         }
 

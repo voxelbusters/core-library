@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using UnityEditor;
 
-namespace VoxelBusters.CoreLibrary.Editor.NativePlugins
+namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 {
     [CustomPropertyDrawer(typeof(PBXFrameworkNameAttribute))]
     public class PBXFrameworkNameAttributeDrawer : PropertyDrawer 

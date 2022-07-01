@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace VoxelBusters.CoreLibrary.Editor.NativePlugins
+namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 {
     public class PBXFrameworkNameAttribute : PropertyAttribute
     {
