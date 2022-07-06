@@ -8,12 +8,12 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.Android
 {
     public class NativeByteBuffer : NativeAndroidJavaObjectWrapper
     {
-        #region Fields
+#region Fields
 
         private const string kClassName = "java.nio.ByteBuffer";
         private byte[] m_cachedBytes;
 
-        #endregion
+#endregion
 
         public NativeByteBuffer(AndroidJavaObject androidJavaObject) : base(kClassName, androidJavaObject)
         {
@@ -24,11 +24,17 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.Android
 
         public static NativeByteBuffer Wrap(byte[] array)
         {
+            if(array == null)
+                return null;
+
             return Wrap(array.ToSBytes());
         }
 
         public static NativeByteBuffer Wrap(sbyte[] data)
         {
+            if(data == null)
+                return null;
+
             NativeByteBuffer nativeByteBuffer = new NativeByteBuffer(CreateFromStatic(kClassName, "wrap", data));
             return nativeByteBuffer;
         }
@@ -57,6 +63,15 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.Android
             return m_cachedBytes;
         }
 
+        public int size()
+        {
+            byte[] bytes = GetBytes();
+
+            if(bytes == null)
+                return 0;
+
+            return bytes.Length;
+        }
         
     }
 }

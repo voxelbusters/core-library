@@ -40,13 +40,13 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.Android
         #endregion
         #region Public methods
 
-        public bool IsValid()
-        {
-            return Call<bool>(Native.Method.kIsValid);
-        }
         public void Load(NativeLoadAssetListener listener)
         {
             Call(Native.Method.kLoad, listener);
+        }
+        public bool IsValid()
+        {
+            return Call<bool>(Native.Method.kIsValid);
         }
 
         #endregion
