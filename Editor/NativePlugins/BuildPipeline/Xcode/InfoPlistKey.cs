@@ -17,6 +17,8 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 
         public  const string   kNSPhotoLibraryAdd                   = "NSPhotoLibraryAddUsageDescription";
 
+        public  const string   kNSMicrophoneUsage                   = "NSMicrophoneUsageDescription";
+
         public  const string   kNSLocationWhenInUse                 = "NSLocationWhenInUseUsageDescription";
 
         public  const string   kNSAppTransportSecurity              = "NSAppTransportSecurity";

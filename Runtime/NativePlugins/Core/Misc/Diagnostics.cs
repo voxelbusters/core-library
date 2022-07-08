@@ -4,7 +4,7 @@ using VoxelBusters.CoreLibrary;
 
 namespace VoxelBusters.CoreLibrary.NativePlugins
 {
-    internal static class Diagnostics
+    public static class Diagnostics
     {
         #region Messages
 
