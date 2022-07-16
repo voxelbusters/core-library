@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace VoxelBusters.CoreLibrary.NativePlugins
+namespace VoxelBusters.CoreLibrary
 {
     [SerializeField]
-    public abstract class NativeFeatureUnitySettingsBase
+    public abstract class SettingsPropertyGroup
     {
         #region Fields
 
@@ -24,7 +24,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
                 // update status value, considering editor support for selective inclusion of feature set
                 /*if (!m_isEnabled && !CanToggleFeatureUsageState())
                 {
-                    Debug.LogWarning(string.Format("Resetting feature: {0} state to active because current build configuration provides limited support for stripping code. Check EssentialKitSettings file for fix.", GetFeatureName()));
+                    Debug.LogWarning(string.Format("Resetting feature: {0} state to active because current build configuration provides limited support for stripping code. Check EssentialKitSettings file for fix.", Name));
                     m_isEnabled     = true;
                 }*/
 #endif
@@ -35,7 +35,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 #if UNITY_EDITOR
                 if (!value && !CanToggleFeatureUsageState())
                 {
-                    Debug.LogWarning(string.Format("Ignoring feature: {0} state value change request because current build configuration provides limited support for stripping code. Check EssentialKitSettings file for fix.", GetFeatureName()));
+                    Debug.LogWarning(string.Format("Ignoring feature: {0} state value change request because current build configuration provides limited support for stripping code. Check EssentialKitSettings file for fix.", Name));
                     return;
                 }
                 m_isEnabled = value;
@@ -43,14 +43,17 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
             }
         }
 
+        public string Name { get; private set; }
+
         #endregion
 
         #region Constructors
 
-        protected NativeFeatureUnitySettingsBase(bool enabled)
+        protected SettingsPropertyGroup(bool isEnabled, string name)
         {
             // set properties
-            m_isEnabled = enabled;
+            m_isEnabled     = isEnabled;
+            Name            = name;
         }
 
         #endregion
@@ -89,12 +92,6 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
             }
         }
 #endif
-
-        #endregion
-
-        #region Private methods
-
-        protected abstract string GetFeatureName();
 
         #endregion
     }

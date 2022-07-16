@@ -233,7 +233,7 @@ namespace VoxelBusters.CoreLibrary.Editor
 
             // draw toggle button
             var     enabledProperty     = property.FindPropertyRelative("m_isEnabled");
-            if ((enabledProperty != null) /*&& NativeFeatureUnitySettingsBase.CanToggleFeatureUsageState()*/)
+            if ((enabledProperty != null) /*&& SettingsPropertyGroup.CanToggleFeatureUsageState()*/)
             {
                 Rect    toggleRect                  = new Rect(rect.xMax - 64f, rect.y, 64f, 25f);
                 if (GUI.Button(toggleRect, enabledProperty.boolValue ? m_toggleOnIcon : m_toggleOffIcon, CustomEditorStyles.InvisibleButton))
@@ -434,6 +434,8 @@ namespace VoxelBusters.CoreLibrary.Editor
             public PropertyGroupInfo(SerializedProperty reference, string displayName,
                 System.Action<SerializedProperty> onDrawChildProperties = null)
             {
+                Assert.IsArgNotNull(reference, displayName);
+
                 // set properties
                 Reference                   = reference;
                 DisplayName                 = displayName;

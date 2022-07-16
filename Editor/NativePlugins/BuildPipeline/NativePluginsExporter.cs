@@ -46,7 +46,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
             }
 
             // set properties
-            var     canToggleFeatures   = NativeFeatureUnitySettingsBase.CanToggleFeatureUsageState();
+            var     canToggleFeatures   = SettingsPropertyGroup.CanToggleFeatureUsageState();
             ActiveExporters             = Array.FindAll(exporters, (item) => item.IsEnabled || !canToggleFeatures);
         }
 

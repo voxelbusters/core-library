@@ -8,8 +8,8 @@
 [assembly: InternalsVisibleTo("VoxelBusters.EssentialKit")]
 [assembly: InternalsVisibleTo("VoxelBusters.EssentialKit.Editor")]
 
-[assembly: InternalsVisibleTo("VoxelBusters.ReplayKit")]
-[assembly: InternalsVisibleTo("VoxelBusters.ReplayKit.Editor")]
+[assembly: InternalsVisibleTo("VoxelBusters.RecorderKit")]
+[assembly: InternalsVisibleTo("VoxelBusters.RecorderKit.Editor")]
 
 [assembly: InternalsVisibleTo("VoxelBusters.ReportingKit")]
 [assembly: InternalsVisibleTo("VoxelBusters.ReportingKit.Editor")]

@@ -24,7 +24,7 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
 
         private     const       string      kInstallUrlMLKit                    = "https://u3d.as/2PMe";
 
-        private     const       string      kInstallUrlReplayKit                = "http://u3d.as/1nN3";
+        private     const       string      kInstallUrlRecorderKit              = "http://u3d.as/1nN3";
 
         #endregion
 
@@ -104,13 +104,13 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
         }
 #endif
 
-#if !ENABLE_VOXELBUSTERS_REPLAY_KIT
+#if !ENABLE_VOXELBUSTERS_RECORDER_KIT
         [SettingsProvider]
-        private static SettingsProvider CreateReplayKitSettingsProvider()
+        private static SettingsProvider CreateRecorderKitSettingsProvider()
         {
             return new SettingsProviderProxy(
-                name: "Replay Kit",
-                installUrl: kInstallUrlReplayKit);
+                name: "Recorder Kit",
+                installUrl: kInstallUrlRecorderKit);
         }
 #endif
 
