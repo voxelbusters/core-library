@@ -49,7 +49,7 @@ namespace VoxelBusters.CoreLibrary
 
         #region Constructors
 
-        protected SettingsPropertyGroup(bool isEnabled, string name)
+        protected SettingsPropertyGroup(string name, bool isEnabled = true)
         {
             // set properties
             m_isEnabled     = isEnabled;

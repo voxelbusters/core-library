@@ -17,7 +17,7 @@ namespace VoxelBusters.CoreLibrary
     /// <summary>
     /// Generic callback definition for operations.
     /// </summary>
-    public delegate void CompletionCallback(Error error);
+    public delegate void CompletionCallback(bool success, Error error);
 
     /// <summary>
     /// Generic callback definition for operations.
@@ -61,7 +61,7 @@ namespace VoxelBusters.CoreLibrary
             }
         }
 
-        public static void InvokeOnMainThread(CompletionCallback callback, Error error)
+        public static void InvokeOnMainThread(CompletionCallback callback, bool success, Error error)
         {
             // validate arguments
             if (callback == null)
@@ -74,7 +74,7 @@ namespace VoxelBusters.CoreLibrary
             var     manager     = GetSingleton();
             if (manager)
             {
-                manager.AddAction(action: () => callback.Invoke(error));
+                manager.AddAction(action: () => callback.Invoke(success, error));
             }
         }
 

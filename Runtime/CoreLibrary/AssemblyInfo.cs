@@ -16,3 +16,6 @@
 
 [assembly: InternalsVisibleTo("VoxelBusters.EasyMLKit")]
 [assembly: InternalsVisibleTo("VoxelBusters.EasyMLKit.Editor")]
+
+[assembly: InternalsVisibleTo("VoxelBusters.SocialKit")]
+[assembly: InternalsVisibleTo("VoxelBusters.SocialKit.Editor")]

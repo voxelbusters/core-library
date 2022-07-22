@@ -31,6 +31,9 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
             [SerializeField]
             private     List<string>                m_macros            = new List<string>();
 
+            [SerializeField]
+            private     List<StringKeyValuePair>    m_buildProperties   = new List<StringKeyValuePair>();
+
 			#endregion
 
 			#region Properties
@@ -124,6 +127,21 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
                     m_macros    = new List<string>(value); 
                 }
             }
+
+            public StringKeyValuePair[] BuildProperties
+			{
+				get 
+				{ 
+					return m_buildProperties.ToArray(); 
+				}
+				set 
+				{ 
+					Assert.IsPropertyNotNull(value, "value");
+
+                    // set new value
+                    m_buildProperties   = new List<StringKeyValuePair>(value); 
+				}
+			}
 
 			#endregion
 

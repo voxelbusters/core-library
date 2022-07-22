@@ -96,23 +96,23 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                 Debug.Log("Is Feature enabled : " + featureExporter.name + " " + featureExporter.IsEnabled);
                 string  exporterFilePath    = Path.GetFullPath(AssetDatabase.GetAssetPath(featureExporter));
                 string  exporterFolder      = Path.GetDirectoryName(exporterFilePath);
-                var     iOSSettings         = featureExporter.IosProperties;
+                var     iosSettings         = featureExporter.IosProperties;
                 string  exporterGroup       = GetExportGroupPath(exporterSettings: featureExporter, prefixPath: kPluginRelativePath);
 
                 // add files
-                foreach (var fileInfo in iOSSettings.Files)
+                foreach (var fileInfo in iosSettings.Files)
                 {
                     AddFileToProject(project, fileInfo.AbsoultePath, targetGuid, exporterGroup, fileInfo.CompileFlags);
                 }
 
                 // add folder
-                foreach (var folderInfo in iOSSettings.Folders)
+                foreach (var folderInfo in iosSettings.Folders)
                 {
                     AddFolderToProject(project, folderInfo.AbsoultePath, targetGuid, exporterGroup, folderInfo.CompileFlags);
                 }
 
                 // add headerpaths
-                foreach (var pathInfo in iOSSettings.HeaderPaths)
+                foreach (var pathInfo in iosSettings.HeaderPaths)
                 {
                     string  destinationPath = GetFilePathInProject(pathInfo.AbsoultePath, exporterFolder, exporterGroup);
                     string  formattedPath   = FormatFilePathInProject(destinationPath);
@@ -120,9 +120,15 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                 }
 
                 // add frameworks
-                foreach (var framework in iOSSettings.Frameworks)
+                foreach (var framework in iosSettings.Frameworks)
                 {
                     project.AddFrameworkToProject(targetGuid, framework.Name, framework.IsWeak);
+                }
+
+                // add build properties
+                foreach (var property in iosSettings.BuildProperties)
+                {
+                    project.AddBuildProperty(targetGuid, property.Key, property.Value);
                 }
             }
 

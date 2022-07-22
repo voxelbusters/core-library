@@ -37,6 +37,39 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             return false;
         }
 
+        public static void AddUniqueString(this PlistElementArray array, string value)
+        {
+            foreach (PlistElement each in array.values)
+            {
+                if (each is PlistElementString)
+                {
+                    string existingValue = each.AsString();
+                    if (!string.IsNullOrEmpty(existingValue) && existingValue.Equals(value))
+                    {
+                       return;
+                    }
+                }
+            }
+
+            // We reached here as value doesn't exist
+            array.AddString(value);
+        }
+
+        // This add new array if the key doesn't exist. If exists, returns it.
+        public static PlistElementArray GetArray(this PlistElementDict source, string key)
+        {
+            PlistElementArray  array = null;
+            if (source.values.ContainsKey(key))
+            {
+                array   = source.values[key] as PlistElementArray;
+            }
+            if (array == null)
+            {
+                array   = source.CreateArray(key);
+            }
+            return array;
+        }
+
         #endregion
     }
 }

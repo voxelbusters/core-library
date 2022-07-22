@@ -6,7 +6,7 @@ using VoxelBusters.CoreLibrary;
 
 namespace VoxelBusters.CoreLibrary.NativePlugins
 {
-    public class NativeFeatureActivator
+    public static class NativeFeatureActivator
     {
         #region Static properties
 
@@ -50,6 +50,27 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
             }
 
             DebugLogger.LogFormat("Created native interface of type: {0}", interfaceObject);
+            return (TFeatureInterface)interfaceObject;
+        }
+
+        public static TFeatureInterface CreateNativeInterfaceComponent<TFeatureInterface>(this GameObject gameObject, NativeFeatureRuntimeConfiguration runtimeConfiguration, bool isEnabled) where TFeatureInterface : INativeFeatureInterface
+        {
+            object  interfaceObject     = null;
+            if (isEnabled)
+            {
+                var     targetPackage   = runtimeConfiguration.GetPackageForPlatform(Application.platform);
+                var     targetType      = ReflectionUtility.GetType(assemblyName: targetPackage.Assembly, typeName: targetPackage.NativeInterfaceType);
+                interfaceObject         = gameObject.AddComponent(targetType);
+            }
+
+            // fallback case, create default type object incase if specified type is not found
+            if (interfaceObject == null)
+            {
+                var     fallbackPackage = runtimeConfiguration.FallbackPackage;
+                var     fallbackType    = ReflectionUtility.GetType(assemblyName: fallbackPackage.Assembly, typeName: fallbackPackage.NativeInterfaceType);
+                interfaceObject         = gameObject.AddComponent(fallbackType);
+            }
+
             return (TFeatureInterface)interfaceObject;
         }
 

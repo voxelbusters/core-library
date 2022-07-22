@@ -14,9 +14,7 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
         private     const       string      kDefaultProjectSettingsPathFormat   = "Project/Voxel Busters/{0}";            
 
         // install path
-        private     const       string      kInstallUrlSnapchat                 = "https://u3d.as/1gWc";
-
-        private     const       string      kInstallUrlInstagram                = "https://u3d.as/1pMn";
+        private     const       string      kInstallUrlSocialKit                = "https://u3d.as/1pMn";
 
         private     const       string      kInstallUrlEssentialKit             = "https://u3d.as/1szE";
 
@@ -54,23 +52,13 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
 
         #region Create methods
 
-#if !ENABLE_VOXELBUSTERS_SNAPCHAT_KIT
+#if !ENABLE_VOXELBUSTERS_SOCIAL_KIT
         [SettingsProvider]
-        private static SettingsProvider CreateSnapchatKitSettingsProvider()
+        private static SettingsProvider CreateSocialKitSettingsProvider()
         {
             return new SettingsProviderProxy(
-                name: "Snapchat Kit",
-                installUrl: kInstallUrlSnapchat);
-        }
-#endif
-
-#if !ENABLE_VOXELBUSTERS_INSTAGRAM_KIT
-        [SettingsProvider]
-        private static SettingsProvider CreateInstagramKitSettingsProvider()
-        {
-            return new SettingsProviderProxy(
-                name: "Instagram Kit",
-                installUrl: kInstallUrlInstagram);
+                name: "Social Kit",
+                installUrl: kInstallUrlSocialKit);
         }
 #endif
 
