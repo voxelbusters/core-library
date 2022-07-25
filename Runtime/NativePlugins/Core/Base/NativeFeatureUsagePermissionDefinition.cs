@@ -64,8 +64,10 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
                 case NativePlatform.iOS:
                 case NativePlatform.tvOS:
                     return description.Replace("$productName", "$(PRODUCT_NAME)");
+
                 case NativePlatform.Android:
                     return description.Replace("$productName", "%app_name%");
+
                 default:
                     return description;
             }

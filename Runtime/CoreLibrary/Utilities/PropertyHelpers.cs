@@ -17,7 +17,7 @@ namespace VoxelBusters.CoreLibrary
             return value;
         }
 
-        public static string GetValueOrDefault<TInstance, U>(TInstance instance, Expression<Func<TInstance, U>> fieldAccess, string value)
+        public static string GetValueOrDefault<TInstance, TProperty>(TInstance instance, Expression<Func<TInstance, TProperty>> fieldAccess, string value)
         {
             if (!string.IsNullOrEmpty(value)) return value;
 
@@ -26,6 +26,17 @@ namespace VoxelBusters.CoreLibrary
 			var		fieldInfo	= ReflectionUtility.GetField(typeof(TInstance), fieldName);
 			var		attribute	= ReflectionUtility.GetAttribute<DefaultValueAttribute>(fieldInfo);
             return attribute.StringValue;
+        }
+
+        public static TValue GetValueOrDefault<TInstance, TProperty, TValue>(TInstance instance, Expression<Func<TInstance, TProperty>> fieldAccess, Nullable<TValue> value) where TValue : struct
+        {
+            if (value != null) return value.GetValueOrDefault();
+
+            // find default value using reflection
+            var		fieldName	= ReflectionUtility.GetFieldName(fieldAccess);
+			var		fieldInfo	= ReflectionUtility.GetField(typeof(TInstance), fieldName);
+			var		attribute	= ReflectionUtility.GetAttribute<DefaultValueAttribute>(fieldInfo);
+            return attribute.GetValue<TValue>();
         }
 
         #endregion

@@ -56,7 +56,7 @@ namespace VoxelBusters.CoreLibrary
         #region Constraints methods
 
 		// Credits: Thomas Hourdel
-		public static string GetFieldName<T, U>(Expression<Func<T, U>> fieldAccess)
+		public static string GetFieldName<TInstance, TProperty>(Expression<Func<TInstance, TProperty>> fieldAccess)
 		{
 			var		memberExpression	= fieldAccess.Body as MemberExpression;
 			if (memberExpression != null)
@@ -71,20 +71,20 @@ namespace VoxelBusters.CoreLibrary
 			return type.GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
 		}
 
-		public static A GetAttribute<A>(FieldInfo field) where A : Attribute
+		public static TAttribute GetAttribute<TAttribute>(FieldInfo field) where TAttribute : Attribute
 		{
-			return (A)Attribute.GetCustomAttribute(field, typeof(A));
+			return (TAttribute)Attribute.GetCustomAttribute(field, typeof(TAttribute));
 		}
 
 		// MinAttribute
-		public static void ConstrainMin<TInstance, U>(TInstance instance, Expression<Func<TInstance, U>> fieldAccess, float value)
+		public static void ConstrainMin<TInstance, TProperty>(TInstance instance, Expression<Func<TInstance, TProperty>> fieldAccess, float value)
 		{
 			var		fieldName	= GetFieldName(fieldAccess);
 			var		fieldInfo	= GetField(typeof(TInstance), fieldName);
 			fieldInfo.SetValue(instance, Mathf.Max(value, GetAttribute<MinAttribute>(fieldInfo).min));
 		}
 
-		public static void ConstrainMin<TInstance, U>(TInstance instance, Expression<Func<TInstance, U>> fieldAccess, int value)
+		public static void ConstrainMin<TInstance, TProperty>(TInstance instance, Expression<Func<TInstance, TProperty>> fieldAccess, int value)
 		{
 			var		fieldName	= GetFieldName(fieldAccess);
 			var		fieldInfo	= GetField(typeof(TInstance), fieldName);
@@ -92,7 +92,7 @@ namespace VoxelBusters.CoreLibrary
 		}
 
 		// RangeAttribute
-		public static void ConstrainRange<TInstance, U>(TInstance instance, Expression<Func<TInstance, U>> fieldAccess, float value)
+		public static void ConstrainRange<TInstance, TProperty>(TInstance instance, Expression<Func<TInstance, TProperty>> fieldAccess, float value)
 		{
 			var		fieldName	= GetFieldName(fieldAccess);
 			var		fieldInfo	= GetField(typeof(TInstance), fieldName);
@@ -100,7 +100,7 @@ namespace VoxelBusters.CoreLibrary
 			fieldInfo.SetValue(instance, Mathf.Clamp(value, attribute.min, attribute.max));
 		}
 
-		public static void ConstrainRange<TInstance, U>(TInstance instance, Expression<Func<TInstance, U>> fieldAccess, int value)
+		public static void ConstrainRange<TInstance, TProperty>(TInstance instance, Expression<Func<TInstance, TProperty>> fieldAccess, int value)
 		{
 			var		fieldName	= GetFieldName(fieldAccess);
 			var		fieldInfo	= GetField(typeof(TInstance), fieldName);
@@ -108,17 +108,20 @@ namespace VoxelBusters.CoreLibrary
 			fieldInfo.SetValue(instance, (int)Mathf.Clamp(value, attribute.min, attribute.max));
 		}
 
-		public static void ConstrainDefault<TInstance, U>(TInstance instance, Expression<Func<TInstance, U>> fieldAccess, Func<bool> condition = null)
+		public static void ConstrainDefault<TInstance, TProperty>(TInstance instance, Expression<Func<TInstance, TProperty>> fieldAccess, Func<bool> condition = null)
 		{
-			if ((condition == null) || !condition()) return;
+			if ((condition != null) && !condition()) return;
 
 			var		fieldName	= GetFieldName(fieldAccess);
 			var		fieldInfo	= GetField(typeof(TInstance), fieldName);
 			var		attribute	= GetAttribute<DefaultValueAttribute>(fieldInfo);
-			fieldInfo.SetValue(instance, attribute.GetValue(fieldInfo.FieldType));
+			if (attribute != null)
+			{
+				fieldInfo.SetValue(instance, attribute.GetValue(fieldInfo.FieldType));
+			}
 		}
 
-		public static void ConstrainDefault<TInstance, U>(TInstance instance, Expression<Func<TInstance, U>> fieldAccess, string value)
+		public static void ConstrainDefault<TInstance, TProperty>(TInstance instance, Expression<Func<TInstance, TProperty>> fieldAccess, string value)
 		{
 			if (!string.IsNullOrEmpty(value)) return;
 
