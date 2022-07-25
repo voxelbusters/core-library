@@ -12,12 +12,12 @@ namespace VoxelBusters.CoreLibrary
     /// <summary>
     /// Generic callback definition for events.
     /// </summary>
-    public delegate void Callback<TResult>(TResult result);
+    public delegate void Callback<TArg>(TArg arg);
 
     /// <summary>
-    /// Generic callback definition for operations.
+    /// Generic callback definition for events.
     /// </summary>
-    public delegate void CompletionCallback(bool success, Error error);
+    public delegate void SuccessCallback<TResult>(TResult result);
 
     /// <summary>
     /// Generic callback definition for operations.
@@ -27,7 +27,14 @@ namespace VoxelBusters.CoreLibrary
     /// <summary>
     /// Generic callback definition for operations.
     /// </summary>
+    public delegate void CompletionCallback(bool success, Error error);
+
+    /// <summary>
+    /// Generic callback definition for operations.
+    /// </summary>
     public delegate void EventCallback<TResult>(TResult result, Error error);
+
+    public delegate void CompletionCallbackLegacy(Error error);
 
     public class CallbackDispatcher : PrivateSingletonBehaviour<CallbackDispatcher>
     {
@@ -61,6 +68,57 @@ namespace VoxelBusters.CoreLibrary
             }
         }
 
+        public static void InvokeOnMainThread<TArg>(Callback<TArg> callback, TArg arg)
+        {
+            // validate arguments
+            if (callback == null)
+            {
+                //DebugLogger.LogWarning("Callback is null.");
+                return;
+            }
+
+            // add request to queue
+            var     manager     = GetSingleton();
+            if (manager)
+            {
+                manager.AddAction(() => callback.Invoke(arg));
+            }
+        }
+
+        public static void InvokeOnMainThread<TResult>(SuccessCallback<TResult> callback, TResult result)
+        {
+            // validate arguments
+            if (callback == null)
+            {
+                //DebugLogger.LogWarning("Callback is null.");
+                return;
+            }
+
+            // add request to queue
+            var     manager     = GetSingleton();
+            if (manager)
+            {
+                manager.AddAction(() => callback.Invoke(result));
+            }
+        }
+
+        public static void InvokeOnMainThread(ErrorCallback callback, Error error)
+        {
+            // validate arguments
+            if (callback == null)
+            {
+                //DebugLogger.LogWarning("Callback is null.");
+                return;
+            }
+
+            // add request to queue
+            var     manager     = GetSingleton();
+            if (manager)
+            {
+                manager.AddAction(() => callback.Invoke(error));
+            }
+        }
+
         public static void InvokeOnMainThread(CompletionCallback callback, bool success, Error error)
         {
             // validate arguments
@@ -75,23 +133,6 @@ namespace VoxelBusters.CoreLibrary
             if (manager)
             {
                 manager.AddAction(action: () => callback.Invoke(success, error));
-            }
-        }
-
-        public static void InvokeOnMainThread<TResult>(Callback<TResult> callback, TResult result)
-        {
-            // validate arguments
-            if (callback == null)
-            {
-                //DebugLogger.LogWarning("Callback is null.");
-                return;
-            }
-
-            // add request to queue
-            var     manager     = GetSingleton();
-            if (manager)
-            {
-                manager.AddAction(() => callback.Invoke(result));
             }
         }
 

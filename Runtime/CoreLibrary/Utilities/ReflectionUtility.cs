@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using System.Reflection;
 using UnityEngine;
 
@@ -49,6 +50,80 @@ namespace VoxelBusters.CoreLibrary
         {
             return (T)type.GetMethod(method, BindingFlags.Public | BindingFlags.Static).Invoke(null, parameters);
         }
+
+        #endregion
+
+        #region Constraints methods
+
+		// Credits: Thomas Hourdel
+		public static string GetFieldName<T, U>(Expression<Func<T, U>> fieldAccess)
+		{
+			var		memberExpression	= fieldAccess.Body as MemberExpression;
+			if (memberExpression != null)
+			{
+				return memberExpression.Member.Name;
+			}
+			throw new InvalidOperationException("Member expression expected");
+		}
+
+		public static FieldInfo GetField(Type type, string fieldName)
+		{
+			return type.GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
+		}
+
+		public static A GetAttribute<A>(FieldInfo field) where A : Attribute
+		{
+			return (A)Attribute.GetCustomAttribute(field, typeof(A));
+		}
+
+		// MinAttribute
+		public static void ConstrainMin<TInstance, U>(TInstance instance, Expression<Func<TInstance, U>> fieldAccess, float value)
+		{
+			var		fieldName	= GetFieldName(fieldAccess);
+			var		fieldInfo	= GetField(typeof(TInstance), fieldName);
+			fieldInfo.SetValue(instance, Mathf.Max(value, GetAttribute<MinAttribute>(fieldInfo).min));
+		}
+
+		public static void ConstrainMin<TInstance, U>(TInstance instance, Expression<Func<TInstance, U>> fieldAccess, int value)
+		{
+			var		fieldName	= GetFieldName(fieldAccess);
+			var		fieldInfo	= GetField(typeof(TInstance), fieldName);
+			fieldInfo.SetValue(instance, (int)Mathf.Max(value, GetAttribute<MinAttribute>(fieldInfo).min));
+		}
+
+		// RangeAttribute
+		public static void ConstrainRange<TInstance, U>(TInstance instance, Expression<Func<TInstance, U>> fieldAccess, float value)
+		{
+			var		fieldName	= GetFieldName(fieldAccess);
+			var		fieldInfo	= GetField(typeof(TInstance), fieldName);
+			var		attribute	= GetAttribute<RangeAttribute>(fieldInfo);
+			fieldInfo.SetValue(instance, Mathf.Clamp(value, attribute.min, attribute.max));
+		}
+
+		public static void ConstrainRange<TInstance, U>(TInstance instance, Expression<Func<TInstance, U>> fieldAccess, int value)
+		{
+			var		fieldName	= GetFieldName(fieldAccess);
+			var		fieldInfo	= GetField(typeof(TInstance), fieldName);
+			var		attribute	= GetAttribute<RangeAttribute>(fieldInfo);
+			fieldInfo.SetValue(instance, (int)Mathf.Clamp(value, attribute.min, attribute.max));
+		}
+
+		public static void ConstrainDefault<TInstance, U>(TInstance instance, Expression<Func<TInstance, U>> fieldAccess, Func<bool> condition = null)
+		{
+			if ((condition == null) || !condition()) return;
+
+			var		fieldName	= GetFieldName(fieldAccess);
+			var		fieldInfo	= GetField(typeof(TInstance), fieldName);
+			var		attribute	= GetAttribute<DefaultValueAttribute>(fieldInfo);
+			fieldInfo.SetValue(instance, attribute.GetValue(fieldInfo.FieldType));
+		}
+
+		public static void ConstrainDefault<TInstance, U>(TInstance instance, Expression<Func<TInstance, U>> fieldAccess, string value)
+		{
+			if (!string.IsNullOrEmpty(value)) return;
+
+			ConstrainDefault(instance, fieldAccess);
+		}
 
         #endregion
     }
