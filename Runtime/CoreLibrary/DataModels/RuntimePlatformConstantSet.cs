@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace VoxelBusters.CoreLibrary.NativePlugins
+namespace VoxelBusters.CoreLibrary
 {
-    [Serializable, Obsolete("This class is deprecated. Instead use RuntimePlatformConstantSet.", true)]
-    public class NativePlatformConstantSet
+    [Serializable]
+    public class RuntimePlatformConstantSet
     {
         #region Fields
 
@@ -23,7 +23,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 
         #region Constructors
 
-        public NativePlatformConstantSet(string ios = null, string tvos = null, string android = null)
+        public RuntimePlatformConstantSet(string ios = null, string tvos = null, string android = null)
         {
             // set properties
             m_ios       = ios;
@@ -37,24 +37,24 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 
         public string GetConstantForActivePlatform(string defaultValue = null)
         {
-            var     platform    = PlatformMappingServices.GetActivePlatform();
+            var     platform    = ApplicationServices.GetActiveOrSimulationPlatform();
             return GetConstantForPlatform(platform, defaultValue);
         }
 
-        public string GetConstantForPlatform(NativePlatform platform, string defaultValue = null)
+        public string GetConstantForPlatform(RuntimePlatform platform, string defaultValue = null)
         {
             string  targetValue = null;
             switch (platform)
             {
-                case NativePlatform.iOS:
+                case RuntimePlatform.IPhonePlayer:
                     targetValue = m_ios;
                     break;
 
-                case NativePlatform.tvOS:
+                case RuntimePlatform.tvOS:
                     targetValue = m_tvos;
                     break;
                     
-                case NativePlatform.Android:
+                case RuntimePlatform.Android:
                     targetValue = m_android;
                     break;
 

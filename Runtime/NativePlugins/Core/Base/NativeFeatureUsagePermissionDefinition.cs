@@ -16,17 +16,17 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         private     string                      m_description;
 
         [SerializeField]
-        private     NativePlatformConstantSet   m_descriptionOverrides;
+        private     RuntimePlatformConstantSet  m_descriptionOverrides;
 
         #endregion
 
         #region Constructors
 
-        public NativeFeatureUsagePermissionDefinition(string description = null, NativePlatformConstantSet descriptionOverrides = null)
+        public NativeFeatureUsagePermissionDefinition(string description = null, RuntimePlatformConstantSet descriptionOverrides = null)
         {
             // set properties
             m_description               = description;     
-            m_descriptionOverrides      = descriptionOverrides ?? new NativePlatformConstantSet();
+            m_descriptionOverrides      = descriptionOverrides ?? new RuntimePlatformConstantSet();
         }
 
         #endregion
@@ -35,10 +35,10 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 
         public string GetDescriptionForActivePlatform()
         {
-            return GetDescription(PlatformMappingServices.GetActivePlatform());
+            return GetDescription(ApplicationServices.GetActiveOrSimulationPlatform());
         }
 
-        public string GetDescription(NativePlatform platform)
+        public string GetDescription(RuntimePlatform platform)
         {
             // check whether overrides are available
             string  targetValue     = m_descriptionOverrides.GetConstantForPlatform(platform, m_description);
@@ -57,15 +57,15 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 
         #region Private methods
 
-        private string FormatDescription(string description, NativePlatform targetPlatform)
+        private string FormatDescription(string description, RuntimePlatform targetPlatform)
         {
             switch (targetPlatform)
             {
-                case NativePlatform.iOS:
-                case NativePlatform.tvOS:
+                case RuntimePlatform.IPhonePlayer:
+                case RuntimePlatform.tvOS:
                     return description.Replace("$productName", "$(PRODUCT_NAME)");
 
-                case NativePlatform.Android:
+                case RuntimePlatform.Android:
                     return description.Replace("$productName", "%app_name%");
 
                 default:

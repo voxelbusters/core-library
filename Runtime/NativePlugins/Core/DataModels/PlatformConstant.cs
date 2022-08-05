@@ -6,7 +6,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
     /// <summary>
     /// Object represents an immutable, read-only object that combines a string value with a platform.
     /// </summary>
-    [Serializable]
+    [Serializable, Obsolete("This class is deprecated. Instead use RuntimePlatformConstant.", true)]
     public class PlatformConstant
     {
         #region Fields

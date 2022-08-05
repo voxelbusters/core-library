@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using VoxelBusters.CoreLibrary.NativePlugins;
+using VoxelBusters.CoreLibrary;
 
-namespace VoxelBusters.CoreLibrary.Editor.NativePlugins
+namespace VoxelBusters.CoreLibrary.Editor
 {
-    [CustomPropertyDrawer(typeof(PlatformConstant))]
-    public class PlatformConstantDrawer : PropertyDrawer 
+    [CustomPropertyDrawer(typeof(RuntimePlatformConstant))]
+    public class RuntimePlatformConstantDrawer : PropertyDrawer 
     {
         #region Unity methods
         

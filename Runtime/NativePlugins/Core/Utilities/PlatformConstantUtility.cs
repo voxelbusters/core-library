@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary.NativePlugins
 {
+    [Obsolete("This class is deprecated. Instead use RuntimePlatformConstantUtility.", true)]
     public static class PlatformConstantUtility 
     {
         #region Static methods

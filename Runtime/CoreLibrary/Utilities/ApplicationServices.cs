@@ -32,6 +32,11 @@ namespace VoxelBusters.CoreLibrary
             }
         }
 
+        public static RuntimePlatform GetActivePlatform()
+        {
+            return Application.platform;
+        }
+
         public static RuntimePlatform GetActiveOrSimulationPlatform()
         {
 #if UNITY_EDITOR
