@@ -32,7 +32,7 @@ namespace VoxelBusters.CoreLibrary
             : this(domain: null, code: 0, description: description)
         { }
 
-        public Error(string domain, int code, string description = null)
+        public Error(string domain, int code, string description)
         {
             // set properties
             Domain          = domain;

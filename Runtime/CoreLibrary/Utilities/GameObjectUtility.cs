@@ -6,6 +6,39 @@ namespace VoxelBusters.CoreLibrary
     {
         #region Static methods
 
+        public static GameObject Instantiate(GameObject prefab, Transform parent = null)
+        {
+            var     newGO   = Object.Instantiate(prefab, parent: parent);
+            newGO.name      = prefab.name;
+
+            return newGO;
+        }
+
+        public static GameObject Instantiate(GameObject prefab, System.Action<GameObject> onBeforeAwake)
+        {
+            var     tempGO      = new GameObject("Temp");
+            tempGO.SetActive(false);
+
+            var     newInstance = Object.Instantiate(prefab, tempGO.transform);
+            newInstance.name    = prefab.name;
+            
+            try
+            {
+                // call the onBeforeAwake method
+                onBeforeAwake(newInstance);
+
+                return newInstance;
+            }
+            finally
+            {
+                // reset gameobject state
+                newInstance.transform.SetParent(null);
+
+                // destroy temp object
+                Object.Destroy(tempGO);
+            }
+        }
+
         public static GameObject CreateChild(string childName, Transform parent)
         {
             return CreateChild(childName, Vector3.zero, Quaternion.identity, Vector3.one, parent);
