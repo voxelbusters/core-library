@@ -9,7 +9,7 @@ namespace VoxelBusters.CoreLibrary
     {
         #region Fields
 
-        private     string  m_persistentDataRelativePath;
+        private     string      m_persistentDataRelativePath;
 
         #endregion
 
@@ -47,21 +47,27 @@ namespace VoxelBusters.CoreLibrary
             }
         }
 
+        public UnityPackageDefinition[] Dependencies { get; private set; }
+
         #endregion
 
         #region Constructors
 
         public UnityPackageDefinition(string name, string displayName,
             string version, string defaultInstallPath = null,
-            string mutableResourcesPath = "Assets/Resources", string persistentDataRelativePath = null)
+            string mutableResourcesPath = "Assets/Resources", string persistentDataRelativePath = null,
+            params UnityPackageDefinition[] dependencies)
         {
-            // set properties
+            // Set properties
             Name                            = name;
             DisplayName                     = displayName;
             Version                         = version;
             DefaultInstallPath              = defaultInstallPath ?? $"Assets/{Name}";
             UpmInstallPath                  = $"Packages/{Name}";
             MutableResourcesPath            = mutableResourcesPath;
+            Dependencies                    = dependencies;
+
+            // Derived properties
             MutableResourcesRelativePath    = mutableResourcesPath.Replace("Assets/Resources", "").TrimStart('/');
             m_persistentDataRelativePath    = persistentDataRelativePath ?? $"VoxelBusters/{string.Join("", displayName.Split(' '))}";
         }

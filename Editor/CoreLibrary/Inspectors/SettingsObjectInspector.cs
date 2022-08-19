@@ -354,6 +354,21 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         #endregion
 
+        #region Additional methods
+
+        protected void ShowMigrateToUpmOption()
+        {
+            GUILayout.Space(5f);
+            EditorLayoutUtility.Helpbox(
+                title: "UPM Support",
+                description: "You can install the package on UPM.",
+                actionLabel: "Migrate To UPM",
+                onClick: GetOwner().MigrateToUpm,
+                style: CustomEditorStyles.GroupBackground);
+        }
+
+        #endregion
+
         #region Callback methods
 
         protected bool OnPropertyGroupSelect(SerializedProperty property)

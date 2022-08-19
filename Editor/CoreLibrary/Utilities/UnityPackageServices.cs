@@ -16,38 +16,64 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         #region Static methods
 
+        [System.Obsolete("This method is deprecated. Use MigrateToUpm instead.")]
         public static void MigrateToUPM(this UnityPackageDefinition package)
+        {
+            MovePackageToUpmRecursively(package, refreshOnFinish: true);
+        }
+
+        public static void MigrateToUpm(this UnityPackageDefinition package)
+        {
+            MovePackageToUpmRecursively(package, refreshOnFinish: true);
+        }
+
+        private static void MovePackageToUpmRecursively(this UnityPackageDefinition package, bool refreshOnFinish)
         {
             try
             {
-                // confirm that package exists in default install path
-                if (!package.IsInstalledWithinAssets()) return;
+                // Move dependencies
+                foreach (var dependency in package.Dependencies)
+                {
+                    MovePackageToUpmRecursively(dependency, refreshOnFinish: false);
+                }
 
-                // move files and folders to new path
-                var     sourceDirectory = new DirectoryInfo(package.DefaultInstallPath);
-                IOServices.CreateDirectory(package.UpmInstallPath);
-                foreach (var file in sourceDirectory.GetFiles())
-                {
-                    var     fileName    = file.Name;
-                    if (System.Array.Exists(s_staticFolders, (item) => string.Equals(fileName, $"{item}.meta")))
-                    {
-                        continue;
-                    }
-                    IOServices.MoveFile(file.FullName, $"{package.UpmInstallPath}/{fileName}");
-                }
-                foreach (var subDirectory in sourceDirectory.GetDirectories())
-                {
-                    var     subDirectoryName    = subDirectory.Name;
-                    if (System.Array.Exists(s_staticFolders, (item) => string.Equals(subDirectoryName, item)))
-                    {
-                        continue;
-                    }
-                    IOServices.MoveDirectory(subDirectory.FullName, $"{package.UpmInstallPath}/{subDirectoryName}");
-                }
+                // Move main package
+                MovePackageToUpm(package);
             }
             finally
             {
-                AssetDatabase.Refresh();
+                if (refreshOnFinish)
+                {
+                    AssetDatabase.Refresh();
+                }
+            }
+        }
+
+        private static void MovePackageToUpm(UnityPackageDefinition package)
+        {
+            // Confirm that package exists in default install path
+            if (!package.IsInstalledWithinAssets()) return;
+
+            // Move files and folders to new path
+            var     sourceDirectory = new DirectoryInfo(package.DefaultInstallPath);
+            IOServices.CreateDirectory(package.UpmInstallPath);
+            foreach (var file in sourceDirectory.GetFiles())
+            {
+                var     fileName    = file.Name;
+                if (System.Array.Exists(s_staticFolders, (item) => string.Equals(fileName, $"{item}.meta")))
+                {
+                    continue;
+                }
+                IOServices.MoveFile(file.FullName, $"{package.UpmInstallPath}/{fileName}");
+            }
+            foreach (var subDirectory in sourceDirectory.GetDirectories())
+            {
+                var     subDirectoryName    = subDirectory.Name;
+                if (System.Array.Exists(s_staticFolders, (item) => string.Equals(subDirectoryName, item)))
+                {
+                    continue;
+                }
+                IOServices.MoveDirectory(subDirectory.FullName, $"{package.UpmInstallPath}/{subDirectoryName}");
             }
         }
 
