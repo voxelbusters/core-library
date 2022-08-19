@@ -358,7 +358,6 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         protected void ShowMigrateToUpmOption()
         {
-            GUILayout.Space(5f);
             EditorLayoutUtility.Helpbox(
                 title: "UPM Support",
                 description: "You can install the package on UPM.",
