@@ -44,18 +44,22 @@
     }
     else
     {
-        [viewControllerToPresent setFullScreenPresentationSettings];
+        [viewControllerToPresent setPresentationSettings];
+    }
+    
+    if(![viewControllerToPresent isKindOfClass:[UIAlertController class]])
+    {
+        viewControllerToPresent.presentationController.delegate = delegate;
     }
     
     // present specified object
     [self presentViewController:viewControllerToPresent animated:flag completion:completion];
 }
 
-- (void)setFullScreenPresentationSettings
+- (void)setPresentationSettings
 {
     if (@available(iOS 13.0, *)) {
-        self.modalPresentationStyle                    = UIModalPresentationOverFullScreen;
-        self.modalInPresentation                      = TRUE;
+        self.modalPresentationStyle                    = UIModalPresentationAutomatic;
     } else {
         // Fallback on earlier versions
         self.modalPresentationStyle                    = UIModalPresentationFullScreen;
@@ -66,7 +70,7 @@
                                  animated: (BOOL)flag
                                 completion: (void (^)())completion
 {
-    [viewControllerToPresent setFullScreenPresentationSettings];
+    self.modalPresentationStyle   = UIModalPresentationFullScreen;
     
     // present specified object
     [self presentViewController:viewControllerToPresent animated:flag completion:completion];
