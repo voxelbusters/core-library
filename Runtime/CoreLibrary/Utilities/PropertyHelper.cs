@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary
 {
-    public static class PropertyHelpers
+    public static class PropertyHelper
     {
         #region Static methods
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary
 {
-    public static class ObjectHelpers
+    public static class ObjectHelper
     {
         #region Static methods
 
