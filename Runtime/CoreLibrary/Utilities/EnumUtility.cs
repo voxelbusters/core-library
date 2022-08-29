@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary
 {
-    public static class EnumHelper
+    public static class EnumUtility
     {
         #region Static methods
 
