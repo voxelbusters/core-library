@@ -13,17 +13,6 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
 
         private     const       string      kDefaultProjectSettingsPathFormat   = "Project/Voxel Busters/{0}";            
 
-        // install path
-        private     const       string      kInstallUrlSocialKit                = "https://u3d.as/1pMn";
-
-        private     const       string      kInstallUrlEssentialKit             = "https://u3d.as/1szE";
-
-        private     const       string      kInstallUrlReportingKit             = "https://u3d.as/2Q6p";
-
-        private     const       string      kInstallUrlMLKit                    = "https://u3d.as/2PMe";
-
-        private     const       string      kInstallUrlScreenRecorderKit        = "http://u3d.as/1nN3";
-
         #endregion
 
         #region Fields
@@ -52,43 +41,13 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
 
         #region Create methods
 
-#if !ENABLE_VOXELBUSTERS_SOCIAL_KIT
-        [SettingsProvider]
-        private static SettingsProvider CreateSocialKitSettingsProvider()
-        {
-            return new SettingsProviderProxy(
-                name: "Social Kit",
-                installUrl: kInstallUrlSocialKit);
-        }
-#endif
-
 #if !ENABLE_VOXELBUSTERS_ESSENTIAL_KIT
         [SettingsProvider]
         private static SettingsProvider CreateEssentialKitSettingsProvider()
         {
             return new SettingsProviderProxy(
                 name: "Essential Kit",
-                installUrl: kInstallUrlEssentialKit);
-        }
-#endif
-
-#if !ENABLE_VOXELBUSTERS_ML_KIT
-        [SettingsProvider]
-        private static SettingsProvider CreateMLKitSettingsProvider()
-        {
-            return new SettingsProviderProxy(
-                name: "ML Kit",
-                installUrl: kInstallUrlMLKit);
-        }
-#endif
-
-#if !ENABLE_VOXELBUSTERS_REPORTING_KIT
-        [SettingsProvider]
-        private static SettingsProvider CreateReportingKitSettingsProvider()
-        {
-            return new SettingsProviderProxy(
-                name: "Reporting Kit",
-                installUrl: kInstallUrlReportingKit);
+                installUrl: InstallPath.EssentialKit);
         }
 #endif
 
@@ -98,7 +57,37 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
         {
             return new SettingsProviderProxy(
                 name: "Screen Recorder Kit",
-                installUrl: kInstallUrlScreenRecorderKit);
+                installUrl: InstallPath.ScreenRecorderKit);
+        }
+#endif
+
+#if !ENABLE_VOXELBUSTERS_SOCIAL_KIT
+        [SettingsProvider]
+        private static SettingsProvider CreateSocialKitSettingsProvider()
+        {
+            return new SettingsProviderProxy(
+                name: "Social Kit",
+                installUrl: InstallPath.SocialKit);
+        }
+#endif
+
+#if !ENABLE_VOXELBUSTERS_ML_KIT
+        [SettingsProvider]
+        private static SettingsProvider CreateMLKitSettingsProvider()
+        {
+            return new SettingsProviderProxy(
+                name: "ML Kit",
+                installUrl: InstallPath.MLKit);
+        }
+#endif
+
+#if !ENABLE_VOXELBUSTERS_REPORTING_KIT
+        [SettingsProvider]
+        private static SettingsProvider CreateReportingKitSettingsProvider()
+        {
+            return new SettingsProviderProxy(
+                name: "Reporting Kit",
+                installUrl: InstallPath.ReportingKit);
         }
 #endif
 

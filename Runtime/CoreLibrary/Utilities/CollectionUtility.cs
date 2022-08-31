@@ -8,11 +8,6 @@ namespace VoxelBusters.CoreLibrary
     {
         #region Extension methods
 
-        public static bool IsNullOrEmpty<TKey, TValue>(this IDictionary<TKey, TValue> dict)
-        {
-            return (dict == null) || (dict.Count == 0);
-        }
-
         public static bool IsNullOrEmpty<T>(this IList<T> list)
         {
             return (list == null) || (list.Count == 0);
@@ -30,9 +25,24 @@ namespace VoxelBusters.CoreLibrary
             return false;
         }
 
+        public static T GetItemAt<T>(this IList<T> list, int index, bool throwError = true)
+        {
+			// Check whether item is within bounds
+			if (throwError || ((index >= 0) && (index < list.Count)))
+			{
+				return list[index];
+			}
+			return default(T);
+        }
+
         #endregion
 
         #region IDictionary methods
+
+        public static bool IsNullOrEmpty<TKey, TValue>(this IDictionary<TKey, TValue> dict)
+        {
+            return (dict == null) || (dict.Count == 0);
+        }
 
         public static bool ContainsKeyPath(this IDictionary dictionary, string keyPath)
 		{

@@ -33,6 +33,15 @@ namespace VoxelBusters.CoreLibrary.Editor
             }
         }
 
+        public static void StringPopup(int selectedIndex, string[] options, Callback<int> onValueChange, params GUILayoutOption[] layoutOptions)
+        {
+            int     newValue    = EditorGUILayout.Popup(selectedIndex, options, layoutOptions);
+            if (newValue != selectedIndex)
+            {
+                onValueChange?.Invoke(newValue);
+            }
+        }
+
         public static void Helpbox(string title, string description, System.Action drawFunc, GUIStyle style)
         {
             GUILayout.BeginVertical(style);
