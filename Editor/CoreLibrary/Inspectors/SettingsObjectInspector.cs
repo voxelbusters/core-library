@@ -235,7 +235,10 @@ namespace VoxelBusters.CoreLibrary.Editor
             var     enabledProperty     = property.FindPropertyRelative("m_isEnabled");
             if ((enabledProperty != null) /*&& SettingsPropertyGroup.CanToggleFeatureUsageState()*/)
             {
-                Rect    toggleRect                  = new Rect(rect.xMax - 64f, rect.y, 64f, 25f);
+
+                Vector2 iconSize = new Vector2(64f, 24f);
+                Rect toggleRect = new Rect(rect.xMax - (iconSize.x * 1.1f), rect.y + (rect.height / 2 - iconSize.y / 2), iconSize.x, iconSize.y);
+
                 if (GUI.Button(toggleRect, enabledProperty.boolValue ? m_toggleOnIcon : m_toggleOffIcon, CustomEditorStyles.InvisibleButton))
                 {
                     enabledProperty.boolValue       = !enabledProperty.boolValue;
