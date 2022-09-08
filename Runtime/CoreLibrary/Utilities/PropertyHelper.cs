@@ -21,7 +21,7 @@ namespace VoxelBusters.CoreLibrary
         {
             if (!string.IsNullOrEmpty(value)) return value;
 
-            // find default value using reflection
+            // Find default value using reflection
             var		fieldName	= ReflectionUtility.GetFieldName(fieldAccess);
 			var		fieldInfo	= ReflectionUtility.GetField(typeof(TInstance), fieldName);
 			var		attribute	= ReflectionUtility.GetAttribute<DefaultValueAttribute>(fieldInfo);
@@ -32,11 +32,27 @@ namespace VoxelBusters.CoreLibrary
         {
             if (value != null) return value.GetValueOrDefault();
 
-            // find default value using reflection
+            // Find default value using reflection
             var		fieldName	= ReflectionUtility.GetFieldName(fieldAccess);
 			var		fieldInfo	= ReflectionUtility.GetField(typeof(TInstance), fieldName);
 			var		attribute	= ReflectionUtility.GetAttribute<DefaultValueAttribute>(fieldInfo);
             return attribute.GetValue<TValue>();
+        }
+
+        public static int GetConstrainedValue<TInstance, TProperty>(TInstance instance, Expression<Func<TInstance, TProperty>> fieldAccess, int value)
+        {
+            var		fieldName	= ReflectionUtility.GetFieldName(fieldAccess);
+			var		fieldInfo	= ReflectionUtility.GetField(typeof(TInstance), fieldName);
+			var		attribute	= ReflectionUtility.GetAttribute<RangeAttribute>(fieldInfo);
+            return Mathf.Clamp(value, (int)attribute.min, (int)attribute.max);
+        }
+
+        public static float GetConstrainedValue<TInstance, TProperty>(TInstance instance, Expression<Func<TInstance, TProperty>> fieldAccess, float value)
+        {
+            var		fieldName	= ReflectionUtility.GetFieldName(fieldAccess);
+			var		fieldInfo	= ReflectionUtility.GetField(typeof(TInstance), fieldName);
+			var		attribute	= ReflectionUtility.GetAttribute<RangeAttribute>(fieldInfo);
+            return Mathf.Clamp(value, attribute.min, attribute.max);
         }
 
         #endregion
