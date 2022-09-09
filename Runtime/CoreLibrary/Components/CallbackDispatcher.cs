@@ -30,6 +30,11 @@ namespace VoxelBusters.CoreLibrary
     public delegate void CompletionCallback(bool success, Error error);
 
     /// <summary>
+    /// Generic callback definition for events.
+    /// </summary>
+    public delegate void CompletionCallback<TResult>(TResult result, Error error);
+
+    /// <summary>
     /// Generic callback definition for operations.
     /// </summary>
     public delegate void EventCallback<TResult>(TResult result, Error error);
@@ -133,6 +138,23 @@ namespace VoxelBusters.CoreLibrary
             if (manager)
             {
                 manager.AddAction(action: () => callback.Invoke(success, error));
+            }
+        }
+
+        public static void InvokeOnMainThread<TResult>(CompletionCallback<TResult> callback, TResult result, Error error)
+        {
+            // validate arguments
+            if (callback == null)
+            {
+                //DebugLogger.LogWarning("Callback is null.");
+                return;
+            }
+
+            // add request to queue
+            var     manager     = GetSingleton();
+            if (manager)
+            {
+                manager.AddAction(() => callback.Invoke(result, error));
             }
         }
 

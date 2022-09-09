@@ -35,6 +35,33 @@ namespace VoxelBusters.CoreLibrary
 			return default(T);
         }
 
+		public static void AddFirst<T>(this IList<T> list, T item)
+		{
+			list.Insert(0, item);
+		}
+
+		public static void AddLast<T>(this IList<T> list, T item)
+		{
+			list.Add(item);
+		}
+
+		public static T PopFirst<T>(this IList<T> list)
+		{
+			var		item	= list[0];
+			list.RemoveAt(0);
+
+			return item;
+		}
+
+		public static T PopLast<T>(this IList<T> list)
+		{
+			int		lastIndex	= list.Count - 1;
+			var		item		= list[lastIndex];
+			list.RemoveAt(lastIndex);
+
+			return item;
+		}
+
         #endregion
 
         #region IDictionary methods
