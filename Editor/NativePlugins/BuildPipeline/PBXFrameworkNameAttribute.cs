@@ -21,6 +21,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
             "SystemConfiguration.framework",
             "UserNotifications.framework",
             "WebKit.framework",
+            "ReplayKit.framework"
         };
 
         #endregion

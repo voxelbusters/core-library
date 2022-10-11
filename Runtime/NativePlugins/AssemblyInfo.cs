@@ -10,8 +10,11 @@
 [assembly: InternalsVisibleTo("VoxelBusters.EssentialKit.AndroidModule")]
 [assembly: InternalsVisibleTo("VoxelBusters.EssentialKit.SimulatorModule")]
 
-[assembly: InternalsVisibleTo("VoxelBusters.RecorderKit")]
-[assembly: InternalsVisibleTo("VoxelBusters.RecorderKit.Editor")]
+[assembly: InternalsVisibleTo("VoxelBusters.ScreenRecorderKit")]
+[assembly: InternalsVisibleTo("VoxelBusters.ScreenRecorderKit.Editor")]
+[assembly: InternalsVisibleTo("VoxelBusters.ScreenRecorderKit.iOSModule")]
+[assembly: InternalsVisibleTo("VoxelBusters.ScreenRecorderKit.AndroidModule")]
+
 
 [assembly: InternalsVisibleTo("VoxelBusters.EasyMLKit")]
 [assembly: InternalsVisibleTo("VoxelBusters.EasyMLKit.Editor")]

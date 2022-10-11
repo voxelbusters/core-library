@@ -80,9 +80,10 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 
         private static object CreateInstance(string assemblyName, string typeName, object[] arguments)
         {
+            Type targetType = null;
             try
             {
-                Type    targetType  = ReflectionUtility.GetType(assemblyName, typeName);
+                targetType  = ReflectionUtility.GetType(assemblyName, typeName);
                 if (targetType == null)
                 {
                     targetType      = ReflectionUtility.GetTypeFromCSharpFirstPassAssembly(typeName);
@@ -103,7 +104,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
             }
             catch (Exception e)
             {
-                DebugLogger.LogError(string.Format("Failed when creating instance [Assembly : {0}] [Type : {1}] [Error : {2}", assemblyName, typeName, e.Message));
+                DebugLogger.LogError(string.Format("Failed when creating instance [Assembly : {0}] [Type : {1}] [Target Type : {2}] [Error : {3}", assemblyName, typeName, targetType, e.Message));
                 return null;
             }
         }

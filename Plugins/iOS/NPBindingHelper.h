@@ -23,6 +23,7 @@ NSURL* NPCreateNSURLFromCString(const char* cString);
 NPArray* NPCreateArrayOfCString(NSArray<NSString*>* array);
 NSString* NPExtractTokenFromNSData(id token);
 NPError NPCreateError(int code, NSString* description);
+NPError NPNullError();
 
 // array opearations
 NPArray* NPCreateNativeArrayFromNSArray(NSArray* array);

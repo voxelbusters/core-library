@@ -10,75 +10,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.Android
         private static AndroidJavaObject    s_context           = null;
         private static NativeContext        s_nativeContext     = null;
         private static NativeActivity       s_nativeActivity    = null;
-        private static NativeViewGroup      s_decorRootView         = null;
-
-        /*private static Dictionary<string, AndroidJavaObject> sSingletonInstances = new Dictionary<string, AndroidJavaObject>();
-
-        public static AndroidJavaObject GetSingletonInstance(string _className, string _methodName = "getInstance") //Assuming the class follows standard naming- "INSTANCE" for singleton objects
-        {
-            AndroidJavaObject _instance;
-
-            sSingletonInstances.TryGetValue(_className, out _instance);
-
-            if (_instance == null)
-            {
-                //Create instance
-                AndroidJavaClass _class = new AndroidJavaClass(_className);
-
-                if (_class != null) //If it doesn't exist, throw an error
-                {
-                    _instance = _class.CallStatic<AndroidJavaObject>(_methodName);
-
-                    //Add the new instance value for this class name key
-                    sSingletonInstances.Add(_className, _instance);
-                }
-                else
-                {
-                    DebugLogger.LogError("Class=" + _className + " not found!");
-                    return null;
-                }
-
-            }
-
-            return _instance;
-        }
-
-        public static AndroidJavaClass CreateJavaClass(string className)
-        {
-            AndroidJavaClass javaClass;
-
-            //Create instance
-            javaClass = new AndroidJavaClass(className);
-
-            if (javaClass == null) //If it doesn't exist, throw an error
-            {
-                DebugLogger.LogError("Class=" + className + " not found!");
-            }
-
-            return javaClass;
-        }
-
-        public static AndroidJavaObject CreateJavaInstance(string className, bool passContext = true, params object[] arguments)
-        {
-            AndroidJavaObject instance;
-
-            //Create instance
-            if (passContext)
-            {
-                instance = new AndroidJavaObject(className, GetContext(), arguments);
-            }
-            else
-            {
-                instance = new AndroidJavaObject(className, arguments);
-            }
-
-            if (instance == null) //If it doesn't exist, throw an error
-            {
-                DebugLogger.LogError("Unable to create instance for class : "+ className);
-            }
-
-            return instance;
-        }*/
+        private static NativeViewGroup      s_decorRootView     = null;
 
         public static NativeActivity GetActivity()
         {

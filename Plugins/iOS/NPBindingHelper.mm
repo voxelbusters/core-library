@@ -61,6 +61,13 @@ NPError NPCreateError(int code, NSString* description)
     return error;
 }
 
+NPError NPNullError()
+{
+    NPError error = {-1, NULL};
+    return error;
+}
+
+
 char* NPCreateCStringCopyFromNSError(NSError* error)
 {
     if (error)
