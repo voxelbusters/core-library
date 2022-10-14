@@ -93,7 +93,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             // read exporter settings for adding native files 
             foreach (var featureExporter in ActiveExporters)
             {
-                Debug.Log("Is Feature enabled : " + featureExporter.name + " " + featureExporter.IsEnabled);
+                DebugLogger.Log("Is Feature enabled : " + featureExporter.name + " " + featureExporter.IsEnabled);
                 string  exporterFilePath    = Path.GetFullPath(AssetDatabase.GetAssetPath(featureExporter));
                 string  exporterFolder      = Path.GetDirectoryName(exporterFilePath);
                 var     iosSettings         = featureExporter.IosProperties;
