@@ -110,6 +110,15 @@ namespace VoxelBusters.CoreLibrary
             return defaultValue;
         }
 
+        /// <summary>
+        /// Returns the complete snapshot of data.      
+        /// </summary>
+        /// <returns>Returns IDictionary with snapshot data</returns>
+        public IDictionary GetSnapshot()
+        {
+            return m_dataCollection;
+        }
+
         #endregion
 
         #region Set value methods
