@@ -80,7 +80,7 @@ namespace VoxelBusters.CoreLibrary
             // check whether operation is already started
             if (AsyncOperationStatus.NotStarted != Status)
             {
-                DebugLogger.LogWarning("The requested operation could not be started.");
+                DebugLogger.LogWarning(CoreLibraryDomain.Default, "The requested operation could not be started.");
                 return;
             }
 
@@ -92,7 +92,7 @@ namespace VoxelBusters.CoreLibrary
             // check whether operation is already completed
             if (AsyncOperationStatus.InProgress != Status)
             {
-                DebugLogger.LogWarning("The requested operation could not be cancelled.");
+                DebugLogger.LogWarning(CoreLibraryDomain.Default, "The requested operation could not be cancelled.");
                 return;
             }
 
@@ -132,7 +132,7 @@ namespace VoxelBusters.CoreLibrary
         {
             if (AsyncOperationStatus.InProgress != Status)
             {
-                DebugLogger.LogWarning("The requested operation could not be marked as completed.");
+                DebugLogger.LogWarning(CoreLibraryDomain.Default, "The requested operation could not be marked as completed.");
                 return;
             }
 

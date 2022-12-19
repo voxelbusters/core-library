@@ -33,7 +33,7 @@ namespace VoxelBusters.CoreLibrary
             var     objectType  = typeof(T);
             if (s_isDestroyed) 
             {
-                DebugLogger.LogWarning(string.Format("{0} instance is already destroyed.", objectType));
+                DebugLogger.LogWarning(CoreLibraryDomain.Default, $"{objectType} instance is already destroyed.");
                 return null;
             }
 

@@ -76,7 +76,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         {
             if (!m_disposed)
             {
-                DebugLogger.Log("Disposing native object.");
+                DebugLogger.Log(CoreLibraryDomain.NativePlugins, "Disposing native object.");
                 if (disposing)
                 {
                     // dispose managed state (managed objects).

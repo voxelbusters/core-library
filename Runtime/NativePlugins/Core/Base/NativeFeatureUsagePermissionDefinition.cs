@@ -44,7 +44,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
             string  targetValue     = m_descriptionOverrides.GetConstantForPlatform(platform, m_description);
             if (targetValue == null)
             {
-                DebugLogger.LogError("Permission is not defined!");
+                DebugLogger.LogError(CoreLibraryDomain.NativePlugins, "Permission is not defined.");
                 return null;
             }
             else

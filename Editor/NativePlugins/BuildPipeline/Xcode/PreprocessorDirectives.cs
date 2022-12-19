@@ -28,7 +28,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             int     pragmaIndex = Array.FindIndex(lines, (item) => item.StartsWith("#pragma", StringComparison.InvariantCultureIgnoreCase));
             if (pragmaIndex == -1)
             {
-                DebugLogger.LogError("Unknown error!");
+                DebugLogger.LogError(CoreLibraryDomain.Default, "Unknown error.");
                 return;
             }
 

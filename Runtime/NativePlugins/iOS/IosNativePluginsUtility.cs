@@ -69,13 +69,13 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.iOS
 
         public static void RetainNativeObject(IntPtr nativePtr)
         {
-            DebugLogger.Log("Retaining native object pointer: " + nativePtr);
+            DebugLogger.Log(CoreLibraryDomain.NativePlugins, $"Retaining native object pointer: {nativePtr}.");
             NPUtilityRetainObject(nativePtr);
         }
 
         public static void ReleaseNativeObject(IntPtr nativePtr)
         {
-            DebugLogger.Log("Releasing native object pointer: " + nativePtr);
+            DebugLogger.Log(CoreLibraryDomain.NativePlugins, $"Releasing native object pointer: {nativePtr}.");
             NPUtilityReleaseObject(nativePtr);
         }
 

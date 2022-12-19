@@ -31,7 +31,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 
         public static void FreeUnmanagedStringArray(IntPtr unmanagedArrayPtr, int count)
         {
-            DebugLogger.Log(NativeConstants.kLogTag, $"Releasing unmanaged array: {unmanagedArrayPtr}");
+            DebugLogger.Log(CoreLibraryDomain.NativePlugins, $"Releasing unmanaged array: {unmanagedArrayPtr}.");
 
             // release each strings allocated in unmanaged space
             var     unmanagedArrayHandle    = GCHandle.FromIntPtr(unmanagedArrayPtr);
@@ -126,7 +126,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
                 var     outputObject        = converter(inputObject);
                 if (EqualityComparer<TOutput>.Default.Equals(outputObject, default(TOutput)) && !includeNullObjects)
                 {
-                    DebugLogger.LogWarning(NativeConstants.kLogTag, $"Failed to convert object with data {inputObject}.");
+                    DebugLogger.LogWarning(CoreLibraryDomain.NativePlugins, $"Failed to convert object with data {inputObject}.");
                     continue;
                 }
 
@@ -161,7 +161,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
                 var     outputObject    = converter(nativePtr);
                 if (EqualityComparer<TOutput>.Default.Equals(outputObject, default(TOutput)) && !includeNullObjects)
                 {
-                    DebugLogger.LogWarning(NativeConstants.kLogTag, $"Failed to convert object with data {nativePtr}.");
+                    DebugLogger.LogWarning(CoreLibraryDomain.NativePlugins, $"Failed to convert object with data {nativePtr}.");
                     continue;
                 }
 

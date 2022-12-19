@@ -49,7 +49,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
                 interfaceObject         = CreateInstance(packageType.Assembly, packageType.NativeInterfaceType, args);
             }
 
-            DebugLogger.Log(NativeConstants.kLogTag, $"Created native interface of type: {interfaceObject}");
+            DebugLogger.Log(CoreLibraryDomain.NativePlugins, $"Created native interface of type: {interfaceObject}");
             return (TFeatureInterface)interfaceObject;
         }
 
@@ -104,7 +104,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
             }
             catch (Exception e)
             {
-                DebugLogger.LogError(NativeConstants.kLogTag, $"Failed when creating instance [Assembly : {assemblyName}] [Type : {typeName}] [Target Type : {targetType}] [Error : {e.Message}");
+                DebugLogger.LogError(CoreLibraryDomain.NativePlugins, $"Failed when creating instance. Assembly: {assemblyName} Type: {typeName} TargetType: {targetType} Error: {e.Message}");
                 return null;
             }
         }

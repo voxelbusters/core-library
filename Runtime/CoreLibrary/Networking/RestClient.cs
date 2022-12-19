@@ -8,12 +8,6 @@ namespace VoxelBusters.CoreLibrary
 {
     internal class RestClient
     {
-        #region Constants
-
-        private const string kLogTag = "VoxelBusters.CoreLibrary.Networking";
-
-        #endregion
-
         #region Static fields
 
         private static RestClient s_sharedInstance;
@@ -66,20 +60,20 @@ namespace VoxelBusters.CoreLibrary
         public void StartWebRequest<TResult>(UnityWebRequest request, System.Action<TResult> onSuccess,
             System.Action<string> onError)
         {
-            DebugLogger.Log(kLogTag, $"Starting request: {request.url}");
+            DebugLogger.Log(CoreLibraryDomain.Default, $"Starting web request: {request.url}.");
             request.SendWebRequest().completed += (obj) =>
             {
                 // Parse response
                 if ((request.responseCode >= 200) && (request.responseCode <= 301))
                 {
-                    DebugLogger.Log(kLogTag, $"Status: {request.responseCode} Result: {request.downloadHandler.text}");
+                    DebugLogger.Log(CoreLibraryDomain.Default, $"Status: {request.responseCode} Result: {request.downloadHandler.text}.");
                     var     result  = JsonConvert.DeserializeObject<TResult>(request.downloadHandler.text);
                     onSuccess(result);
                 }
                 else
                 {
                     var     error   = request.downloadHandler.text;
-                    DebugLogger.LogError(kLogTag, $"Status: {request.responseCode} Error: {error}");
+                    DebugLogger.LogError(CoreLibraryDomain.Default, $"Status: {request.responseCode} Error: {error}.");
                     onError(error);
                 }
             };

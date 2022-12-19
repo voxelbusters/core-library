@@ -27,12 +27,12 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 
         public static void LogNotSupportedInEditor(string featureName = "This")
         {
-            DebugLogger.LogWarning(string.Format("{0} feature is not supported by simulator.", featureName));
+            DebugLogger.LogWarning(CoreLibraryDomain.NativePlugins, $"{featureName} feature is not supported by simulator.");
         }
 
         public static void LogNotSupported(string featureName = "This")
         {
-            DebugLogger.LogWarning(string.Format("{0} feature is not supported.", featureName));
+            DebugLogger.LogWarning(CoreLibraryDomain.NativePlugins, $"{featureName} feature is not supported.");
         }
 
         #endregion

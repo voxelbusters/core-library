@@ -82,7 +82,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 
         private void UpdatePBXProject()
         {
-            DebugLogger.Log("[XcodeBuildProcess] Linking native files.");
+            DebugLogger.Log(CoreLibraryDomain.Default, "Linking native files.");
 
             // open project file for editing
             string  projectFilePath     = PBXProject.GetPBXProjectPath(ProjectPath);
@@ -93,7 +93,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             // read exporter settings for adding native files 
             foreach (var featureExporter in ActiveExporters)
             {
-                DebugLogger.Log("Is Feature enabled : " + featureExporter.name + " " + featureExporter.IsEnabled);
+                DebugLogger.Log(CoreLibraryDomain.Default, $"Is feature: {featureExporter.name} enabled:{featureExporter.IsEnabled}.");
                 string  exporterFilePath    = Path.GetFullPath(AssetDatabase.GetAssetPath(featureExporter));
                 string  exporterFolder      = Path.GetDirectoryName(exporterFilePath);
                 var     iosSettings         = featureExporter.IosProperties;
@@ -253,7 +253,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             string  fileName            = Path.GetFileName(sourceFilePath);
             string  destinationFolder   = IOServices.CombinePath(ProjectPath, parentGroup);
             string  destinationFilePath = CopyFileToProject(sourceFilePath, destinationFolder);
-            DebugLogger.Log(string.Format("[NativePluginsExportManager] Adding file {0} to project.", fileName));
+            DebugLogger.Log(CoreLibraryDomain.Default, $"Adding file {fileName} to project.");
 
             // add copied file to the project
             string  fileGuid            = project.AddFile(FormatFilePathInProject(destinationFilePath, rooted: false),  parentGroup + fileName);

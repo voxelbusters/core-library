@@ -65,7 +65,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
             }
 
 #if NATIVE_PLUGINS_DEBUG && !UNITY_ANDROID
-            DebugLogger.LogFormat("Disposing native object: {0}", this);
+            DebugLogger.Log(CoreLibraryDomain.NativePlugins, $"Disposing native object: {this}.");
 #endif
 
             if (disposing)
