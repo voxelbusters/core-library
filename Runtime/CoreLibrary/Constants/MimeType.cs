@@ -30,6 +30,9 @@ namespace VoxelBusters.CoreLibrary
         /// <summary> The MIME value used to determine png image file. (Readonly)</summary>
         public  const   string      kPNGImage           = "image/png";
 
+        /// <summary> The MIME value used to determine gif image file. (Readonly)</summary>
+        public  const   string      kGIFImage           = "image/gif";
+
         /// <summary> The MIME value used to determine Adobe® PDF documents. (Readonly)</summary>
         public  const   string      kPDF                = "application/pdf";
 
