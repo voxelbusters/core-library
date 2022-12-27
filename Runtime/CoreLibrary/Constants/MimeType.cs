@@ -43,7 +43,7 @@ namespace VoxelBusters.CoreLibrary
 
         #region Static methods
 
-        public static string FindTypeForExtension(string extension)
+        public static string GetTypeForExtension(string extension)
         {
             extension = extension.TrimStart('.');
             if (string.Equals(extension, "txt", StringComparison.InvariantCultureIgnoreCase))
