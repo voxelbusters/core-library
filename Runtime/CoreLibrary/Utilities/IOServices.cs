@@ -247,6 +247,16 @@ namespace VoxelBusters.CoreLibrary
             }
         }
 
+        public static string GetFileNameWithoutExtension(string path)
+        {
+            return Path.GetFileNameWithoutExtension(path);
+        }
+
+        public static string GetExtension(string path)
+        {
+            return Path.GetExtension(path);
+        }
+
         #endregion
     }
 }
