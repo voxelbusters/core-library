@@ -25,6 +25,15 @@ namespace VoxelBusters.CoreLibrary
             return false;
         }
 
+		public static IList<T> Add<T>(this IList<T> list, T item, System.Func<bool> condition)
+		{
+			if ((list != null) && condition())
+			{
+				list.Add(item);
+			}
+			return list;
+		}
+
         public static T GetItemAt<T>(this IList<T> list, int index, bool throwError = true)
         {
 			// Check whether item is within bounds
