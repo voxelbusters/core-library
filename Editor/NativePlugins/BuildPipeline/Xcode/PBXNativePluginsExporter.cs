@@ -15,7 +15,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 {
     public class PBXNativePluginsExporter : NativePluginsExporter, IPostprocessBuildWithReport
     {
-        #region Constants
+#region Constants
 
         private const string                kPluginRelativePath     = "VoxelBusters/";
 
@@ -29,17 +29,17 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             ".cs",
         };
 
-        #endregion
+#endregion
 
-        #region Fields
+#region Fields
 
         private     List<string>        m_librarySearchPaths    = null;
 
         private     List<string>        m_frameworkSearchPaths  = null;
 
-        #endregion
+#endregion
 
-        #region Base class methods
+#region Base class methods
 
         protected override bool CanExportPlugins(BuildTarget target)
         {
@@ -63,9 +63,9 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             UpdatePBXProject();
         }
 
-        #endregion
+#endregion
 
-        #region Static methods
+#region Static methods
 
         private static string GetProjectTarget(PBXProject project)
         {
@@ -76,9 +76,14 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 #endif
         }
 
-        #endregion
+        private static string GetProjectMainTarget(PBXProject project)
+        {
+            return project.GetUnityMainTargetGuid();
+        }
 
-        #region Private methods
+#endregion
+
+#region Private methods
 
         private void UpdatePBXProject()
         {
@@ -89,6 +94,10 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             var     project             = new PBXProject();
             project.ReadFromFile(projectFilePath);
             string  targetGuid          = GetProjectTarget(project);
+
+            Debug.Log("Project File Path :" + projectFilePath + " targetGuid : " + targetGuid + " ProjectPath : " + ProjectPath);
+
+            project.AddSourcesBuildPhase(targetGuid);//@@ fix for "does not refer to a file in a known build section"
 
             // read exporter settings for adding native files 
             foreach (var featureExporter in ActiveExporters)
@@ -144,12 +153,16 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                 project.AddFrameworkSearchPath(targetGuid, FormatFilePathInProject(path));
             }
 
+            // copy streaming assets audio files to main target folder
+            CopyRequiredStreamingAssetsToProjectRoot(project);
+
             // apply changes
             File.WriteAllText(projectFilePath, project.WriteToString());
 
             // add entitlements
             AddEntitlements(project);
         }
+
 
         private string GetExportGroupPath(NativePluginsExporterSettings exporterSettings, string prefixPath)
         {
@@ -369,7 +382,41 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             }).ToArray();
         }
 
-        #endregion
+        //Added for supporting notification services custom sound files
+        private void CopyRequiredStreamingAssetsToProjectRoot(PBXProject project)
+        {
+            string mainTargetGuid = GetProjectMainTarget(project);
+
+            // Copy audio files from streaming assets if any to Raw folder
+            string path = UnityEngine.Application.streamingAssetsPath;
+            if(IOServices.DirectoryExists(path))
+            {
+                string[] files = System.IO.Directory.GetFiles(path);
+                string destinationFolder = ProjectPath;
+
+                string[] formats = new string[]
+                {
+                    ".mp3",
+                    ".wav",
+                    ".ogg",
+                    ".aiff"
+                };
+
+                for(int i=0; i< files.Length; i++)
+                {
+                    string extension = System.IO.Path.GetExtension(files[i]);
+                    if(formats.Contains(extension.ToLower()))
+                    {
+                        string destinationRelativePath = files[i].Replace(path, ".");
+                        IOServices.CopyFile(files[i], IOServices.CombinePath(destinationFolder, IOServices.GetFileName(files[i])));
+                        Debug.Log("destinationRelativePath :" + destinationRelativePath);
+                        project.AddFileToBuild(mainTargetGuid, project.AddFile(destinationRelativePath, destinationRelativePath));
+                    }
+                }
+            }
+        }
+
+#endregion
     }
 }
 #endif
