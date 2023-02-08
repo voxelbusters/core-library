@@ -25,11 +25,11 @@ namespace VoxelBusters.CoreLibrary
             return false;
         }
 
-		public static IList<T> Add<T>(this IList<T> list, T item, System.Func<bool> condition)
+		public static IList<T> Add<T>(this IList<T> list, System.Func<bool> condition, System.Func<T> getItem)
 		{
 			if ((list != null) && condition())
 			{
-				list.Add(item);
+				list.Add(getItem());
 			}
 			return list;
 		}

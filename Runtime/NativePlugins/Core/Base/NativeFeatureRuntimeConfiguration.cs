@@ -8,23 +8,11 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
     {
         #region Properties
 
-        public NativeFeatureRuntimePackage[] Packages
-        {
-            get;
-            private set;
-        }
+        public NativeFeatureRuntimePackage[] Packages { get; private set; }
 
-        public NativeFeatureRuntimePackage SimulatorPackage
-        {
-            get;
-            private set;
-        }
+        public NativeFeatureRuntimePackage SimulatorPackage { get; private set; }
 
-        public NativeFeatureRuntimePackage FallbackPackage
-        {
-            get;
-            private set;
-        }
+        public NativeFeatureRuntimePackage FallbackPackage { get; private set; }
 
         #endregion
 
