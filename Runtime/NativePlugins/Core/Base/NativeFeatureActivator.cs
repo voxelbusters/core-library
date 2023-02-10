@@ -80,26 +80,22 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 
         private static object CreateInstance(string assemblyName, string typeName, object[] arguments)
         {
-            Type targetType = null;
+            Type    targetType  = null;
             try
             {
-                targetType  = ReflectionUtility.GetType(assemblyName, typeName);
+                targetType      = ReflectionUtility.GetType(assemblyName, typeName);
                 if (targetType == null)
                 {
-                    targetType      = ReflectionUtility.GetTypeFromCSharpFirstPassAssembly(typeName);
-                    if (targetType == null)
-                    {
-                        targetType  = ReflectionUtility.GetTypeFromCSharpAssembly(typeName);
-                    }
+                    targetType  = ReflectionUtility.GetTypeFromAssemblyCSharp(typeName, includeFirstPass: true);
                 }
 
                 if (arguments == null)
                 {
-                    return Activator.CreateInstance(targetType);
+                    return ReflectionUtility.CreateInstance(targetType);
                 }
                 else
                 {
-                    return Activator.CreateInstance(targetType, arguments);
+                    return ReflectionUtility.CreateInstance(targetType, arguments);
                 }
             }
             catch (Exception e)

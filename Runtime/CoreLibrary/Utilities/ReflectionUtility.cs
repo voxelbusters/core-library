@@ -9,31 +9,37 @@ namespace VoxelBusters.CoreLibrary
     {
         #region Constants
 
-        public  const   string  kCSharpFirstPassAssembly    = "Assembly-CSharp-firstpass";
+        public  const   string  kAssemblyCSharpFirstPass    = "Assembly-CSharp-firstpass";
 
-        public  const   string  kCSharpAssembly             = "Assembly-CSharp";
+        public  const   string  kAssemblyCSharp             = "Assembly-CSharp";
 
         #endregion
 
         #region Type methods
 
-        public static Type GetTypeFromCSharpAssembly(string typeName)
-        {
-            return GetType(kCSharpAssembly, typeName);
-        }
+		[System.Obsolete("Use method GetTypeFromAssemblyCSharp instead.", false)]
+		public static Type GetTypeFromCSharpAssembly(string typeName)
+		{
+			return GetType(kAssemblyCSharp, typeName);
+		}
 
+		[System.Obsolete("Use method GetTypeFromAssemblyCSharp instead.", false)]
         public static Type GetTypeFromCSharpFirstPassAssembly(string typeName)
         {
-			return GetType(kCSharpFirstPassAssembly, typeName);
+			return GetType(kAssemblyCSharpFirstPass, typeName);
         }
 
-        public static Type GetTypeFromCSharpAssemblies(string typeName)
+        public static Type GetTypeFromAssemblyCSharp(string typeName, bool includeFirstPass = false)
         {
 			Type	targetType		= null;
-            if ((targetType = GetTypeFromCSharpFirstPassAssembly(typeName)) == null)
+            if (includeFirstPass)
 			{
-				targetType			= GetTypeFromCSharpAssembly(typeName);
+				targetType			= GetType(kAssemblyCSharpFirstPass, typeName);
 			};
+			if (targetType == null)
+			{
+				targetType			= GetType(kAssemblyCSharp, typeName);
+			}
 			return targetType;
         }
 
