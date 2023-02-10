@@ -22,10 +22,15 @@ namespace VoxelBusters.CoreLibrary
             return GetType(kCSharpAssembly, typeName);
         }
 
-        public static Type GetTypeFromCSharpFirstPassAssembly(string typeName, bool allowsFallback = false)
+        public static Type GetTypeFromCSharpFirstPassAssembly(string typeName)
+        {
+			return GetType(kCSharpFirstPassAssembly, typeName);
+        }
+
+        public static Type GetTypeFromCSharpAssemblies(string typeName)
         {
 			Type	targetType		= null;
-            if (((targetType = GetType(kCSharpFirstPassAssembly, typeName)) == null) && allowsFallback)
+            if ((targetType = GetTypeFromCSharpFirstPassAssembly(typeName)) == null)
 			{
 				targetType			= GetTypeFromCSharpAssembly(typeName);
 			};
