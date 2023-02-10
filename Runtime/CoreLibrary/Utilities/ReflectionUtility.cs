@@ -15,21 +15,26 @@ namespace VoxelBusters.CoreLibrary
 
         #endregion
 
-        #region Static methods
+        #region Type methods
 
         public static Type GetTypeFromCSharpAssembly(string typeName)
         {
             return GetType(kCSharpAssembly, typeName);
         }
 
-        public static Type GetTypeFromCSharpFirstPassAssembly(string typeName)
+        public static Type GetTypeFromCSharpFirstPassAssembly(string typeName, bool allowsFallback = false)
         {
-            return GetType(kCSharpFirstPassAssembly, typeName);
+			Type	targetType		= null;
+            if (((targetType = GetType(kCSharpFirstPassAssembly, typeName)) == null) && allowsFallback)
+			{
+				targetType			= GetTypeFromCSharpAssembly(typeName);
+			};
+			return targetType;
         }
 
         public static Type GetType(string assemblyName, string typeName)
         {
-            var targetAssembly  = FindAssemblyWithName(assemblyName);
+            var		targetAssembly	= FindAssemblyWithName(assemblyName);
             if (targetAssembly != null)
             {
                 return targetAssembly.GetType(typeName, false);
@@ -46,6 +51,24 @@ namespace VoxelBusters.CoreLibrary
             });
         }
 
+		#endregion
+
+		#region Create methods
+
+		public static object CreateInstance(Type type, bool nonPublic = true)
+		{
+			return Activator.CreateInstance(type, nonPublic);
+		}
+
+		public static object CreateInstance(Type type, params object[] args)
+		{
+			return Activator.CreateInstance(type, args);
+		}
+
+        #endregion
+
+        #region Invoke methods
+
         public static T InvokeStaticMethod<T>(this Type type, string method, params object[] parameters)
         {
             return (T)type.GetMethod(method, BindingFlags.Public | BindingFlags.Static).Invoke(null, parameters);
@@ -55,8 +78,8 @@ namespace VoxelBusters.CoreLibrary
 
         #region Constraints methods
 
-		// Credits: Thomas Hourdel
-		public static string GetFieldName<TInstance, TProperty>(Expression<Func<TInstance, TProperty>> fieldAccess)
+        // Credits: Thomas Hourdel
+        public static string GetFieldName<TInstance, TProperty>(Expression<Func<TInstance, TProperty>> fieldAccess)
 		{
 			var		memberExpression	= fieldAccess.Body as MemberExpression;
 			if (memberExpression != null)
