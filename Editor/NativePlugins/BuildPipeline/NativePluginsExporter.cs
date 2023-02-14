@@ -16,55 +16,66 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 
         #region Proprerties
 
-        protected NativePluginsExporterSettings[] ActiveExporters { get; private set; }
+        public NativePluginsExporterSettings[] ActiveExporters { get; private set; }
 
-        protected BuildReport Report { get; private set; }
+        public BuildReport Report { get; private set; }
 
-        protected string ProjectPath => Report.summary.outputPath;
-
-        #endregion
-
-        #region Abstract methods
-
-        protected abstract bool CanExportPlugins(BuildTarget target);
+        public string ProjectPath => Report.summary.outputPath;
 
         #endregion
 
-        #region Private methods
+        #region Static methods
 
-        private void Init(BuildReport report)
+        private static NativePluginsExporterSettings[] FindActiveExporterSettings()
         {
-            // set properties
-            Report                      = report;
-
-            // update base exporter state
             var     exporters           = NativePluginsExporterSettings.FindAllExporters(includeInactive: true);
             var     baseExporter        = Array.Find(exporters, (item) => string.Equals(item.name, kBaseExporterName));
             if (baseExporter != null)
             {
                 baseExporter.IsEnabled  = true; // Array.Exists(exporters, (item) => (item != baseExporter) && item.IsEnabled);
             }
-
-            // set properties
             var     canToggleFeatures   = SettingsPropertyGroup.CanToggleFeatureUsageState();
-            ActiveExporters             = Array.FindAll(exporters, (item) => item.IsEnabled || !canToggleFeatures);
+            return Array.FindAll(exporters, (item) => item.IsEnabled || !canToggleFeatures);
         }
 
-        protected virtual void OnExportPlugins()
+        #endregion
+
+        #region Base class methods
+
+        protected virtual void Init()
         { }
+
+        protected virtual bool CanPerformExport(BuildTarget target) => true;
+
+        protected virtual void PerformExport()
+        { }
+
+        #endregion
+
+        #region Private methods
+
+        private void InitInternal(BuildReport report)
+        {
+            // Set properties
+            Report          = report;
+            ActiveExporters = FindActiveExporterSettings();
+
+            // Invoke concrete implementation
+            Init();
+        }
 
         #endregion
 
         #region IPostprocessBuildWithReport implementation
 
-        public int callbackOrder => int.MaxValue;
+        int IOrderedCallback.callbackOrder => int.MaxValue;
 
-        public virtual void OnPostprocessBuild(BuildReport report)
+        void IPostprocessBuildWithReport.OnPostprocessBuild(BuildReport report)
         {
-            if (!CanExportPlugins(target: report.summary.platform)) return;
+            if (!CanPerformExport(target: report.summary.platform)) return;
 
-            Init(report);
-            OnExportPlugins();
+            InitInternal(report);
+            PerformExport();
         }
 
         #endregion

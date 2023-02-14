@@ -17,13 +17,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 
         #region Properties
 
-        public string[] Domains
-        {
-            get
-            {
-                return m_domains;
-            }
-        }
+        public string[] Domains => m_domains;
 
         #endregion
 

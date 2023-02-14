@@ -8,6 +8,8 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 {
     public static class PBXProjectExtensions
     {
+        #region Search paths
+
         public static void AddHeaderSearchPath(this PBXProject project, string targetGuid, string headerSearchPath)
         {
             AddBuildProperty(project, targetGuid, PBXProjectBuildConfigurationKey.kHeaderSearchPaths, GetPlatformCompatiblePath(headerSearchPath));
@@ -52,6 +54,21 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             path = path.Replace("\\", "/");
             return path;
         }
+
+        #endregion
+
+        #region Target methods
+
+        public static string GetUnityProjectTargetGuid(this PBXProject project)
+        {
+#if UNITY_2019_3_OR_NEWER
+            return project.GetUnityFrameworkTargetGuid();
+#else
+            return project.TargetGuidByName(PBXProject.GetUnityTargetName());
+#endif
+        }
+
+        #endregion
     }
 }
 #endif
