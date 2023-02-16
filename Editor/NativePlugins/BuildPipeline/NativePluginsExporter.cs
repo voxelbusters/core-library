@@ -20,7 +20,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 
         public BuildReport Report { get; private set; }
 
-        public string ProjectPath => Report.summary.outputPath;
+        public string OutputPath => Report.summary.outputPath;
 
         #endregion
 

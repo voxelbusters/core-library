@@ -18,21 +18,9 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 
         #region Properties
 
-        public PBXCapabilityType Type
-        {
-            get
-            {
-                return m_type;
-            }
-        }
+        public PBXCapabilityType Type => m_type;
 
-        public PBXAssociatedDomainsEntitlement AssociatedDomainsEntitlement
-        {
-            get
-            {
-                return m_associatedDomainsEntitlement;
-            }
-        }
+        public PBXAssociatedDomainsEntitlement AssociatedDomainsEntitlement => m_associatedDomainsEntitlement;
 
         #endregion
 

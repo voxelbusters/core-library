@@ -31,9 +31,45 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 
         #region Fields
 
-        private     List<string>        m_librarySearchPaths    = null;
+        private     PBXProject                  m_project;
+        private     ProjectCapabilityManager    m_capabilityManager;
+        private     List<string>                m_librarySearchPaths;
+        private     List<string>                m_frameworkSearchPaths;
+        
+        #endregion
 
-        private     List<string>        m_frameworkSearchPaths  = null;
+        #region Properties
+
+        protected PBXProject Project
+        {
+            get
+            {
+                if (m_project == null)
+                {
+                    m_project   = new PBXProject();
+                    m_project.ReadFromFile(ProjectFilePath);
+                }
+                return m_project;
+            }
+        }
+
+        protected string ProjectFilePath => PBXProject.GetPBXProjectPath(OutputPath);
+
+        protected ProjectCapabilityManager CapabilityManager
+        {
+            get
+            {
+                if (m_capabilityManager == null)
+                {
+                    m_capabilityManager         = new ProjectCapabilityManager(
+                        ProjectFilePath,
+                        GetEntitlementsPath(),
+                        Project.GetMainTargetName(),
+                        Project.GetMainTargetGuid());
+                }
+                return m_capabilityManager;
+            }
+        }
 
         #endregion
 
@@ -48,7 +84,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             m_frameworkSearchPaths      = new List<string>();
             
             // Remove old directory
-            string  pluginExportPath    = Path.Combine(ProjectPath, kPluginRelativePath);
+            string  pluginExportPath    = Path.Combine(OutputPath, kPluginRelativePath);
             IOServices.DeleteDirectory(pluginExportPath);
         }
 
@@ -69,11 +105,6 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             UpdatePBXProject();
         }
 
-        private static string GetProjectMainTarget(PBXProject project)
-        {
-            return project.GetUnityMainTargetGuid();
-        }
-
         #endregion
 
         #region Private methods
@@ -82,17 +113,15 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
         {
             DebugLogger.Log(CoreLibraryDomain.Default, "Linking native files.");
 
-            // open project file for editing
-            string  projectFilePath     = PBXProject.GetPBXProjectPath(ProjectPath);
-            var     project             = new PBXProject();
-            project.ReadFromFile(projectFilePath);
-            string  targetGuid          = project.GetUnityProjectTargetGuid();
-
-            Debug.Log("Project File Path :" + projectFilePath + " targetGuid : " + targetGuid + " ProjectPath : " + ProjectPath);
+            // Open project file for editing
+            string  projectFilePath = ProjectFilePath;
+            var     project         = Project;
+            string  targetGuid      = project.GetFrameworkGuid();
+            DebugLogger.Log(CoreLibraryDomain.NativePlugins, $"Project File Path: {projectFilePath} targetGuid: {targetGuid} ProjectPath: {OutputPath}");
 
             project.AddSourcesBuildPhase(targetGuid);//@@ fix for "does not refer to a file in a known build section"
 
-            // read exporter settings for adding native files 
+            // Read exporter settings for adding native files 
             foreach (var featureExporter in ActiveExporters)
             {
                 DebugLogger.Log(CoreLibraryDomain.Default, $"Is feature: {featureExporter.name} enabled:{featureExporter.IsEnabled}.");
@@ -101,19 +130,19 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                 var     iosSettings         = featureExporter.IosProperties;
                 string  exporterGroup       = GetExportGroupPath(exporterSettings: featureExporter, prefixPath: kPluginRelativePath);
 
-                // add files
+                // Add files
                 foreach (var fileInfo in iosSettings.Files)
                 {
                     AddFileToProject(project, fileInfo.AbsoultePath, targetGuid, exporterGroup, fileInfo.CompileFlags);
                 }
 
-                // add folder
+                // Add folder
                 foreach (var folderInfo in iosSettings.Folders)
                 {
                     AddFolderToProject(project, folderInfo.AbsoultePath, targetGuid, exporterGroup, folderInfo.CompileFlags);
                 }
 
-                // add headerpaths
+                // Add headerpaths
                 foreach (var pathInfo in iosSettings.HeaderPaths)
                 {
                     string  destinationPath = GetFilePathInProject(pathInfo.AbsoultePath, exporterFolder, exporterGroup);
@@ -121,41 +150,38 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                     project.AddHeaderSearchPath(targetGuid, formattedPath);
                 }
 
-                // add frameworks
+                // Add frameworks
                 foreach (var framework in iosSettings.Frameworks)
                 {
                     project.AddFrameworkToProject(targetGuid, framework.Name, framework.IsWeak);
                 }
 
-                // add build properties
+                // Add build properties
                 foreach (var property in iosSettings.BuildProperties)
                 {
                     project.AddBuildProperty(targetGuid, property.Key, property.Value);
                 }
             }
 
-            // add header search paths
+            // Add header search paths
             foreach (string path in m_librarySearchPaths)
             {
                 project.AddLibrarySearchPath(targetGuid, FormatFilePathInProject(path));
             }
 
-            // add framework search paths
+            // Add framework search paths
             foreach (string path in m_frameworkSearchPaths)
             {
                 project.AddFrameworkSearchPath(targetGuid, FormatFilePathInProject(path));
             }
 
-            // copy streaming assets audio files to main target folder
-            CopyRequiredStreamingAssetsToProjectRoot(project);
+            // Add additional files
+            CopyRequiredStreamingAssetsToProjectRoot();
+            UpdateCapabilities();
 
-            // apply changes
+            // Apply changes
             File.WriteAllText(projectFilePath, project.WriteToString());
-
-            // add entitlements
-            AddEntitlements(project, projectFilePath, targetGuid);
         }
-
 
         private string GetExportGroupPath(NativePluginsExporterSettings exporterSettings, string prefixPath)
         {
@@ -173,9 +199,39 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             return groupPath;
         }
 
-        private void AddEntitlements(PBXProject project, string projectPath, string targetGuid)
+        private string GetEntitlementsPath()
+		{
+			var     targetGuid      = Project.GetMainTargetGuid();
+			var     targetName      = Project.GetMainTargetName();
+
+            var     relativePath    = Project.GetBuildPropertyForAnyConfig(targetGuid, PBXBuildConfigurationKey.kCodeSignEntitlements);
+			if (relativePath != null)
+			{
+				var     fullPath    = Path.Combine(OutputPath, relativePath);
+				if (IOServices.FileExists(fullPath))
+				{
+					return fullPath;
+				}
+			}
+
+            //  Make new file
+			var     entitlementsPath    = Path.Combine(OutputPath, targetName, $"{targetName}.entitlements");
+			var     entitlementsPlist   = new PlistDocument();
+			entitlementsPlist.WriteToFile(entitlementsPath);
+
+			// Copy the entitlement file to the xcode project
+			var     entitlementFileName = Path.GetFileName(entitlementsPath);
+			var     relativeDestination = $"{targetName}/{entitlementFileName}";
+
+			// Add the pbx configs to include the entitlements files on the project
+			Project.AddFile(relativeDestination, entitlementFileName);
+			Project.SetBuildProperty(targetGuid, PBXBuildConfigurationKey.kCodeSignEntitlements, relativeDestination);
+
+			return entitlementsPath;
+		}
+
+        private void UpdateCapabilities()
         {
-            var     capabilityManager   = PBXProjectUtility.CreateDefaultProjectCapabilityManager(project, projectPath, targetGuid);
             foreach (var featureExporter in ActiveExporters)
             {
                 if (!featureExporter.IsEnabled) continue;
@@ -185,25 +241,25 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                     switch (capability.Type)
                     {
                         case PBXCapabilityType.GameCenter:
-                            capabilityManager.AddGameCenter();
+                            CapabilityManager.AddGameCenter();
                             break;
 
                         case PBXCapabilityType.iCloud:
-                            capabilityManager.AddiCloud(enableKeyValueStorage: true, enableiCloudDocument: false, enablecloudKit: false, addDefaultContainers: false, customContainers: null);
+                            CapabilityManager.AddiCloud(enableKeyValueStorage: true, enableiCloudDocument: false, enablecloudKit: false, addDefaultContainers: false, customContainers: null);
                             break;
 
                         case PBXCapabilityType.InAppPurchase:
-                            capabilityManager.AddInAppPurchase();
+                            CapabilityManager.AddInAppPurchase();
                             break;
 
                         case PBXCapabilityType.PushNotifications:
-                            capabilityManager.AddPushNotifications(Debug.isDebugBuild);
-                            capabilityManager.AddBackgroundModes(BackgroundModesOptions.RemoteNotifications);
+                            CapabilityManager.AddPushNotifications(Debug.isDebugBuild);
+                            CapabilityManager.AddBackgroundModes(BackgroundModesOptions.RemoteNotifications);
                             break;
 
                         case PBXCapabilityType.AssociatedDomains:
                             var     associatedDomainsEntitlement    = capability.AssociatedDomainsEntitlement;
-                            capabilityManager.AddAssociatedDomains(domains: associatedDomainsEntitlement.Domains);
+                            CapabilityManager.AddAssociatedDomains(domains: associatedDomainsEntitlement.Domains);
                             break;
 
                         default:
@@ -213,7 +269,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             }
 
             // save changes
-            capabilityManager.WriteToFile();
+            CapabilityManager.WriteToFile();
         }
 
         private void UpdateMacroDefinitions()
@@ -241,7 +297,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 
             // copy file to the target folder
             string  fileName            = Path.GetFileName(sourceFilePath);
-            string  destinationFolder   = IOServices.CombinePath(ProjectPath, parentGroup);
+            string  destinationFolder   = IOServices.CombinePath(OutputPath, parentGroup);
             string  destinationFilePath = CopyFileToProject(sourceFilePath, destinationFolder);
             DebugLogger.Log(CoreLibraryDomain.Default, $"Adding file {fileName} to project.");
 
@@ -265,10 +321,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
         {
             // check whether given folder is valid
             var     sourceFolderInfo    = new DirectoryInfo(sourceFolder);
-            if (!sourceFolderInfo.Exists)
-            {
-                return;
-            }
+            if (!sourceFolderInfo.Exists) return;
 
             // add files placed within this folder
             foreach (var fileInfo in FindFiles(sourceFolderInfo))
@@ -299,7 +352,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             string  fileName        = Path.GetFileName(filePath);
             string  destPath        = Path.Combine(targetFolder, fileName);
 
-            DebugLogger.Log(string.Format("[NativePluginsExportManager] Copying file {0} to {1}.", filePath, destPath));
+            DebugLogger.Log(CoreLibraryDomain.NativePlugins, $"Copying file {filePath} to {destPath}.");
             FileUtil.CopyFileOrDirectory(filePath, destPath);
 
             return destPath;
@@ -312,7 +365,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             return sourcePath;
 #else
             string  relativePath        = IOServices.GetRelativePath(parentFolder, sourcePath);
-            string  destinationFolder   = IOServices.CombinePath(ProjectPath, parentGroup);
+            string  destinationFolder   = IOServices.CombinePath(OutputPath, parentGroup);
             return IOServices.CombinePath(destinationFolder, relativePath);
 #endif
         }
@@ -327,7 +380,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                 return path;
             }
 
-            string  relativePathToProject   = IOServices.GetRelativePath(ProjectPath, path);
+            string  relativePathToProject   = IOServices.GetRelativePath(OutputPath, path);
             return rooted ? Path.Combine("$(SRCROOT)", relativePathToProject) : relativePathToProject;
 #endif
         }
@@ -354,34 +407,33 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
         }
 
         //Added for supporting notification services custom sound files
-        private void CopyRequiredStreamingAssetsToProjectRoot(PBXProject project)
+        private void CopyRequiredStreamingAssetsToProjectRoot()
         {
-            string mainTargetGuid = GetProjectMainTarget(project);
+            string  mainTargetGuid  = Project.GetMainTargetGuid();
 
             // Copy audio files from streaming assets if any to Raw folder
-            string path = UnityEngine.Application.streamingAssetsPath;
-            if(IOServices.DirectoryExists(path))
+            string  path            = UnityEngine.Application.streamingAssetsPath;
+            if (IOServices.DirectoryExists(path))
             {
-                string[] files = System.IO.Directory.GetFiles(path);
-                string destinationFolder = ProjectPath;
+                var     files               = System.IO.Directory.GetFiles(path);
+                string  destinationFolder   = OutputPath;
 
-                string[] formats = new string[]
+                var     formats             = new string[]
                 {
                     ".mp3",
                     ".wav",
                     ".ogg",
                     ".aiff"
                 };
-
-                for(int i=0; i< files.Length; i++)
+                for (int i=0; i< files.Length; i++)
                 {
-                    string extension = System.IO.Path.GetExtension(files[i]);
-                    if(formats.Contains(extension.ToLower()))
+                    string  extension   = IOServices.GetExtension(files[i]);
+                    if (formats.Contains(extension.ToLower()))
                     {
                         string destinationRelativePath = files[i].Replace(path, ".");
                         IOServices.CopyFile(files[i], IOServices.CombinePath(destinationFolder, IOServices.GetFileName(files[i])));
-                        Debug.Log("destinationRelativePath :" + destinationRelativePath);
-                        project.AddFileToBuild(mainTargetGuid, project.AddFile(destinationRelativePath, destinationRelativePath));
+                        DebugLogger.Log(CoreLibraryDomain.NativePlugins, $"Coping asset with relativePath: {destinationRelativePath}.");
+                        Project.AddFileToBuild(mainTargetGuid, Project.AddFile(destinationRelativePath, destinationRelativePath));
                     }
                 }
             }
