@@ -114,12 +114,13 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             DebugLogger.Log(CoreLibraryDomain.Default, "Linking native files.");
 
             // Open project file for editing
-            string  projectFilePath = ProjectFilePath;
-            var     project         = Project;
-            string  targetGuid      = project.GetFrameworkGuid();
-            DebugLogger.Log(CoreLibraryDomain.NativePlugins, $"Project File Path: {projectFilePath} targetGuid: {targetGuid} ProjectPath: {OutputPath}");
+            string  projectFilePath     = ProjectFilePath;
+            var     project             = Project;
+            string  mainTargetGuid      = project.GetMainTargetGuid();
+            string  frameworkTargetGuid = project.GetFrameworkGuid();
+            DebugLogger.Log(CoreLibraryDomain.NativePlugins, $"Project File Path: {projectFilePath} targetGuid: {frameworkTargetGuid} ProjectPath: {OutputPath}");
 
-            project.AddSourcesBuildPhase(targetGuid);//@@ fix for "does not refer to a file in a known build section"
+            project.AddSourcesBuildPhase(frameworkTargetGuid);//@@ fix for "does not refer to a file in a known build section"
 
             // Read exporter settings for adding native files 
             foreach (var featureExporter in ActiveExporters)
@@ -133,13 +134,13 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                 // Add files
                 foreach (var fileInfo in iosSettings.Files)
                 {
-                    AddFileToProject(project, fileInfo.AbsoultePath, targetGuid, exporterGroup, fileInfo.CompileFlags);
+                    AddFileToProject(project, fileInfo.AbsoultePath, frameworkTargetGuid, exporterGroup, fileInfo.CompileFlags);
                 }
 
                 // Add folder
                 foreach (var folderInfo in iosSettings.Folders)
                 {
-                    AddFolderToProject(project, folderInfo.AbsoultePath, targetGuid, exporterGroup, folderInfo.CompileFlags);
+                    AddFolderToProject(project, folderInfo.AbsoultePath, frameworkTargetGuid, exporterGroup, folderInfo.CompileFlags);
                 }
 
                 // Add headerpaths
@@ -147,32 +148,39 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                 {
                     string  destinationPath = GetFilePathInProject(pathInfo.AbsoultePath, exporterFolder, exporterGroup);
                     string  formattedPath   = FormatFilePathInProject(destinationPath);
-                    project.AddHeaderSearchPath(targetGuid, formattedPath);
+                    project.AddHeaderSearchPath(frameworkTargetGuid, formattedPath);
                 }
 
                 // Add frameworks
                 foreach (var framework in iosSettings.Frameworks)
                 {
-                    project.AddFrameworkToProject(targetGuid, framework.Name, framework.IsWeak);
+                    if (framework.Target.HasFlag(PBXTargetMembership.UnityIphone))
+                    {
+                        project.AddFrameworkToProject(mainTargetGuid, framework.Name, framework.IsOptional);
+                    }
+                    if (framework.Target.HasFlag(PBXTargetMembership.UnityFramework))
+                    {
+                        project.AddFrameworkToProject(frameworkTargetGuid, framework.Name, framework.IsOptional);
+                    }
                 }
 
                 // Add build properties
                 foreach (var property in iosSettings.BuildProperties)
                 {
-                    project.AddBuildProperty(targetGuid, property.Key, property.Value);
+                    project.AddBuildProperty(frameworkTargetGuid, property.Key, property.Value);
                 }
             }
 
             // Add header search paths
             foreach (string path in m_librarySearchPaths)
             {
-                project.AddLibrarySearchPath(targetGuid, FormatFilePathInProject(path));
+                project.AddLibrarySearchPath(frameworkTargetGuid, FormatFilePathInProject(path));
             }
 
             // Add framework search paths
             foreach (string path in m_frameworkSearchPaths)
             {
-                project.AddFrameworkSearchPath(targetGuid, FormatFilePathInProject(path));
+                project.AddFrameworkSearchPath(frameworkTargetGuid, FormatFilePathInProject(path));
             }
 
             // Add additional files

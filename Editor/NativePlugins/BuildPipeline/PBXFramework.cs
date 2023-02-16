@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 {
@@ -9,48 +10,45 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 		#region Fields
 
 		[SerializeField, PBXFrameworkName]
-		private			string			m_name		    = string.Empty;
-		
-        [SerializeField]
-		private			bool			m_isWeak	    = false;
+		private	    string			    m_name;
+        [SerializeField, EnumMaskField(typeof(PBXTargetMembership))]
+		private     PBXTargetMembership m_target;
+        [SerializeField, FormerlySerializedAs("m_isWeak")]
+		private	    bool			    m_isOptional;
 
 		#endregion
 
 		#region Properties
 
 		public string Name
-		{
-			get
-			{
-				return m_name;
-			}
-			set
-			{
-				m_name = value;
-			}
-		}
+        {
+            get => m_name;
+            private set => m_name = value;
+        }
 
-		public bool IsWeak
-		{
-			get
-			{
-				return m_isWeak;
-			}
-			set
-			{
-				m_isWeak = value;
-			}
-		}
+        public PBXTargetMembership Target
+        {
+            get => m_target;
+            private set => m_target = value;
+        }
+
+        public bool IsOptional
+        {
+            get => m_isOptional;
+            private set => m_isOptional = value;
+        }
 
         #endregion
 
         #region Constructors
 
-        public PBXFramework(string name, bool isWeak = false)
+        public PBXFramework(string name, PBXTargetMembership target = (PBXTargetMembership)0,
+            bool isOptional = false)
         {
-            // set properties
-            m_name      = name;
-            m_isWeak    = isWeak;
+            // Set properties
+            Name            = name;
+            Target          = target;
+            IsOptional      = isOptional;
         }
 
         #endregion

@@ -20,13 +20,17 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
             position    = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), GUIContent.none);
 
             // show property attributes
-            Rect    nameRect        = new Rect(position.x, position.y, position.width - 25f, position.height);
-            Rect    weakRect        = new Rect(nameRect.xMax + 5f, position.y, 20f, position.height);
+            float   maxWidth        = position.width * .3f;
+            float   offset          = position.width * .01f;
+            Rect    nameRect        = new Rect(position.x, position.y, maxWidth, position.height);
+            Rect    targetRect      = new Rect(nameRect.xMax + offset, position.y, maxWidth, position.height);
+            Rect    optionalRect    = new Rect(targetRect.xMax + offset, position.y, maxWidth, position.height);
             int     indentLevel     = EditorGUI.indentLevel;
 
             EditorGUI.indentLevel   = 0;
             EditorGUI.PropertyField(nameRect, property.FindPropertyRelative("m_name"), GUIContent.none);
-            EditorGUI.PropertyField(weakRect, property.FindPropertyRelative("m_isWeak"), GUIContent.none);
+            EditorGUI.PropertyField(targetRect, property.FindPropertyRelative("m_target"), GUIContent.none);
+            EditorGUI.PropertyField(optionalRect, property.FindPropertyRelative("m_isOptional"), GUIContent.none);
             EditorGUI.indentLevel   = indentLevel;
             
             EditorGUI.EndProperty();

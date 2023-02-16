@@ -22,9 +22,11 @@ MonoBehaviour:
     m_headerPaths: []
     m_frameworks:
     - m_name: MobileCoreServices.framework
-      m_isWeak: 0
+      m_target: 4
+      m_isOptional: 0
     - m_name: StoreKit.framework
-      m_isWeak: 0
+      m_target: 4
+      m_isOptional: 0
     m_capabilities: []
     m_macros: []
     m_buildProperties: []
