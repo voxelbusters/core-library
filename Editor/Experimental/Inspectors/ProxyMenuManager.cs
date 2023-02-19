@@ -5,7 +5,7 @@ using UnityEditor;
 
 namespace VoxelBusters.CoreLibrary.Editor.Experimental
 {
-    public static class MenuManagerProxy
+    public static class ProxyMenuManager
     {
         #region Constants
 

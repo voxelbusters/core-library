@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary.Editor.Experimental
 {
-    public class SettingsProviderProxy : SettingsProvider
+    public class ProxySettingsProvider : SettingsProvider
     {
         #region Constants
 
@@ -27,7 +27,7 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
 
         #region Constructors
 
-        public SettingsProviderProxy(string name, string installUrl,
+        public ProxySettingsProvider(string name, string installUrl,
             string path = null, SettingsScope scopes = SettingsScope.Project)
             : base(path ?? string.Format(kDefaultProjectSettingsPathFormat, name), scopes)
         {
@@ -55,7 +55,7 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
         [SettingsProvider]
         private static SettingsProvider CreateScreenRecorderKitSettingsProvider()
         {
-            return new SettingsProviderProxy(
+            return new ProxySettingsProvider(
                 name: "Screen Recorder Kit",
                 installUrl: InstallPath.ScreenRecorderKit);
         }
@@ -65,7 +65,7 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
         [SettingsProvider]
         private static SettingsProvider CreateSocialKitSettingsProvider()
         {
-            return new SettingsProviderProxy(
+            return new ProxySettingsProvider(
                 name: "Social Kit",
                 installUrl: InstallPath.SocialKit);
         }
@@ -75,7 +75,7 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
         [SettingsProvider]
         private static SettingsProvider CreateMLKitSettingsProvider()
         {
-            return new SettingsProviderProxy(
+            return new ProxySettingsProvider(
                 name: "ML Kit",
                 installUrl: InstallPath.MLKit);
         }
@@ -85,7 +85,7 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
         [SettingsProvider]
         private static SettingsProvider CreateReportingKitSettingsProvider()
         {
-            return new SettingsProviderProxy(
+            return new ProxySettingsProvider(
                 name: "Reporting Kit",
                 installUrl: InstallPath.ReportingKit);
         }
