@@ -100,7 +100,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
             }
             catch (Exception e)
             {
-                DebugLogger.LogError(CoreLibraryDomain.NativePlugins, $"Failed when creating instance. Assembly: {assemblyName} Type: {typeName} TargetType: {targetType} Error: {e.Message}");
+                DebugLogger.LogError(CoreLibraryDomain.NativePlugins, $"Failed when creating instance. Assembly: {assemblyName} Type: {typeName} TargetType: {targetType} Error: {e.InnerException?.Message ?? e.Message}");
                 return null;
             }
         }
