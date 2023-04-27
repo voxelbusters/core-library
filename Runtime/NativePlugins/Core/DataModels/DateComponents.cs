@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary.NativePlugins
@@ -18,31 +16,31 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 
         [SerializeField]
         private     int         m_year;
-
+        
         [SerializeField]
         private     int         m_month;
-
+        
         [SerializeField]
         private     int         m_day;
 
         [SerializeField]
         private     int         m_hour;
-
+        
         [SerializeField]
         private     int         m_minute;
-
+        
         [SerializeField]
         private     int         m_second;
-
+        
         [SerializeField]
         private     int         m_nanosecond;
 
         [SerializeField]
         private     int         m_weekday;
-
+        
         [SerializeField]
         private     int         m_weekOfMonth;
-
+        
         [SerializeField]
         private     int         m_weekOfYear;
 
@@ -56,14 +54,8 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         /// <value>The calendar.</value>
         public Calendar Calendar
         {
-            get
-            {
-                return m_calendar;
-            }
-            set
-            {
-                m_calendar  = value;
-            }
+            get => m_calendar;
+            set => m_calendar = value;
         }
 
         /// <summary>
@@ -72,14 +64,8 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         /// <value>The year.</value>
         public int Year
         {
-            get
-            {
-                return m_year;
-            }
-            set
-            {
-                m_year      = value;
-            }
+            get => m_year;
+            set => m_year = value;
         }
 
         /// <summary>
@@ -88,14 +74,8 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         /// <value>The month.</value>
         public int Month
         {
-            get
-            {
-                return m_month;
-            }
-            set
-            {
-                m_month     = value;
-            }
+            get => m_month;
+            set => m_month = value;
         }
 
         /// <summary>
@@ -104,14 +84,8 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         /// <value>The day.</value>
         public int Day
         {
-            get
-            {
-                return m_day;
-            }
-            set
-            {
-                m_day       = value;
-            }
+            get => m_day;
+            set => m_day = value;
         }
 
         /// <summary>
@@ -120,14 +94,8 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         /// <value>The hour.</value>
         public int Hour
         {
-            get
-            {
-                return m_hour;
-            }
-            set
-            {
-                m_hour      = value;
-            }
+            get => m_hour;
+            set => m_hour = value;
         }
 
         /// <summary>
@@ -136,14 +104,8 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         /// <value>The minute.</value>
         public int Minute
         {
-            get
-            {
-                return m_minute;
-            }
-            set
-            {
-                m_minute    = value;
-            }
+            get => m_minute;
+            set => m_minute = value;
         }
 
         /// <summary>
@@ -152,14 +114,8 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         /// <value>The second.</value>
         public int Second
         {
-            get
-            {
-                return m_second;
-            }
-            set
-            {
-                m_second    = value;
-            }
+            get => m_second;
+            set => m_second = value;
         }
 
         /// <summary>
@@ -168,14 +124,8 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         /// <value>The nanosecond.</value>
         public int Nanosecond
         {
-            get
-            {
-                return m_nanosecond;
-            }
-            set
-            {
-                m_nanosecond    = value;
-            }
+            get => m_nanosecond;
+            set => m_nanosecond = value;
         }
 
         /// <summary>
@@ -184,14 +134,8 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         /// <value>The weekday.</value>
         public int Weekday
         {
-            get
-            {
-                return m_weekday;
-            }
-            set
-            {
-                m_weekday   = value;
-            }
+            get => m_weekday;
+            set => m_weekday = value;
         }
 
         /// <summary>
@@ -200,14 +144,8 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         /// <value>The week of month.</value>
         public int WeekOfMonth
         {
-            get
-            {
-                return m_weekOfMonth;
-            }
-            set
-            {
-                m_weekOfMonth   = value;
-            }
+            get => m_weekOfMonth;
+            set => m_weekOfMonth = value;
         }
 
         /// <summary>
@@ -216,14 +154,8 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         /// <value>The week of year.</value>
         public int WeekOfYear
         {
-            get
-            {
-                return m_weekOfYear;
-            }
-            set
-            {
-                m_weekOfYear    = value;
-            }
+            get => m_weekOfYear;
+            set => m_weekOfYear = value;
         }
 
         #endregion

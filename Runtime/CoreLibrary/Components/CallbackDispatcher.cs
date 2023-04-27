@@ -45,13 +45,13 @@ namespace VoxelBusters.CoreLibrary
     {
         #region Fields
 
-        private     Queue<Action>       m_queue         = new Queue<Action>();
+        private     Queue<Action>       m_queue;
 
         #endregion
 
         #region Static methods
 
-        public static CallbackDispatcher Initialize()
+        internal static CallbackDispatcher Initialize()
         {
             return GetSingleton();
         }
@@ -183,6 +183,14 @@ namespace VoxelBusters.CoreLibrary
         #endregion
 
         #region Unity methods
+
+        protected override void OnSingletonAwake()
+        {
+            base.OnSingletonAwake();
+
+            // Set properties
+            m_queue     = new Queue<Action>(capacity: 16);
+        }
 
         private void LateUpdate()
         {

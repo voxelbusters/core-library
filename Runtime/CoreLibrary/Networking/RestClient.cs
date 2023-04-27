@@ -10,24 +10,16 @@ namespace VoxelBusters.CoreLibrary
     {
         #region Static fields
 
+        [ClearOnReload]
         private static RestClient s_sharedInstance;
 
         #endregion
 
         #region Static properties
 
-        public static RestClient SharedInstance
-        {
-            get
-            {
-                if (s_sharedInstance == null)
-                {
-                    s_sharedInstance = new RestClient();
-                }
-                return s_sharedInstance;
-            }
-        }
-
+        public static RestClient SharedInstance => ObjectHelper.CreateInstanceIfNull(
+            ref s_sharedInstance,
+            () => new RestClient());
 
         #endregion
 

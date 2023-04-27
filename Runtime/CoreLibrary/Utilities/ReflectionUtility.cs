@@ -1,32 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary
 {
+	public static class SystemAssemblyName
+	{
+        public  const   string  kCSharpFirstPass    = "Assembly-CSharp-firstpass";
+        public  const   string  kCSharp             = "Assembly-CSharp";
+	}
+
     public static class ReflectionUtility
     {
-        #region Constants
-
-        public  const   string  kAssemblyCSharpFirstPass    = "Assembly-CSharp-firstpass";
-
-        public  const   string  kAssemblyCSharp             = "Assembly-CSharp";
-
-        #endregion
-
         #region Type methods
 
 		[System.Obsolete("Use method GetTypeFromAssemblyCSharp instead.", false)]
 		public static Type GetTypeFromCSharpAssembly(string typeName)
 		{
-			return GetType(kAssemblyCSharp, typeName);
+			return GetType(SystemAssemblyName.kCSharp, typeName);
 		}
 
 		[System.Obsolete("Use method GetTypeFromAssemblyCSharp instead.", false)]
         public static Type GetTypeFromCSharpFirstPassAssembly(string typeName)
         {
-			return GetType(kAssemblyCSharpFirstPass, typeName);
+			return GetType(SystemAssemblyName.kCSharpFirstPass, typeName);
         }
 
         public static Type GetTypeFromAssemblyCSharp(string typeName, bool includeFirstPass = false)
@@ -34,11 +33,11 @@ namespace VoxelBusters.CoreLibrary
 			Type	targetType		= null;
             if (includeFirstPass)
 			{
-				targetType			= GetType(kAssemblyCSharpFirstPass, typeName);
+				targetType			= GetType(SystemAssemblyName.kCSharpFirstPass, typeName);
 			};
 			if (targetType == null)
 			{
-				targetType			= GetType(kAssemblyCSharp, typeName);
+				targetType			= GetType(SystemAssemblyName.kCSharp, typeName);
 			}
 			return targetType;
         }
@@ -60,6 +59,22 @@ namespace VoxelBusters.CoreLibrary
             {
                 return string.Equals(item.GetName().Name, assemblyName);
             });
+        }
+
+		public static Type[] FindAllTypes(Predicate<Type> predicate = null)
+        {
+			var		typeList	= new List<Type>();
+			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+			{
+				foreach (var type in assembly.GetTypes())
+				{
+					if ((predicate == null) || predicate(type))
+					{
+						typeList.Add(type);
+					}
+				}
+			}
+            return typeList.ToArray();
         }
 
 		#endregion
@@ -84,6 +99,28 @@ namespace VoxelBusters.CoreLibrary
         {
             return (T)type.GetMethod(method, BindingFlags.Public | BindingFlags.Static).Invoke(null, parameters);
         }
+
+        #endregion
+
+        #region Modifier methods
+
+		public static void SetPropertyValue(this object obj, string name, object value)
+		{
+			var		type		= obj.GetType();
+			var		bindingAttr	= BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+			var		property	= type.GetProperty(name, bindingAttr);
+			if (property != null)
+			{
+				if (property.DeclaringType != type)
+				{
+					property.DeclaringType.GetProperty(name, bindingAttr).SetValue(obj, value);
+				}
+				else
+				{
+					property.SetValue(obj, value);
+				}
+			}
+		}
 
         #endregion
 

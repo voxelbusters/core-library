@@ -41,7 +41,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
                     return SimulatorPackage;
 
                 default:
-                    return Array.Find(Packages, (item) => item.Platform == platform);
+                    return Array.Find(Packages, (item) => item.SupportsPlatform(platform));
             }
         }
 

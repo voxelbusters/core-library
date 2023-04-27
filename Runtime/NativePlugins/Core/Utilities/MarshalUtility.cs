@@ -36,7 +36,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
             // release each strings allocated in unmanaged space
             var     unmanagedArrayHandle    = GCHandle.FromIntPtr(unmanagedArrayPtr);
             var     dataArray               = (IntPtr[])unmanagedArrayHandle.Target;
-            for (int iter = 0; iter < count; iter ++)
+            for (int iter = 0; iter < count; iter++)
             {
                 Marshal.FreeHGlobal(dataArray[iter]);
             }

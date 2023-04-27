@@ -10,71 +10,27 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
     {
         #region Properties
 
-        public Calendar Calendar
-        {
-            get;
-            set;
-        }
+        public Calendar Calendar { get; set; }
 
-        public long Year
-        {
-            get;
-            set;
-        }
+        public long Year { get; set; }
 
-        public long Month
-        {
-            get;
-            set;
-        }
+        public long Month { get; set; }
 
-        public long Day
-        {
-            get;
-            set;
-        }
+        public long Day { get; set; }
 
-        public long Hour
-        {
-            get;
-            set;
-        }
+        public long Hour { get; set; }
 
-        public long Minute
-        {
-            get;
-            set;
-        }
+        public long Minute { get; set; }
 
-        public long Second
-        {
-            get;
-            set;
-        }
+        public long Second { get; set; }
 
-        public long Nanosecond
-        {
-            get;
-            set;
-        }
+        public long Nanosecond { get; set; }
 
-        public long Weekday
-        {
-            get;
-            set;
-        }
+        public long Weekday { get; set; }
 
-        public long WeekOfMonth
-        {
-            get;
-            set;
-        }
+        public long WeekOfMonth { get; set; }
 
-        public long WeekOfYear
-        {
-            get;
-            set;
-        }
+        public long WeekOfYear { get; set; }
 
         #endregion
 

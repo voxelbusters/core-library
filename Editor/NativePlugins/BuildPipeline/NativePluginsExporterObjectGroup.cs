@@ -4,14 +4,14 @@ using UnityEditor;
 
 namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 {
-    [CreateAssetMenu(fileName = "NativePluginsExporterGroup", menuName = "VoxelBusters/NativePluginsExporterGroup", order = 0)]
-    public class NativePluginsExporterGroup : ScriptableObject
+    [CreateAssetMenu(fileName = "NativePluginsExporterObjectGroup", menuName = "VoxelBusters/NativePluginsExporterGroup", order = 0)]
+    public class NativePluginsExporterObjectGroup : ScriptableObject
     {
         #region Fields
 
         [SerializeField]
         private     string      m_name;
-
+        
         [SerializeField]
         private     bool        m_usesNestedHeierarchy      = true;
 

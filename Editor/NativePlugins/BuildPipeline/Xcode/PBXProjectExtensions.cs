@@ -12,17 +12,17 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 
         public static void AddHeaderSearchPath(this PBXProject project, string targetGuid, string headerSearchPath)
         {
-            AddBuildProperty(project, targetGuid, PBXBuildConfigurationKey.kHeaderSearchPaths, GetPlatformCompatiblePath(headerSearchPath));
+            AddBuildProperty(project, targetGuid, BuildConfigurationKey.kHeaderSearchPaths, GetPlatformCompatiblePath(headerSearchPath));
         }
 
         public static void AddLibrarySearchPath(this PBXProject project, string targetGuid, string librarySearchPath)
         {
-            AddBuildProperty(project, targetGuid, PBXBuildConfigurationKey.kLibrarySearchPaths, GetPlatformCompatiblePath(librarySearchPath), false, false);
+            AddBuildProperty(project, targetGuid, BuildConfigurationKey.kLibrarySearchPaths, GetPlatformCompatiblePath(librarySearchPath), false, false);
         }
 
         public static void AddFrameworkSearchPath(this PBXProject project, string targetGuid, string frameworkSearchPath)
         {
-            AddBuildProperty(project, targetGuid, PBXBuildConfigurationKey.kFrameworkSearchPaths, GetPlatformCompatiblePath(frameworkSearchPath), false, false);
+            AddBuildProperty(project, targetGuid, BuildConfigurationKey.kFrameworkSearchPaths, GetPlatformCompatiblePath(frameworkSearchPath), false, false);
         }
 
         private static void AddBuildProperty(PBXProject project, string targetGuid, string key, string value, bool recursive = true, bool quoted = true)

@@ -68,6 +68,16 @@ namespace VoxelBusters.CoreLibrary.Editor
             return null;
         }
 
+        public static T[] FindAssetObjects<T>() where T : ScriptableObject
+        {
+            var    guids   = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
+            return System.Array.ConvertAll(guids, (item) =>
+            {
+                string  path    = AssetDatabase.GUIDToAssetPath(item);
+                return AssetDatabase.LoadAssetAtPath<T>(path);
+            });
+        }
+
         #endregion
     }
 }

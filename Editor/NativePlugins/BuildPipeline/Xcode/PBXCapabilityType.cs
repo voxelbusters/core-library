@@ -2,7 +2,7 @@
 {
 	public enum PBXCapabilityType
 	{
-        GameCenter,
+        GameCenter = 1,
 
 		InAppPurchase,
 

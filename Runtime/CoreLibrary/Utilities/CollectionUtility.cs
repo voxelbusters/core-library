@@ -34,6 +34,30 @@ namespace VoxelBusters.CoreLibrary
 			return list;
 		}
 
+		public static void AddOrReplace<T>(this List<T> list, T item, System.Predicate<T> match)
+		{
+			int     replaceIndex	= list.FindIndex(match);
+            if (-1 == replaceIndex)
+            {
+                list.Add(item);
+            }
+            else
+            {
+                list[replaceIndex]	= item; 
+            }
+		}
+
+		public static bool Remove<T>(this List<T> list, System.Predicate<T> match)
+		{
+			int     targetIndex		= list.FindIndex(match);
+            if (targetIndex != -1)
+            {
+                list.RemoveAt(targetIndex);
+				return true;
+            }
+			return false;
+		}
+
         public static T GetItemAt<T>(this IList<T> list, int index, bool throwError = true)
         {
 			// Check whether item is within bounds
@@ -69,6 +93,14 @@ namespace VoxelBusters.CoreLibrary
 			list.RemoveAt(lastIndex);
 
 			return item;
+		}
+
+		public static void ForEach<T>(this IList<T> list, System.Action<T> action)
+		{
+			foreach (var item in list)
+			{
+				action(item);
+			}
 		}
 
         #endregion

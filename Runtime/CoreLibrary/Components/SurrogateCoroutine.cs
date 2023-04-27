@@ -10,6 +10,7 @@ namespace VoxelBusters.CoreLibrary
 	{
 		#region Static fields
 
+		[ClearOnReload]
 		private     static      SurrogateBehaviour	    surrogateObject	    = null;
 
 		#endregion

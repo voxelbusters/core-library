@@ -6,7 +6,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 {
     public static class Diagnostics
     {
-        #region Messages
+        #region Constants
 
         public  static  readonly    Error   kFeatureNotSupported            = new Error(description: "The requested operation could not be completed because this feature is not supported on current platform.");
 
@@ -16,9 +16,9 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 
         #region Exception methods
 
-        public static VBException PluginNotConfiguredException()
+        public static VBException PluginNotConfiguredException(string name = "Native")
         {
-            return new VBException("Please configure your NativePlugins before you start using it in your project.");
+            return new VBException($"Please configure {name} plugin, before you start using it in your project.");
         }
 
         #endregion

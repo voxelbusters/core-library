@@ -10,11 +10,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
     {
         #region Properties
 
-        protected bool IsDisposed
-        {
-            get;
-            private set; 
-        }
+        protected bool IsDisposed { get; private set; }
 
         #endregion
 

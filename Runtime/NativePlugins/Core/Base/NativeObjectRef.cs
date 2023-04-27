@@ -13,11 +13,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 
         #region Properties
 
-        public IntPtr Pointer 
-        { 
-            get; 
-            private set; 
-        }
+        public IntPtr Pointer { get; private set; }
 
         #endregion
 

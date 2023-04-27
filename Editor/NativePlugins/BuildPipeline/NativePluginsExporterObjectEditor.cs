@@ -6,7 +6,7 @@ using VoxelBusters.CoreLibrary.Editor;
 
 namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 {
-    [CustomEditor(typeof(NativePluginsExporterSettings))]
-    public class NativePluginsExporterSettingsEditor : CustomInspector
+    [CustomEditor(typeof(NativePluginsExporterObject))]
+    public class NativePluginsExporterObjectEditor : CustomInspector
     { }
 }

@@ -12,11 +12,29 @@ namespace VoxelBusters.CoreLibrary
 
         #endregion
 
-        #region Private methods
+        #region Base methods
+
+        protected virtual void Awake()
+        {
+            UpdateLoggerSettings();
+        }
 
         protected virtual void OnValidate()
         {
+            UpdateLoggerSettings();
+
             OnSettingsUpdated?.Invoke();
+        }
+
+        #endregion
+
+        #region Private methods
+
+        protected virtual void UpdateLoggerSettings() { }
+
+        internal virtual void OnEditorReload()
+        {
+            UpdateLoggerSettings();
         }
 
         #endregion

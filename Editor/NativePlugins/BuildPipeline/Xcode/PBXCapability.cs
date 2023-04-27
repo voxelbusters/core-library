@@ -10,7 +10,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 
         [SerializeField]
         private     PBXCapabilityType                   m_type;   
-
+        
         [SerializeField]
         private     PBXAssociatedDomainsEntitlement     m_associatedDomainsEntitlement;
 

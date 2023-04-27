@@ -10,24 +10,20 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
     {
         #region Properties
 
-        public float Width
-        {
-            get;
-            set;
-        }
+        public float Width { get; set; }
 
-        public float Height
-        {
-            get;
-            set;
-        }
+        public float Height { get; set; }
 
         #endregion
+
+        #region Constructors
 
         public NativeSize(float width, float height)
         {
             Width = width;
             Height = height;
         }
+
+        #endregion
     }
 }

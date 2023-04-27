@@ -37,6 +37,15 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         static CustomEditorStyles()
         {
+            LoadStyles();
+        }
+
+        #endregion
+
+        #region Static methods
+
+        private static void LoadStyles()
+        {
             Heading1                = new GUIStyle(EditorStyles.boldLabel)
             {
                 fontSize            = 18,

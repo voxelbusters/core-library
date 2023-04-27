@@ -10,7 +10,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 		#region Fields
 
 		[SerializeField]
-		private     Object			m_reference = null;
+		private     Object			m_reference;
 
 		[SerializeField]
 		private	    string			m_compileFlags;
@@ -19,21 +19,9 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 
 		#region Properties
 
-		public string RelativePath
-		{
-			get
-			{
-                return AssetDatabase.GetAssetPath(m_reference);
-            }
-		}
+		public string RelativePath => AssetDatabase.GetAssetPath(m_reference);
 
-        public string AbsoultePath
-        {
-            get
-            {
-                return Path.GetFullPath(RelativePath);
-            }
-        }
+        public string AbsoultePath => Path.GetFullPath(RelativePath);
 
 		public string[] CompileFlags
 		{

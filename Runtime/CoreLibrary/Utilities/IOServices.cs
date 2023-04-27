@@ -8,9 +8,9 @@ namespace VoxelBusters.CoreLibrary
     {
         #region Static methods
 
-        public static string CombinePath(string path1, string path2)
+        public static string CombinePath(params string[] paths)
         {
-            return Path.Combine(path1, path2);
+            return Path.Combine(paths);
         }
 
         public static string GetAbsolutePath(string path)
@@ -147,6 +147,13 @@ namespace VoxelBusters.CoreLibrary
         public static bool DirectoryExists(string path)
         {
             return Directory.Exists(path);
+        }
+
+        public static bool IsSubDirectory(string parent, string path)
+        {
+            var     parentUri   = new Uri(parent);
+            var     childUri    = new Uri(Path.GetDirectoryName(path));
+            return (parentUri != childUri) && parentUri.IsBaseOf(childUri);
         }
 
         public static string GetUniquePath(string path)

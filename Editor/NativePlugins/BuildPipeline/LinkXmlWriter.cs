@@ -4,26 +4,27 @@ using System.Linq;
 using System.Xml;
 using UnityEngine;
 using VoxelBusters.CoreLibrary;
+using VoxelBusters.CoreLibrary.NativePlugins;
 
 namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 {
-    public partial class LinkerStrippingSettingsWriter
+    public partial class LinkXmlWriter
     {
         #region Fields
 
         private     List<AssemblyDefinition>    m_assemblies;
-
-        private     string                      m_savePath;
         
+        private     string                      m_savePath;
+
         #endregion
 
         #region Constructors
 
-        public LinkerStrippingSettingsWriter(string path)
+        public LinkXmlWriter(string path)
         {
             // set properties
-            m_assemblies    = new List<AssemblyDefinition>();
             m_savePath      = path;
+            m_assemblies    = new List<AssemblyDefinition>();
         }
 
         #endregion
@@ -63,6 +64,21 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
             return targetDefinition;
         }
 
+        public void AddConfiguration(string name, NativeFeatureRuntimeConfiguration runtimeConfiguration, RuntimePlatform platform)
+        {
+            var     packageConfiguration    = runtimeConfiguration.GetPackageForPlatform(platform);
+            if (packageConfiguration == null)
+            {
+                DebugLogger.LogWarning(CoreLibraryDomain.Default, $"Configuration not found for: {name}.");
+                var     fallbackConfiguration   = runtimeConfiguration.FallbackPackage;
+                AddRequiredType(fallbackConfiguration.Assembly, fallbackConfiguration.NativeInterfaceType);
+            }
+            else
+            {
+                AddRequiredNamespace(packageConfiguration.Assembly, packageConfiguration.Namespace);
+            }
+        }
+
         public void AddRequiredNamespace(string assembly, string ns)
         {
             GetOrCreateAssemblyDefinition(assembly)
@@ -87,10 +103,10 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
                 .AddIgnoreType(type);
         }
 
-        public void WriteToFile(bool replaceExisting = true)
+        public void WriteToFile()
         {
             // remove existing file
-            if (replaceExisting && IOServices.FileExists(m_savePath))
+            if (IOServices.FileExists(m_savePath))
             {
                 IOServices.DeleteFile(m_savePath);
             }

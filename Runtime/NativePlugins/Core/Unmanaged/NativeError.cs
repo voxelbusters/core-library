@@ -10,24 +10,20 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
     {
         #region Properties
 
-        public int Code
-        {
-            get;
-            set;
-        }
+        public int Code { get; set; }
 
-        public string Description
-        {
-            get;
-            set;
-        }
+        public string Description { get; set; }
 
         #endregion
+
+        #region Constructors
 
         public NativeError(int code, IntPtr description)
         {
             Code = code;
             Description = MarshalUtility.ToString(description);
         }
+
+        #endregion
     }
 }

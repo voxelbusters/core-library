@@ -14,7 +14,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 
         [SerializeField]
         private     string                      m_description;
-
+        
         [SerializeField]
         private     RuntimePlatformConstantSet  m_descriptionOverrides;
 

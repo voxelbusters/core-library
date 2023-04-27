@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 {
-    public static class PBXBuildConfigurationKey
+    public static class BuildConfigurationKey
     {
         public  const   string  kBuildSettings          = "buildSettings";
 
@@ -20,7 +20,6 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
         public  const   string  kOtherLDFlags           = "OTHER_LDFLAGS";
 
         public  const   string  kCodeSignEntitlements   = "CODE_SIGN_ENTITLEMENTS";
-
     }
 }
 #endif

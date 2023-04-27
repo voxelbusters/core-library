@@ -5,6 +5,7 @@ using UnityEditor.iOS.Xcode;
 using UnityEngine;
 
 using CapabilityType = UnityEditor.iOS.Xcode.PBXCapabilityType;
+
 namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 { 
     public static class ProjectCapabilityManagerExtensions

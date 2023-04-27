@@ -8,7 +8,7 @@ namespace VoxelBusters.CoreLibrary
     {
         #region Static fields
 
-        private     static      string[]        s_emptyOptions      = new string[0];
+        private     static  readonly    string[]    s_emptyOptions      = new string[0];
 
         #endregion
 

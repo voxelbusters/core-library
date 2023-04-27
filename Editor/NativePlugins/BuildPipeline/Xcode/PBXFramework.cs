@@ -11,8 +11,10 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 
 		[SerializeField, PBXFrameworkName]
 		private	    string			    m_name;
+
         [SerializeField, EnumMaskField(typeof(PBXTargetMembership))]
 		private     PBXTargetMembership m_target;
+        
         [SerializeField, FormerlySerializedAs("m_isWeak")]
 		private	    bool			    m_isOptional;
 

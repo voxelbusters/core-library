@@ -7,10 +7,13 @@ namespace VoxelBusters.CoreLibrary
 	{
         #region Static fields
 
+        [ClearOnReload]
         private     static          T           s_sharedInstance        = null;
 
+        [ClearOnReload(ClearOnReloadOption.Default)]
         private     static readonly object      s_objectLock            = new object();
         
+        [ClearOnReload(customValue: false)]
         private     static          bool        s_isDestroyed           = false;
 
         #endregion
@@ -23,6 +26,12 @@ namespace VoxelBusters.CoreLibrary
         private     bool                        m_isInitialised         = false;
 
         private     bool                        m_forcedDestroy         = false;
+
+        #endregion
+
+        #region Static properties
+
+        public static bool IsSingletonActive => (s_sharedInstance != null);
 
         #endregion
 
@@ -71,12 +80,11 @@ namespace VoxelBusters.CoreLibrary
             return s_sharedInstance;
         }
 
-        public static bool IsSingletonActive
+        protected static bool TryGetSingleton(out T singleton)
         {
-            get
-            {
-                return (s_sharedInstance != null);
-            }
+            singleton    = GetSingleton();
+
+            return (singleton != null);
         }
 
         #endregion

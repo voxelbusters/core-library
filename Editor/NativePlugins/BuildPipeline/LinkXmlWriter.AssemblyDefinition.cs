@@ -4,18 +4,18 @@ using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 {
-    public partial class LinkerStrippingSettingsWriter
+    public partial class LinkXmlWriter
     {
         private class AssemblyDefinition
         {
             #region Fields
 
             private     List<string>        m_requiredNamespaces;
-
+            
             private     List<string>        m_ignoreNamespaces;
-
+            
             private     List<string>        m_requiredTypes;
-
+            
             private     List<string>        m_ignoreTypes;
 
             #endregion
