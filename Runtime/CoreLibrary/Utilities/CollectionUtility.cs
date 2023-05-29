@@ -103,6 +103,19 @@ namespace VoxelBusters.CoreLibrary
 			}
 		}
 
+		public static TOutput[] ConvertAll<TInput, TOutput>(this IList<TInput> source, System.Converter<TInput, TOutput> converter, System.Predicate<TInput> match = null)
+		{
+			var		newList		= new List<TOutput>(source.Count);
+			foreach (var item in source)
+			{
+				if ((match != null) && !match(item)) continue;
+
+				var		convertedItem	= converter(item);
+				newList.Add(convertedItem);
+			}
+			return newList.ToArray();
+		}
+
         #endregion
 
         #region IDictionary methods

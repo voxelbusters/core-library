@@ -8,7 +8,7 @@ namespace VoxelBusters.CoreLibrary
     {
         #region Fields
 
-        private     bool    m_isInitialized = false;
+        private     bool    m_isInstanceInitialized = false;
 
         #endregion
 
@@ -28,9 +28,10 @@ namespace VoxelBusters.CoreLibrary
 
         protected void EnsureInitialized()
         {
-            if (m_isInitialized) return;
+            if (m_isInstanceInitialized) return;
 
-            m_isInitialized = true;
+            m_isInstanceInitialized = true;
+
             Init();
         }
 
