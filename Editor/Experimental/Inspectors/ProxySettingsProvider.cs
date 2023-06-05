@@ -45,7 +45,7 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
         [SettingsProvider]
         private static SettingsProvider CreateEssentialKitSettingsProvider()
         {
-            return new SettingsProviderProxy(
+            return new ProxySettingsProvider(
                 name: "Essential Kit",
                 installUrl: InstallPath.EssentialKit);
         }

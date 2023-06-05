@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary
 {
-    public interface IAsyncOperation : IEnumerator
+    public interface IAsyncOperationHandle : IEnumerator
     {
         #region Properties
 
@@ -20,24 +20,16 @@ namespace VoxelBusters.CoreLibrary
 
         #endregion
 
-        #region Methods
-
-        void Start();
-
-        void Abort();
-
-        #endregion
-
         #region Events
 
-        event Callback<IAsyncOperation> OnProgress;
+        event Callback<IAsyncOperationHandle> OnProgress;
 
-        event Callback<IAsyncOperation> OnComplete;
+        event Callback<IAsyncOperationHandle> OnComplete;
 
         #endregion
     }
 
-    public interface IAsyncOperation<T> : IAsyncOperation
+    public interface IAsyncOperationHandle<T> : IAsyncOperationHandle
     {
         #region Properties
 
@@ -47,9 +39,9 @@ namespace VoxelBusters.CoreLibrary
 
         #region Events
 
-        new event Callback<IAsyncOperation<T>> OnProgress;
+        new event Callback<IAsyncOperationHandle<T>> OnProgress;
 
-        new event Callback<IAsyncOperation<T>> OnComplete;
+        new event Callback<IAsyncOperationHandle<T>> OnComplete;
 
         #endregion
     }

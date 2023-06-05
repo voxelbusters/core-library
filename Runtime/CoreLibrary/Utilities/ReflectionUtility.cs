@@ -79,7 +79,7 @@ namespace VoxelBusters.CoreLibrary
 
 		#endregion
 
-		#region Create methods
+		#region Create instance methods
 
 		public static object CreateInstance(Type type, bool nonPublic = true)
 		{
@@ -90,6 +90,51 @@ namespace VoxelBusters.CoreLibrary
 		{
 			return Activator.CreateInstance(type, args);
 		}
+
+        #endregion
+
+        #region Attribute methods
+
+		public static Dictionary<Type, Attribute[]> FindTypesWithAttribute(Type attributeType, bool inherit = false)
+		{
+			var		collection	= new Dictionary<Type, Attribute[]>();
+			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+				foreach (var type in assembly.GetTypes())
+                {
+					if (type.IsClass == false) continue;
+
+					var		customAttributes	= type.GetCustomAttributes(attributeType, inherit);
+					if (customAttributes.Length == 0) continue;
+
+					collection.Add(type, Array.ConvertAll(customAttributes, (item) => item as Attribute));
+                }
+            }
+			return collection;
+		}
+
+		/*
+		public static Type[] FindTypesWithAttributes(Type attributeType, System.Func<Type, bool> typeFilter = null,
+			System.Func<MethodInfo> methodFilter = null)
+		{
+			var		targetTypes	= new List<Type>();
+			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+				foreach (var type in assembly.GetTypes())
+                {
+                    if ((typeFilter != null) && !typeFilter(type)) continue;
+
+					foreach (var method in type.GetRuntimeMethods())
+                    {
+
+                    }
+
+                }
+            }
+
+			return targetTypes.ToArray();
+		}
+		*/
 
         #endregion
 

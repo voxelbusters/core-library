@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary
 {
-    public abstract class StringPopupAttribute : PropertyAttribute 
+    public class StringPopupAttribute : PropertyAttribute 
     {
         #region Static fields
 
@@ -14,7 +14,9 @@ namespace VoxelBusters.CoreLibrary
 
         #region Fields
 
-        private     string[]    m_constantOptions;
+        private readonly    string[]    m_fixedOptions;
+        
+        private readonly    bool        m_usesFixedOptions;
 
         #endregion
 
@@ -24,38 +26,27 @@ namespace VoxelBusters.CoreLibrary
 
         public bool PreferencePropertyValue { get; private set; }
 
-        public bool UsesConstantOptions { get; private set; }
-
-        public string[] Options
-        {
-            get
-            {
-                var     options     = UsesConstantOptions ? m_constantOptions : GetDynamicOptions();
-                return options ?? s_emptyOptions;
-            }
-        }
+        public string[] Options => m_usesFixedOptions ? m_fixedOptions : GetDynamicOptions();
 
         #endregion
 
         #region Constructors
 
-        public StringPopupAttribute(string preferencePropertyName = null, bool preferencePropertyValue = true, bool usesConstantOptions = true, params string[] constantOptions)
+        public StringPopupAttribute(string preferencePropertyName = null, bool preferencePropertyValue = true,
+            params string[] fixedOptions)
         {
             // set properties
             PreferencePropertyName  = preferencePropertyName;
             PreferencePropertyValue = preferencePropertyValue;
-            UsesConstantOptions     = usesConstantOptions;
-            m_constantOptions       = constantOptions;
+            m_fixedOptions          = fixedOptions;
+            m_usesFixedOptions      = !fixedOptions.IsNullOrEmpty();
         }
 
         #endregion
 
         #region Private methods
 
-        protected virtual string[] GetDynamicOptions()
-        {
-            return null;
-        }
+        protected virtual string[] GetDynamicOptions() => s_emptyOptions;
 
         #endregion
     }

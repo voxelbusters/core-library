@@ -103,14 +103,17 @@ namespace VoxelBusters.CoreLibrary
 			}
 		}
 
-		public static List<TOutput> ConvertAll<TInput, TOutput>(this IEnumerable<TInput> source, System.Converter<TInput, TOutput> converter)
+		public static TOutput[] ConvertAll<TInput, TOutput>(this IList<TInput> source, System.Converter<TInput, TOutput> converter, System.Predicate<TInput> match = null)
 		{
-			var		convertedList	= new List<TOutput>();
+			var		newList		= new List<TOutput>(source.Count);
 			foreach (var item in source)
 			{
-				convertedList.Add(converter(item));
+				if ((match != null) && !match(item)) continue;
+
+				var		convertedItem	= converter(item);
+				newList.Add(convertedItem);
 			}
-			return convertedList;
+			return newList.ToArray();
 		}
 
         #endregion

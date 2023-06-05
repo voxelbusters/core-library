@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿#if UNITY_IOS || UNITY_TVOS
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor.iOS.Xcode;
@@ -44,3 +45,4 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
         }
     }
 }
+#endif
