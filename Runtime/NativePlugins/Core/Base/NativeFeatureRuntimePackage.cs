@@ -4,11 +4,18 @@ using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary.NativePlugins
 {
+    [System.Serializable]
     public class NativeFeatureRuntimePackage
     {
-        #region Properties
+        #region Fields
 
-        private RuntimePlatform[] Platforms { get; set; }
+        private readonly    RuntimePlatform[]   m_platforms;
+
+        private readonly    string              m_custom;
+
+        #endregion
+
+        #region Properties
 
         public string Assembly { get; private set; }
 
@@ -22,11 +29,13 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 
         #region Constructors
 
-        private NativeFeatureRuntimePackage(RuntimePlatform[] platforms, string assembly,
-            string ns, string nativeInterfaceType, string[] bindingTypes = null)
+        private NativeFeatureRuntimePackage(string assembly, string ns,
+            string nativeInterfaceType, string[] bindingTypes = null,
+            string custom = null, params RuntimePlatform[] platforms)
         {
             // Set properties
-            Platforms           = platforms;
+            m_platforms         = platforms;
+            m_custom            = custom;
             Assembly            = assembly;
             Namespace           = ns;
             NativeInterfaceType = GetTypeFullName(ns, nativeInterfaceType);
@@ -43,7 +52,6 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
             string nativeInterfaceType, string[] bindingTypes = null)
         {
             return new NativeFeatureRuntimePackage(
-                platforms: null,
                 assembly: assembly,
                 ns: ns,
                 nativeInterfaceType: nativeInterfaceType,
@@ -54,33 +62,56 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
             string nativeInterfaceType, string[] bindingTypes = null)
         {
             return new NativeFeatureRuntimePackage(
-                platforms: new [] { RuntimePlatform.Android },
                 assembly: assembly,
                 ns: ns,
                 nativeInterfaceType: nativeInterfaceType,
-                bindingTypes: bindingTypes);
+                bindingTypes: bindingTypes,
+                platforms: RuntimePlatform.Android);
         }
 
         public static NativeFeatureRuntimePackage IPhonePlayer(string assembly, string ns,
             string nativeInterfaceType, string[] bindingTypes = null)
         {
             return new NativeFeatureRuntimePackage(
-                platforms: new [] { RuntimePlatform.IPhonePlayer },
                 assembly: assembly,
                 ns: ns,
                 nativeInterfaceType: nativeInterfaceType,
-                bindingTypes: bindingTypes);
+                bindingTypes: bindingTypes,
+                platforms: RuntimePlatform.IPhonePlayer);
+        }
+
+        public static NativeFeatureRuntimePackage TvOS(string assembly, string ns,
+            string nativeInterfaceType, string[] bindingTypes = null)
+        {
+            return new NativeFeatureRuntimePackage(
+                assembly: assembly,
+                ns: ns,
+                nativeInterfaceType: nativeInterfaceType,
+                bindingTypes: bindingTypes,
+                platforms: RuntimePlatform.tvOS);
         }
 
         public static NativeFeatureRuntimePackage iOS(string assembly, string ns,
             string nativeInterfaceType, string[] bindingTypes = null)
         {
             return new NativeFeatureRuntimePackage(
-                platforms: new [] { RuntimePlatform.IPhonePlayer, RuntimePlatform.tvOS },
                 assembly: assembly,
                 ns: ns,
                 nativeInterfaceType: nativeInterfaceType,
-                bindingTypes: bindingTypes);
+                bindingTypes: bindingTypes,
+                platforms: new RuntimePlatform[] { RuntimePlatform.IPhonePlayer, RuntimePlatform.tvOS });
+        }
+
+        public static NativeFeatureRuntimePackage Custom(string custom, string assembly,
+            string ns, string nativeInterfaceType,
+            string[] bindingTypes = null)
+        {
+            return new NativeFeatureRuntimePackage(
+                assembly: assembly,
+                ns: ns,
+                nativeInterfaceType: nativeInterfaceType,
+                bindingTypes: bindingTypes,
+                custom: custom);
         }
 
         private static string GetTypeFullName(string ns, string type) => $"{ns}.{type}";
@@ -95,9 +126,18 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
             return System.Array.ConvertAll(BindingTypes, (item) => assembly.GetType(item));
         }
 
+        public bool IsMatch(RuntimePlatform platform, string custom)
+        {
+            if ((custom != null) && string.Equals(m_custom, custom))
+            {
+                return true;
+            }
+            return SupportsPlatform(platform);
+        }
+
         public bool SupportsPlatform(RuntimePlatform platform)
         {
-            return (Platforms != null) && System.Array.Exists(Platforms, (value) => (value == platform));
+            return (m_platforms == null) || System.Array.Exists(m_platforms, (value) => (value == platform));
         }
 
         #endregion

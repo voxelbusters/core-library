@@ -103,6 +103,16 @@ namespace VoxelBusters.CoreLibrary
 			}
 		}
 
+		public static List<TOutput> ConvertAll<TInput, TOutput>(this IEnumerable<TInput> source, System.Converter<TInput, TOutput> converter)
+		{
+			var		convertedList	= new List<TOutput>();
+			foreach (var item in source)
+			{
+				convertedList.Add(converter(item));
+			}
+			return convertedList;
+		}
+
         #endregion
 
         #region IDictionary methods

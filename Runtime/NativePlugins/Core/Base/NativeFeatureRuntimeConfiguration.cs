@@ -21,7 +21,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         public NativeFeatureRuntimeConfiguration(NativeFeatureRuntimePackage[] packages, NativeFeatureRuntimePackage simulatorPackage = null,
             NativeFeatureRuntimePackage fallbackPackage = null)
         {
-            // set properties
+            // Set properties
             Packages            = packages;
             SimulatorPackage    = simulatorPackage;
             FallbackPackage     = fallbackPackage;

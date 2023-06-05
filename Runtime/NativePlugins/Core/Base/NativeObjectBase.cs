@@ -32,11 +32,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 
         #region INativeInterface implementation
 
-        public NativeObjectRef NativeObjectRef 
-        { 
-            get; 
-            protected set; 
-        }
+        public NativeObjectRef NativeObjectRef { get; protected set; }
 
         public IntPtr AddrOfNativeObject()
         {
