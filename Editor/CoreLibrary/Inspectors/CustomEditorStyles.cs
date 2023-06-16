@@ -23,6 +23,8 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         public static GUIStyle InvisibleButton { get; private set; }
 
+        public static GUIStyle SelectableLabel { get; private set; }
+
         public static GUIStyle Link { get; private set; }
 
         public static GUIStyle ItemBackground { get; private set; }
@@ -84,6 +86,7 @@ namespace VoxelBusters.CoreLibrary.Editor
                 fontSize            = 14,
             };
             InvisibleButton         = new GUIStyle("InvisibleButton");
+            SelectableLabel         = new GUIStyle("InvisibleButton");
             Link                    = new GUIStyle("LinkLabel")
             {
                 fontSize            = 12,

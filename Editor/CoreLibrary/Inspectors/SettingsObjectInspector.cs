@@ -12,6 +12,8 @@ namespace VoxelBusters.CoreLibrary.Editor
         private     static  readonly    ButtonInfo[]            s_emptyButtonArray          = new ButtonInfo[0];
 
         private     static  readonly    PropertyGroupInfo[]     s_emptyPropertyGroupArray   = new PropertyGroupInfo[0];
+         
+        private     static  readonly    string[]                s_ignoredProperties         = new string[] { "m_Script" };
 
         #endregion
 
@@ -26,8 +28,6 @@ namespace VoxelBusters.CoreLibrary.Editor
         private     PropertyGroupInfo[]     m_propertyGroups;
 
         private     int                     m_propertyGroupCount;
-
-        private     SerializedProperty      m_activePropertyGroup;
 
         private     InspectorDrawStyle      m_drawStyle;
 
@@ -48,6 +48,14 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         protected GUIStyle HeaderLabelStyle { get; private set; }
 
+        protected SerializedProperty FocusProperty { get; private set; }
+
+        #endregion
+
+        #region Abstract methods
+
+        protected abstract UnityPackageDefinition GetOwner();
+
         #endregion
 
         #region Unity methods
@@ -55,53 +63,25 @@ namespace VoxelBusters.CoreLibrary.Editor
         protected virtual void OnEnable()
         {
             // set properties
-            var     ownerPackage        = GetOwner();
-            m_productName               = ownerPackage.DisplayName;
-            m_productVersion            = $"v{ownerPackage.Version}";
-            m_drawStyle                 = GetDrawStyle();
-            m_topBarButtons             = GetTopBarButtons();
-            if (m_drawStyle == InspectorDrawStyle.Group)
-            {
-                m_propertyGroups        = GetPropertyGroups();
-                m_propertyGroupCount    = m_propertyGroups.Length;
-            }
             LoadAssets();
         }
 
         public override void OnInspectorGUI()
         {
+            EnsurePropertiesAreSet();
             EnsureStylesAreLoaded();
-            DrawTopBar();
+
             EditorGUI.BeginChangeCheck();
-            switch (m_drawStyle)
+            if (CanShowMainMenu())
             {
-                case InspectorDrawStyle.Default:
-                    DrawDefaultInspector();
-                    break;
-
-                case InspectorDrawStyle.Group:
-                    DrawGroupStyleInspector();
-                    break;
-
-                case InspectorDrawStyle.Custom:
-                    DrawCustomInspector();
-                    break;
+                DrawMainMenuContent();
             }
-            GUILayout.Space(5f);
-            DrawFooter();
-            if (EditorGUI.EndChangeCheck())
+            else
             {
-                // save changes
-                serializedObject.ApplyModifiedProperties();
-                serializedObject.Update();
+                DrawFocusPropertyContent();
             }
+            TryApplyModifiedProperties();
         }
-
-        #endregion
-
-        #region Abstract methods
-
-        protected abstract UnityPackageDefinition GetOwner();
 
         #endregion
 
@@ -166,6 +146,52 @@ namespace VoxelBusters.CoreLibrary.Editor
             }
         }
 
+        private void DrawMainMenuContent()
+        {
+            DrawTopBar();
+            GUILayout.Space(5f);
+
+            switch (m_drawStyle)
+            {
+                case InspectorDrawStyle.Default:
+                    DrawDefaultStyleInspector();
+                    break;
+
+                case InspectorDrawStyle.Group:
+                    DrawGroupStyleInspector();
+                    break;
+
+                case InspectorDrawStyle.Custom:
+                    DrawCustomStyleInspector();
+                    break;
+            }
+            
+            GUILayout.Space(5f);
+            DrawFooter();
+        }
+
+        private bool CanShowMainMenu()
+        {
+            return !TryGetFocusPropertyGroup(m_propertyGroups, out PropertyGroupInfo focusGroup) ||
+                (focusGroup.DrawStyle == PropertyGroupDrawStyle.Expand);
+        }
+
+        private void DrawDefaultStyleInspector()
+        {
+            EditorGUILayout.BeginVertical(CustomEditorStyles.GroupBackground);
+            var     property    = serializedObject.GetIterator();
+            if (property.NextVisible(enterChildren: true))
+            {
+                do
+                {
+                    if (System.Array.Exists(s_ignoredProperties, (item) => string.Equals(item, property.name))) continue;
+
+                    EditorGUILayout.PropertyField(property);
+                } while (property.NextVisible(enterChildren: false));
+            }
+            EditorGUILayout.EndVertical();
+        }
+
         protected virtual void DrawGroupStyleInspector()
         {
             for (int iter = 0; iter < m_propertyGroupCount; iter++)
@@ -175,83 +201,119 @@ namespace VoxelBusters.CoreLibrary.Editor
             }
         }
 
-        protected virtual void DrawCustomInspector()
+        protected virtual void DrawCustomStyleInspector()
         { }
 
         protected virtual void DrawFooter()
         { }
 
-        protected void DrawPropertyGroup(PropertyGroupInfo propertyGroup)
+        protected void DrawFocusPropertyContent()
+        {
+            TryGetFocusPropertyGroup(m_propertyGroups, out PropertyGroupInfo focusGroup);
+
+            char upArrow = '\u2190';
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button($"{upArrow} Back To Main Menu", CustomEditorStyles.SelectableLabel))
+            {
+                FocusProperty.isExpanded    = false;
+                FocusProperty               = null;
+                return;
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(10f);
+            FocusProperty.isExpanded    = true;
+            DrawPropertyGroup(focusGroup, selectable: false);
+        }
+
+        protected void DrawPropertyGroup(PropertyGroupInfo propertyGroup, bool selectable = true)
         {
             var     property        = propertyGroup.Reference;
             EditorGUILayout.BeginVertical(CustomEditorStyles.GroupBackground);
-            if (DrawControlHeader(property, propertyGroup.DisplayName))
+            if (DrawPropertyGroupHeader(property,
+                                        propertyGroup.DisplayName,
+                                        propertyGroup.Description,
+                                        propertyGroup.DrawStyle,
+                                        selectable))
             {
-                bool    oldGUIState         = GUI.enabled;
-                var     enabledProperty     = property.FindPropertyRelative("m_isEnabled");
-
-                // update gui state
-                GUI.enabled     = (enabledProperty == null) || enabledProperty.boolValue;
-
-                // display child properties
-                if (propertyGroup.OnDrawChildProperties != null)
-                {
-                    propertyGroup.OnDrawChildProperties(property);
-                }
-                else
-                {
-                    DrawChildProperties(property, ignoreProperties: "m_isEnabled");
-                }
-
-                // reset gui state
-                GUI.enabled     = oldGUIState;
+                DrawPropertyGroupChildren(propertyGroup);
             }
             EditorGUILayout.EndVertical();
         }
 
-        private bool DrawControlHeader(SerializedProperty property, string displayName)
+        private bool DrawPropertyGroupHeader(SerializedProperty property, string displayName,
+                                             string description, PropertyGroupDrawStyle drawStyle,
+                                             bool selectable = true)
         {
-            // draw rect
-            var     rect                = EditorGUILayout.GetControlRect(false, 30f);
-            GUI.Box(rect, GUIContent.none, HeaderButtonStyle);
+            bool    isSelected          = (property == FocusProperty);
 
-            // draw foldable control
-            bool    isSelected          = (property == m_activePropertyGroup);
-            var     foldOutRect         = new Rect(rect.x + 5f, rect.y, 50f, rect.height);
-            EditorGUI.LabelField(foldOutRect, isSelected ? "-" : "+", CustomEditorStyles.Heading3);
+            // Draw rect
+            var     rect                = EditorGUILayout.GetControlRect(false, 80f);
+            //GUI.Box(rect, GUIContent.none, HeaderButtonStyle);
 
-            // draw label 
-            var     labelRect           = new Rect(rect.x + 20f, rect.y, rect.width - 100f, rect.height);
-            EditorGUI.LabelField(labelRect, displayName, CustomEditorStyles.Heading3);
+            /*
+            // Draw expand control
+            if (drawStyle == PropertyGroupDrawStyle.Expand)
+            {
+                var     foldOutRect         = new Rect(rect.x + 5f, rect.y, 50f, rect.height);
+                EditorGUI.LabelField(foldOutRect, isSelected ? "-" : "+", CustomEditorStyles.Heading3);
+            }
+            */
 
-            // draw selectable rect
-            var     selectableRect      = new Rect(rect.x, rect.y, rect.width - 100f, rect.height);
-            if (EditorLayoutUtility.TransparentButton(selectableRect))
+            // Draw text 
+            var     titleRect           = new Rect(rect.x + 5f, rect.y + 10f, rect.width * 0.8f, 22f);
+            var     descriptionRect     = new Rect(rect.x + 5f, rect.y + 42f, rect.width * 0.8f, 30f);
+            EditorGUI.LabelField(titleRect, displayName, CustomEditorStyles.Normal);
+            EditorGUI.LabelField(descriptionRect, description, CustomEditorStyles.Options);
+
+            // Draw selectable rect
+            var     selectableRect      = new Rect(rect.x, rect.y, rect.width * 0.8f, rect.height);
+            if (selectable && EditorLayoutUtility.TransparentButton(selectableRect))
             {
                 isSelected              = OnPropertyGroupSelect(property);
             }
 
-            // draw toggle button
+            // Draw toggle button
             var     enabledProperty     = property.FindPropertyRelative("m_isEnabled");
-            if ((enabledProperty != null) /*&& SettingsPropertyGroup.CanToggleFeatureUsageState()*/)
+            if (enabledProperty != null)
             {
 
-                Vector2 iconSize = new Vector2(64f, 24f);
-                Rect toggleRect = new Rect(rect.xMax - (iconSize.x * 1.1f), rect.y + (rect.height / 2 - iconSize.y / 2), iconSize.x, iconSize.y);
+                Vector2 iconSize = new Vector2(32f, 12f);
+                Rect toggleRect = new Rect(rect.xMax - (iconSize.x * 1.2f), rect.y + 42f, iconSize.x, iconSize.y);
 
                 if (GUI.Button(toggleRect, enabledProperty.boolValue ? m_toggleOnIcon : m_toggleOffIcon, CustomEditorStyles.InvisibleButton))
                 {
                     enabledProperty.boolValue       = !enabledProperty.boolValue;
-
 #if UNITY_ANDROID
                     //TODO : Fire an event if any feature toggles and listent for adding the dependencies
                     EditorPrefs.SetBool("refresh-feature-dependencies", true);
 #endif
-
                 }
-                
             }
             return isSelected;
+        }
+
+        private void DrawPropertyGroupChildren(PropertyGroupInfo propertyGroup)
+        {
+            var     property        = propertyGroup.Reference;
+            bool    oldGUIState     = GUI.enabled;
+            var     enabledProperty = property.FindPropertyRelative("m_isEnabled");
+
+            GUI.enabled             = (enabledProperty == null) || enabledProperty.boolValue;
+
+            // display child properties
+            if (propertyGroup.OnDrawChildProperties != null)
+            {
+                propertyGroup.OnDrawChildProperties(propertyGroup.Reference);
+            }
+            else
+            {
+                DrawChildProperties(property, ignoreProperties: "m_isEnabled");
+            }
+
+            // reset gui state
+            GUI.enabled     = oldGUIState;
         }
 
         protected void DrawChildProperties(SerializedProperty property, string prefix = null,
@@ -312,11 +374,17 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         #region Private methods
 
-        protected void EnsureChangesAreSerialized()
+        private void EnsurePropertiesAreSet()
         {
-            EditorUtility.SetDirty(target);
-            serializedObject.ApplyModifiedProperties();
-            serializedObject.Update();
+            if (m_topBarButtons != null) return;
+            
+            var     ownerPackage        = GetOwner();
+            m_productName               = ownerPackage.DisplayName;
+            m_productVersion            = $"v{ownerPackage.Version}";
+            m_drawStyle                 = GetDrawStyle();
+            m_topBarButtons             = GetTopBarButtons();
+            m_propertyGroups            = GetPropertyGroups() ?? new PropertyGroupInfo[0];
+            m_propertyGroupCount        = m_propertyGroups.Length;
         }
 
         private void EnsureStylesAreLoaded()
@@ -343,6 +411,22 @@ namespace VoxelBusters.CoreLibrary.Editor
             };
         }
 
+        protected void EnsureChangesAreSerialized()
+        {
+            EditorUtility.SetDirty(target);
+            serializedObject.ApplyModifiedProperties();
+            serializedObject.Update();
+        }
+
+        protected void TryApplyModifiedProperties()
+        {
+            if (EditorGUI.EndChangeCheck())
+            {
+                serializedObject.ApplyModifiedProperties();
+                serializedObject.Update();
+            }
+        }
+
         private void LoadAssets()
         {
             // load custom assets
@@ -353,6 +437,15 @@ namespace VoxelBusters.CoreLibrary.Editor
             var     commonResourcePath  = CoreLibrarySettings.Package.GetEditorResourcesPath();
             m_toggleOnIcon              = AssetDatabase.LoadAssetAtPath<Texture2D>(commonResourcePath + "/Textures/toggle-on.png");
             m_toggleOffIcon             = AssetDatabase.LoadAssetAtPath<Texture2D>(commonResourcePath + "/Textures/toggle-off.png");
+        }
+
+        protected bool TryGetFocusPropertyGroup(PropertyGroupInfo[] groups, out PropertyGroupInfo groupInfo)
+        {
+            groupInfo   = null;
+            if (FocusProperty == null) return false;
+
+            groupInfo = System.Array.Find(groups, (item) => (item.Reference == FocusProperty));
+            return (groupInfo != null);
         }
 
         #endregion
@@ -369,32 +462,36 @@ namespace VoxelBusters.CoreLibrary.Editor
                 style: CustomEditorStyles.GroupBackground);
         }
 
+        [System.Obsolete("Use DrawCustomStyleInspector instead.", false)]
+        protected virtual void DrawCustomInspector()
+        { }
+
         #endregion
 
         #region Callback methods
 
         protected bool OnPropertyGroupSelect(SerializedProperty property)
         {
-            var     lastActiveProperty  = m_activePropertyGroup;
-            if (m_activePropertyGroup == null)
+            var     lastActiveProperty  = FocusProperty;
+            if (FocusProperty == null)
             {
                 property.isExpanded     = true;
-                m_activePropertyGroup   = property;
+                FocusProperty           = property;
 
                 return true;
             }
-            if (m_activePropertyGroup == property)
+            if (FocusProperty == property)
             {
                 property.isExpanded     = false;
-                m_activePropertyGroup   = null;
+                FocusProperty           = null;
 
                 return false;
             }
 
             // update reference
-            lastActiveProperty.isExpanded       = false;
-            m_activePropertyGroup               = property;
-            m_activePropertyGroup.isExpanded    = true;
+            lastActiveProperty.isExpanded   = false;
+            FocusProperty                   = property;
+            FocusProperty.isExpanded        = true;
 
             return true;
         }
@@ -442,24 +539,38 @@ namespace VoxelBusters.CoreLibrary.Editor
 
             public string DisplayName { get; private set; }
 
+            public string Description { get; private set; }
+
             public System.Action<SerializedProperty> OnDrawChildProperties { get; private set; }
+
+            public PropertyGroupDrawStyle DrawStyle { get; private set; }
 
             #endregion
 
             #region Constructors
 
             public PropertyGroupInfo(SerializedProperty reference, string displayName,
-                System.Action<SerializedProperty> onDrawChildProperties = null)
+                                     string description, PropertyGroupDrawStyle drawStyle = PropertyGroupDrawStyle.Expand,
+                                     System.Action<SerializedProperty> onDrawChildProperties = null)
             {
                 Assert.IsArgNotNull(reference, displayName);
 
                 // set properties
                 Reference                   = reference;
                 DisplayName                 = displayName;
+                Description                 = description;
+                DrawStyle                   = drawStyle;
                 OnDrawChildProperties       = onDrawChildProperties;
             }
 
             #endregion
+        }
+
+        protected enum PropertyGroupDrawStyle
+        {
+            Expand,
+
+            Detailed,
         }
 
         #endregion

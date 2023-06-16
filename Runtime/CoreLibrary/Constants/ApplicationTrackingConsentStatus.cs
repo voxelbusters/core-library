@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary
 {
-    public enum AppTrackingConsentStatus
+    public enum ApplicationTrackingConsentStatus
     {
         NotDetermined = 0,
 

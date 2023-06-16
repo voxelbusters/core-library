@@ -59,8 +59,17 @@ namespace VoxelBusters.CoreLibrary
             InternalOp      = op;
             OnProgress      = null;
             OnComplete      = null;
-
             RegisterForCallbacks();
+
+            // Manually invoke the events incase if the operation is already completed
+            if (op.IsDone)
+            {
+                SurrogateCoroutine.WaitForEndOfFrameAndInvoke(action: () =>
+                                                              {
+                                                                  HandleOnProgress(op);
+                                                                  HandleOnComplete(op);
+                                                              });
+            }
         }
 
         #endregion
