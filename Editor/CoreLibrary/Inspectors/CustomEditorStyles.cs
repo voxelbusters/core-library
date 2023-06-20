@@ -86,7 +86,21 @@ namespace VoxelBusters.CoreLibrary.Editor
                 fontSize            = 14,
             };
             InvisibleButton         = new GUIStyle("InvisibleButton");
-            SelectableLabel         = new GUIStyle("InvisibleButton");
+            SelectableLabel         = new GUIStyle()
+            {
+                border              = new RectOffset(0, 0, 0, 0),
+                font                = Normal.font,
+                fontSize            = Normal.fontSize,
+                alignment           = Normal.alignment,
+                active              = Normal.active,
+                onActive            = Normal.onActive,
+                focused             = Normal.focused,
+                onFocused           = Normal.onFocused,
+                normal              = Normal.normal,
+                onNormal            = Normal.onNormal,
+                hover               = Normal.hover,
+                onHover             = Normal.onHover,
+            };
             Link                    = new GUIStyle("LinkLabel")
             {
                 fontSize            = 12,
@@ -94,7 +108,10 @@ namespace VoxelBusters.CoreLibrary.Editor
                 richText            = true,
             };
             ItemBackground          = new GUIStyle("AnimItemBackground");
-            GroupBackground         = new GUIStyle("HelpBox");
+            GroupBackground         = new GUIStyle("FrameBox")
+            {
+                border              = new RectOffset(0, 0, 0, 0),
+            };
             GroupBackground.margin  = new RectOffset(GroupBackground.margin.left, GroupBackground.margin.right, GroupBackground.margin.top, 5);
             BorderColor             = new Color(0.15f, 0.15f, 0.15f, 1f);
         }

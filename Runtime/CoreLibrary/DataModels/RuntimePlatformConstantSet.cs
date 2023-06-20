@@ -43,7 +43,7 @@ namespace VoxelBusters.CoreLibrary
 
         public string GetConstantForPlatform(RuntimePlatform platform, string defaultValue = null)
         {
-            string  targetValue = null;
+            string  targetValue;
             switch (platform)
             {
                 case RuntimePlatform.IPhonePlayer:
@@ -59,10 +59,10 @@ namespace VoxelBusters.CoreLibrary
                     break;
 
                 default:
-                    throw VBException.SwitchCaseNotImplemented(platform);
+                    targetValue = defaultValue;
+                    break;
             }
-
-            return string.IsNullOrEmpty(targetValue) ? defaultValue : targetValue;
+            return targetValue;
         }
 
         #endregion

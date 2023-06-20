@@ -77,6 +77,21 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.DemoKit
             m_consoleRect.Log(string.Format(kLogCreateInstance, GetCreateInstanceCodeSnippet()), append);
         }
 
+        protected bool AssertPropertyIsValid(string property, string value)
+        {
+            return AssertPropertyIsValid(property, () => string.IsNullOrEmpty(value));
+        }
+
+        protected bool AssertPropertyIsValid(string property, Func<bool> condition)
+        {
+            if (condition())
+            {
+                m_consoleRect.Log($"Property \"{property}\" value is invalid.", append: true);
+                return false;
+            }
+            return true;
+        }
+
         private void SetActionCallbacks()
         {
             // set button property
