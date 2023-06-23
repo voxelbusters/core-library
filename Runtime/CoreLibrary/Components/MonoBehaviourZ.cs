@@ -22,6 +22,15 @@ namespace VoxelBusters.CoreLibrary
         protected virtual void Start()
         { }
 
+        protected virtual void OnEnable()
+        { }
+
+        protected virtual void OnDisable()
+        { }
+
+        protected virtual void OnDestroy()
+        { }
+
         #endregion
 
         #region Private methods

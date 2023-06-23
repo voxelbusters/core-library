@@ -127,6 +127,8 @@ namespace VoxelBusters.CoreLibrary.Editor
                                                                   drawFooterCallback: DrawFooter,
                                                                   toggleOnIcon: AssetDatabase.LoadAssetAtPath<Texture2D>(commonResourcePath + "/Textures/toggle-on.png"),
                                                                   toggleOffIcon: AssetDatabase.LoadAssetAtPath<Texture2D>(commonResourcePath + "/Textures/toggle-off.png"));
+            m_layoutBuilder.OnSectionStatusChange       += OnSectionStatusChange;
+            m_layoutBuilder.OnFocusSectionValueChange   += OnFocusSectionValueChange;
         }
 
         private void LoadCustomStyles()
@@ -190,6 +192,16 @@ namespace VoxelBusters.CoreLibrary.Editor
                 onClick: GetOwner().MigrateToUpm,
                 style: CustomEditorStyles.GroupBackground);
         }
+
+        #endregion
+
+        #region Event handler methods
+
+        protected virtual void OnSectionStatusChange(EditorSectionInfo section)
+        { }
+
+        protected virtual void OnFocusSectionValueChange(EditorSectionInfo section)
+        { }
 
         #endregion
 

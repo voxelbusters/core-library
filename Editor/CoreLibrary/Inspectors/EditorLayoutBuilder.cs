@@ -47,6 +47,14 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         #endregion
 
+        #region Events
+
+        public event Callback<EditorSectionInfo> OnSectionStatusChange;
+
+        public event Callback<EditorSectionInfo> OnFocusSectionValueChange;
+
+        #endregion
+
         #region Constructors
 
         public EditorLayoutBuilder(SerializedObject serializedObject,
@@ -105,7 +113,7 @@ namespace VoxelBusters.CoreLibrary.Editor
         {
             if (m_tabs.Length > 1)
             {
-                m_tabBarScrollPosition  = GUILayout.BeginScrollView(m_tabBarScrollPosition, CustomEditorStyles.GroupBackground);
+                m_tabBarScrollPosition  = GUILayout.BeginScrollView(m_tabBarScrollPosition, CustomEditorStyles.GroupBackground, GUILayout.Height(30f));
                 GUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
                 for (int iter = 0; iter < m_tabs.Length; iter++)
@@ -193,7 +201,10 @@ namespace VoxelBusters.CoreLibrary.Editor
                 var     toggleRect      = new Rect(rect.xMax - (iconSize.x * 1.2f), rect.y + 42f, iconSize.x, iconSize.y);
                 if (GUI.Button(toggleRect, enabledProperty.boolValue ? m_toggleOnIcon : m_toggleOffIcon, CustomEditorStyles.InvisibleButton))
                 {
-                    enabledProperty.boolValue   = !enabledProperty.boolValue;
+                    enabledProperty.boolValue       = !enabledProperty.boolValue;
+
+                    // Raise an event to notify others, delay is added to ensure that modified properties are serialized
+                    EditorApplication.delayCall    += () => { OnSectionStatusChange?.Invoke(section); };
                 }
             }
             return isSelected;
@@ -339,7 +350,12 @@ namespace VoxelBusters.CoreLibrary.Editor
                     section.Property.isExpanded         = true;
                 }
             }
-            return (oldFocusSection != m_focusSection);
+            bool    hasChanged  = (oldFocusSection != m_focusSection);
+            if (hasChanged)
+            {
+                OnFocusSectionValueChange?.Invoke(m_focusSection);
+            }
+            return hasChanged;
         }
 
         #endregion
