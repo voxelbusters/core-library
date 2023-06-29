@@ -7,7 +7,9 @@ namespace VoxelBusters.CoreLibrary
     {
         #region Properties
 
-        public ApplicationTrackingConsentStatus ConsentStatus { get; private set; }
+        public ConsentStatus UsageConsent { get; private set; }
+
+        public bool? IsAgeRestrictedUser { get; private set; } 
 
         public string Version { get; private set; }
 
@@ -15,11 +17,14 @@ namespace VoxelBusters.CoreLibrary
 
         #region Constructors
 
-        public ApplicationPrivacyConfiguration(ApplicationTrackingConsentStatus consentStatus, string version)
+        public ApplicationPrivacyConfiguration(ConsentStatus usageConsent,
+                                               bool? isAgeRestrictedUser = null,
+                                               string version = null)
         {
             // Set properties
-            ConsentStatus   = consentStatus;
-            Version         = version;
+            UsageConsent        = usageConsent;
+            IsAgeRestrictedUser = isAgeRestrictedUser;
+            Version             = version;
         }
 
         #endregion

@@ -37,6 +37,12 @@ namespace VoxelBusters.CoreLibrary
 
         public string GetConstantForActivePlatform(string defaultValue = null)
         {
+            var     platform    = ApplicationServices.GetActivePlatform();
+            return GetConstantForPlatform(platform, defaultValue);
+        }
+
+        public string GetConstantForActiveOrSimulationPlatform(string defaultValue = null)
+        {
             var     platform    = ApplicationServices.GetActiveOrSimulationPlatform();
             return GetConstantForPlatform(platform, defaultValue);
         }
