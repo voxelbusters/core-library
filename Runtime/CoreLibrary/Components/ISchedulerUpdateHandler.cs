@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary
 {
-    internal interface IAsyncOperationUpdateHandler
+    public interface ISchedulerUpdateHandler
     {
         #region Methods
 

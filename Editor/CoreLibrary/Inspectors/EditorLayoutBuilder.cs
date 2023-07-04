@@ -29,8 +29,6 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         private     Vector2                     m_tabBarScrollPosition;
 
-        private     GUIStyle                    m_inspectorMargin;
-
         private     Texture2D                   m_toggleOnIcon;
 
         private     Texture2D                   m_toggleOffIcon;
@@ -100,6 +98,25 @@ namespace VoxelBusters.CoreLibrary.Editor
             m_serializedObject.Update();
         }
 
+        public void DrawSection(EditorSectionInfo section,
+                                bool showDetails,
+                                bool selectable)
+        {
+            EditorGUILayout.BeginVertical(CustomEditorStyles.GroupBackground);
+            bool    expanded        = DrawSectionHeader(section,
+                                                        selectable);
+            if (showDetails || expanded)
+            {
+                if (section.DrawStyle == EditorSectionDrawStyle.Default)
+                {
+                    EditorGUILayout.EndVertical();
+                    EditorGUILayout.BeginVertical(CustomEditorStyles.GroupBackground);
+                }
+                DrawSectionDetails(section);
+            }
+            EditorGUILayout.EndVertical();
+        }
+
         #endregion
 
         #region Private methods
@@ -137,28 +154,28 @@ namespace VoxelBusters.CoreLibrary.Editor
                 for (int iter = 0; iter < m_selectedTabSections.Length; iter++)
                 {
                     var     current = m_selectedTabSections[iter];
-                    DrawSection(section: current, showDetails: false);
+                    DrawSectionInternal(section: current,
+                                        showDetails: false);
                 }
             }
         }
 
-        protected void DrawSection(EditorSectionInfo section,
-                                   bool showDetails = true,
-                                   bool selectable = true)
+        private void DrawSectionInternal(EditorSectionInfo section,
+                                         bool showDetails = true,
+                                         bool selectable = true)
         {
-            EditorGUILayout.BeginVertical(CustomEditorStyles.GroupBackground);
-            bool    expanded        = DrawSectionHeader(section,
-                                                        selectable);
-            if (showDetails || expanded)
+            if (section.CustomDrawCallback != null)
             {
-                if (section.DrawStyle == EditorSectionDrawStyle.Default)
-                {
-                    EditorGUILayout.EndVertical();
-                    EditorGUILayout.BeginVertical(CustomEditorStyles.GroupBackground);
-                }
-                DrawSectionDetails(section);
+                section.CustomDrawCallback(section,
+                                           showDetails,
+                                           selectable);
             }
-            EditorGUILayout.EndVertical();
+            else
+            {
+                DrawSection(section,
+                            showDetails,
+                            selectable);
+            }
         }
 
         private bool DrawSectionHeader(EditorSectionInfo section,
@@ -220,34 +237,10 @@ namespace VoxelBusters.CoreLibrary.Editor
             GUI.enabled     = (enabledProperty == null) || enabledProperty.boolValue;
 
             // Draw section properties
-            if (section.CustomDrawCallback != null)
-            {
-                section.CustomDrawCallback(section);
-            }
-            else
-            {
-                DrawChildProperties(property, ignoreProperties: "m_isEnabled");
-            }
+            DrawChildProperties(property, ignoreProperties: "m_isEnabled");
 
             // Reset gui state
             GUI.enabled     = originalGUIState;
-        }
-
-        private void DrawFocusSection()
-        {
-            var     property    = m_focusSection.Property;
-            EditorGUILayout.BeginHorizontal(CustomEditorStyles.GroupBackground);
-            if (GUILayout.Button($"{'\u2190'} Back To Main Menu", CustomEditorStyles.SelectableLabel))
-            {
-                SetFocusSection(null);
-                return;
-            }
-            GUILayout.FlexibleSpace();
-            EditorGUILayout.EndHorizontal();
-
-            property.isExpanded = true;
-            DrawSection(m_focusSection,
-                        selectable: false);
         }
 
         private void DrawChildProperties(SerializedProperty property,
@@ -304,6 +297,23 @@ namespace VoxelBusters.CoreLibrary.Editor
                     EditorGUI.indentLevel--;
                 }
             }
+        }
+
+        private void DrawFocusSection()
+        {
+            var     property    = m_focusSection.Property;
+            EditorGUILayout.BeginHorizontal(CustomEditorStyles.GroupBackground);
+            if (GUILayout.Button($"{'\u2190'} Back To Main Menu", CustomEditorStyles.SelectableLabel))
+            {
+                SetFocusSection(null);
+                return;
+            }
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.EndHorizontal();
+
+            property.isExpanded = true;
+            DrawSectionInternal(section: m_focusSection,
+                                selectable: false);
         }
 
         #endregion
@@ -373,17 +383,26 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         public EditorSectionDrawStyle DrawStyle { get; private set; }
 
-        public System.Action<EditorSectionInfo> CustomDrawCallback { get; private set; }
+        public DrawCallback CustomDrawCallback { get; private set; }
+
+        public object Tag { get; private set; }
+
+        #endregion
+
+        #region Delegates
+
+        public delegate void DrawCallback(EditorSectionInfo section, bool showDetails, bool selectable);
 
         #endregion
 
         #region Constructors
 
         public EditorSectionInfo(string displayName,
-                                    string description,
-                                    SerializedProperty property = null,
-                                    EditorSectionDrawStyle drawStyle = EditorSectionDrawStyle.Expand,
-                                    System.Action<EditorSectionInfo> customDrawCallback = null)
+                                 string description,
+                                 SerializedProperty property = null,
+                                 EditorSectionDrawStyle drawStyle = EditorSectionDrawStyle.Expand,
+                                 DrawCallback customDrawCallback = null,
+                                 object tag = null)
         {   
             Assert.IsArgNotNull(displayName, nameof(displayName));
             Assert.IsArgNotNull(property, nameof(property));
@@ -394,6 +413,7 @@ namespace VoxelBusters.CoreLibrary.Editor
             Property                = property;
             DrawStyle               = drawStyle;
             CustomDrawCallback      = customDrawCallback;
+            Tag                     = tag;
         }
 
         #endregion

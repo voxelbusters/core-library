@@ -53,4 +53,9 @@ namespace VoxelBusters.CoreLibrary
 
         #endregion
     }
+
+    public interface IAsyncOperationUpdateHandler
+    {
+        void Update();
+    }
 }

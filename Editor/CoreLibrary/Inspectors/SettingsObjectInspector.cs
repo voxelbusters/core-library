@@ -21,8 +21,6 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         private     string                  m_productVersion;
 
-        private     EditorLayoutBuilder     m_layoutBuilder;
-
         private     GUIStyle                m_customMarginStyle;
 
         // Assets
@@ -37,6 +35,8 @@ namespace VoxelBusters.CoreLibrary.Editor
         protected GUIStyle HeaderFoldoutStyle { get; private set; }
 
         protected GUIStyle HeaderLabelStyle { get; private set; }
+
+        protected EditorLayoutBuilder LayoutBuilder { get; private set; }
 
         #endregion
 
@@ -60,7 +60,7 @@ namespace VoxelBusters.CoreLibrary.Editor
             EnsurePropertiesAreSet();
 
             EditorGUILayout.BeginVertical(m_customMarginStyle);
-            m_layoutBuilder.DoLayout();
+            LayoutBuilder.DoLayout();
             EditorGUILayout.EndVertical();
         }
 
@@ -109,7 +109,7 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         private void EnsurePropertiesAreSet()
         {
-            if (m_layoutBuilder != null) return;
+            if (LayoutBuilder != null) return;
 
             LoadCustomStyles();
             LoadAssets();
@@ -119,7 +119,7 @@ namespace VoxelBusters.CoreLibrary.Editor
             var     ownerPackage        = GetOwner();
             m_productName               = ownerPackage.DisplayName;
             m_productVersion            = $"v{ownerPackage.Version}";
-            m_layoutBuilder             = new EditorLayoutBuilder(serializedObject: serializedObject,
+            LayoutBuilder             = new EditorLayoutBuilder(serializedObject: serializedObject,
                                                                   tabs: GetTabNames(),
                                                                   getSectionsCallback: GetSectionsForTab,
                                                                   drawTopBarCallback: DrawTopBar,
@@ -127,8 +127,8 @@ namespace VoxelBusters.CoreLibrary.Editor
                                                                   drawFooterCallback: DrawFooter,
                                                                   toggleOnIcon: AssetDatabase.LoadAssetAtPath<Texture2D>(commonResourcePath + "/Textures/toggle-on.png"),
                                                                   toggleOffIcon: AssetDatabase.LoadAssetAtPath<Texture2D>(commonResourcePath + "/Textures/toggle-off.png"));
-            m_layoutBuilder.OnSectionStatusChange       += OnSectionStatusChange;
-            m_layoutBuilder.OnFocusSectionValueChange   += OnFocusSectionValueChange;
+            LayoutBuilder.OnSectionStatusChange       += OnSectionStatusChange;
+            LayoutBuilder.OnFocusSectionValueChange   += OnFocusSectionValueChange;
         }
 
         private void LoadCustomStyles()

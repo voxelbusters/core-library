@@ -4,85 +4,68 @@ using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary
 {
-    internal class AsyncOperationManager : PrivateSingletonBehaviour<AsyncOperationManager>
+    internal static class AsyncOperationManager
     {
         #region Properties
 
-        private List<IAsyncOperationUpdateHandler> ActiveObjects { get; set; }
-
-        private List<IAsyncOperationUpdateHandler> CompletedObjects { get; set; }
+        [ClearOnReload]
+        private     static  List<IAsyncOperationUpdateHandler>  s_targets;
 
         #endregion
 
         #region Static methods
 
-        public static void ScheduleUpdate(IAsyncOperationUpdateHandler updateHandler)
+        public static void ScheduleUpdate(IAsyncOperationUpdateHandler target)
         {
-            Assert.IsArgNotNull(updateHandler, nameof(updateHandler));
+            Assert.IsArgNotNull(target, nameof(target));
 
-            if (TryGetSingleton(out AsyncOperationManager manager))
-            {
-                manager.ActiveObjects.Add(updateHandler);
-            }
+            EnsureInitialised();
+
+            s_targets.Add(target);
         }
 
-        public static void UnscheduleUpdate(IAsyncOperationUpdateHandler updateHandler)
+        public static void UnscheduleUpdate(IAsyncOperationUpdateHandler target)
         {
-            Assert.IsArgNotNull(updateHandler, nameof(updateHandler));
+            Assert.IsArgNotNull(target, nameof(target));
 
-            // add object to remove list
-            if (TryGetSingleton(out AsyncOperationManager manager))
-            {
-                manager.CompletedObjects.Add(updateHandler);
-            }
+            EnsureInitialised();
+
+            s_targets.Remove(target);
         }
 
         #endregion
 
         #region Unity methods
 
-        private void Update()
+        private static void Update()
         {
-            RemoveCompletedObjects();
-            TickActiveObjects();
-        }
-
-        #endregion
-
-        #region Base class methods
-
-        protected override void OnSingletonAwake()
-        {
-            base.OnSingletonAwake();
-
-            // Set properties
-            ActiveObjects     = new List<IAsyncOperationUpdateHandler>(8);
-            CompletedObjects  = new List<IAsyncOperationUpdateHandler>(8);
+            UpdateTargets();
         }
 
         #endregion
 
         #region Private methods
 
-        private void RemoveCompletedObjects()
+        private static void EnsureInitialised()
         {
-            // remove completed objects
-            for (int iter = 0; iter < CompletedObjects.Count; iter++)
-            {
-                var     updateHandler   = CompletedObjects[iter];
-                ActiveObjects.Remove(updateHandler);
-            }
+            if (s_targets != null) return;
 
-            CompletedObjects.Clear();
+            // Set properties
+            s_targets           = new List<IAsyncOperationUpdateHandler>(8);
+
+            // Register for callbacks
+            Scheduler.Update   += Update;
         }
 
-        private void TickActiveObjects()
+        private static void UpdateTargets()
         {
-            // call update function for active operations
-            for (int iter = 0; iter < ActiveObjects.Count; iter++)
+            for (int iter = 0; iter < s_targets.Count; iter++)
             {
-                var     updateHandler   = ActiveObjects[iter];
-                updateHandler.Update();
+                var     target  = s_targets[iter];
+                if (target != null)
+                {
+                    target.Update();
+                }
             }
         }
          
