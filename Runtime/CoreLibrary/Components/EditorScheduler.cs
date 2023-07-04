@@ -35,7 +35,6 @@ namespace VoxelBusters.CoreLibrary
 
         private void EditorUpdate()
         {
-            Debug.Log("EditorUpdate");
             UpdateCoroutines();
             SendUpdateEvent();
         }
