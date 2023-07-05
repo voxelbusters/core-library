@@ -244,11 +244,11 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         protected class DefaultTabs
         {
-            public  const   string  kBasic      = "Basic";
+            public  const   string  kGeneral    = "General";
 
             public  const   string  kServices   = "Services";
 
-            public  const   string  kResources  = "Resources";
+            public  const   string  kMisc       = "Misc.";
         }
 
         #endregion

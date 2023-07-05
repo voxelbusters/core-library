@@ -182,9 +182,11 @@ namespace VoxelBusters.CoreLibrary.Editor
                                        bool selectable = true)
         {
             bool    isSelected          = (section == m_focusSection);
+            bool    hasSubtitle         = (section.Description != null);
+            float   headerHeight        = hasSubtitle ? 52f : 30f;
 
             // Draw rect
-            var     rect                = EditorGUILayout.GetControlRect(false, 80f);
+            var     rect                = EditorGUILayout.GetControlRect(false, headerHeight);
             //GUI.Box(rect, GUIContent.none, HeaderButtonStyle);
 
             /*
@@ -197,13 +199,25 @@ namespace VoxelBusters.CoreLibrary.Editor
             */
 
             // Draw text 
-            var     titleRect           = new Rect(rect.x + 5f, rect.y + 10f, rect.width * 0.8f, 22f);
-            var     descriptionRect     = new Rect(rect.x + 5f, rect.y + 42f, rect.width * 0.8f, 30f);
-            EditorGUI.LabelField(titleRect, section.DisplayName, CustomEditorStyles.Normal);
-            EditorGUI.LabelField(descriptionRect, section.Description, CustomEditorStyles.Options);
+            var     titleRect           = new Rect(rect.x + 5f,
+                                                   rect.y + 4f,
+                                                   rect.width * 0.8f,
+                                                   22f);
+            EditorGUI.LabelField(titleRect, section.DisplayName, CustomEditorStyles.Heading3);
+            if (hasSubtitle)
+            {
+                var     subtitleRect    = new Rect(rect.x + 5f,
+                                                   rect.y + 30f,
+                                                   rect.width * 0.8f,
+                                                   18f);
+                EditorGUI.LabelField(subtitleRect, section.Description, CustomEditorStyles.Options);
+            }
 
             // Draw selectable rect
-            var     selectableRect      = new Rect(rect.x, rect.y, rect.width * 0.8f, rect.height);
+            var     selectableRect      = new Rect(rect.x,
+                                                   rect.y,
+                                                   rect.width * 0.8f,
+                                                   rect.height);
             if (selectable && EditorLayoutUtility.TransparentButton(selectableRect))
             {
                 isSelected              = SetFocusSection(section);
@@ -214,9 +228,13 @@ namespace VoxelBusters.CoreLibrary.Editor
             var     enabledProperty     = mainProperty.FindPropertyRelative("m_isEnabled");
             if (enabledProperty != null)
             {
+                var     toggleIcon      = enabledProperty.boolValue ? m_toggleOnIcon : m_toggleOffIcon;
                 var     iconSize        = new Vector2(32f, 12f);
-                var     toggleRect      = new Rect(rect.xMax - (iconSize.x * 1.2f), rect.y + 42f, iconSize.x, iconSize.y);
-                if (GUI.Button(toggleRect, enabledProperty.boolValue ? m_toggleOnIcon : m_toggleOffIcon, CustomEditorStyles.InvisibleButton))
+                var     toggleRect      = new Rect(rect.xMax - (iconSize.x * 1.2f),
+                                                   titleRect.yMin + ((titleRect.height - iconSize.y) * 0.5f),
+                                                   iconSize.x,
+                                                   iconSize.y);
+                if (GUI.Button(toggleRect, toggleIcon, CustomEditorStyles.InvisibleButton))
                 {
                     enabledProperty.boolValue       = !enabledProperty.boolValue;
 
@@ -398,9 +416,9 @@ namespace VoxelBusters.CoreLibrary.Editor
         #region Constructors
 
         public EditorSectionInfo(string displayName,
-                                 string description,
-                                 SerializedProperty property = null,
-                                 EditorSectionDrawStyle drawStyle = EditorSectionDrawStyle.Expand,
+                                 SerializedProperty property,
+                                 string description = null,
+                                 EditorSectionDrawStyle drawStyle = EditorSectionDrawStyle.Default,
                                  DrawCallback customDrawCallback = null,
                                  object tag = null)
         {   
