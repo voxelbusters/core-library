@@ -103,6 +103,19 @@ namespace VoxelBusters.CoreLibrary.Editor
         protected virtual void DrawFooter(string tab)
         { }
 
+        protected virtual void DrawButtonList(ButtonMeta[] buttons)
+        {
+            GUILayout.BeginVertical();
+            foreach (var item in buttons)
+            {
+                if (GUILayout.Button(item.Label, GUILayout.MinHeight(80f)))
+                {
+                    item?.OnClick();
+                }
+            }
+            GUILayout.EndVertical();
+        }
+
         #endregion
 
         #region Private methods

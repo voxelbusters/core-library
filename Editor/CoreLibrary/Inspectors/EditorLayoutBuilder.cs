@@ -155,7 +155,7 @@ namespace VoxelBusters.CoreLibrary.Editor
                 {
                     var     current = m_selectedTabSections[iter];
                     DrawSectionInternal(section: current,
-                                        showDetails: false);
+                                        showDetails: (current.DrawStyle == EditorSectionDrawStyle.Expand) && (current == m_focusSection));
                 }
             }
         }
