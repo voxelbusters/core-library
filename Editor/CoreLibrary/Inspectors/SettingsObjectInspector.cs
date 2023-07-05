@@ -21,8 +21,6 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         private     string                  m_productVersion;
 
-        private     GUIStyle                m_customMarginStyle;
-
         // Assets
         private     Texture2D               m_logoIcon;
 
@@ -30,13 +28,17 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         #region Properties
 
-        protected GUIStyle HeaderButtonStyle { get; private set; }
+        public EditorLayoutBuilder LayoutBuilder { get; private set; }
 
-        protected GUIStyle HeaderFoldoutStyle { get; private set; }
+        protected GUIStyle CustomMarginStyle { get; private set; }
 
-        protected GUIStyle HeaderLabelStyle { get; private set; }
+        protected GUIStyle BackgroundStyle { get; private set; }
 
-        protected EditorLayoutBuilder LayoutBuilder { get; private set; }
+        protected GUIStyle ProductNameStyle { get; private set; }
+
+        protected GUIStyle NormalLabelStyle { get; private set; }
+
+        protected GUIStyle OptionsLabelStyle { get; private set; }
 
         #endregion
 
@@ -59,7 +61,7 @@ namespace VoxelBusters.CoreLibrary.Editor
         {
             EnsurePropertiesAreSet();
 
-            EditorGUILayout.BeginVertical(m_customMarginStyle);
+            EditorGUILayout.BeginVertical(CustomMarginStyle);
             LayoutBuilder.DoLayout();
             EditorGUILayout.EndVertical();
         }
@@ -75,7 +77,7 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         protected virtual void DrawTopBar(string tab)
         {
-            GUILayout.BeginHorizontal(CustomEditorStyles.GroupBackground);
+            GUILayout.BeginHorizontal(BackgroundStyle);
 
             // logo section
             GUILayout.BeginVertical();
@@ -86,9 +88,9 @@ namespace VoxelBusters.CoreLibrary.Editor
 
             // product info
             GUILayout.BeginVertical();
-            GUILayout.Label(m_productName, CustomEditorStyles.Heading1);
-            GUILayout.Label(m_productVersion, CustomEditorStyles.Normal);
-            GUILayout.Label("Copyright © 2022 Voxel Busters Interactive LLP.", CustomEditorStyles.Options);
+            GUILayout.Label(m_productName, ProductNameStyle);
+            GUILayout.Label(m_productVersion, NormalLabelStyle);
+            GUILayout.Label("Copyright © 2022 Voxel Busters Interactive LLP.", OptionsLabelStyle);
             GUILayout.EndVertical();
 
             GUILayout.FlexibleSpace();
@@ -146,27 +148,14 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         private void LoadCustomStyles()
         {
-            // Set custom style properties
-            HeaderButtonStyle   = new GUIStyle("PreButton")
-            {
-                fixedHeight     = 0,
-                fontSize        = 20,
-                alignment       = TextAnchor.MiddleLeft,
-            };
-            HeaderFoldoutStyle  = new GUIStyle("WhiteBoldLabel")
-            {
-                fontSize        = 20,
-                alignment       = TextAnchor.MiddleLeft,
-            };
-            HeaderLabelStyle    = new GUIStyle("WhiteBoldLabel")
-            {
-                fontSize        = 20,
-                alignment       = TextAnchor.MiddleLeft,
-            };
-            m_customMarginStyle = new GUIStyle(EditorStyles.inspectorFullWidthMargins)
+            CustomMarginStyle   = new GUIStyle(EditorStyles.inspectorFullWidthMargins)
             {
                 margin          = new RectOffset(2, 2, 0, 0),
             };
+            BackgroundStyle     = CustomEditorStyles.GroupBackground();
+            ProductNameStyle    = CustomEditorStyles.Heading1();
+            NormalLabelStyle    = CustomEditorStyles.Normal();
+            OptionsLabelStyle   = CustomEditorStyles.Options();
         }
 
         private void LoadAssets()
@@ -198,12 +187,11 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         protected void ShowMigrateToUpmOption()
         {
-            EditorLayoutUtility.Helpbox(
-                title: "UPM Support",
-                description: "You can install the package on UPM.",
-                actionLabel: "Migrate To UPM",
-                onClick: GetOwner().MigrateToUpm,
-                style: CustomEditorStyles.GroupBackground);
+            EditorLayoutUtility.Helpbox(title: "UPM Support",
+                                        description: "You can install the package on UPM.",
+                                        actionLabel: "Migrate To UPM",
+                                        onClick: GetOwner().MigrateToUpm,
+                                        style: BackgroundStyle);
         }
 
         #endregion

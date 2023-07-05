@@ -7,113 +7,184 @@ namespace VoxelBusters.CoreLibrary.Editor
 {
     public static class CustomEditorStyles
     {
-        #region Static properties
+        #region Properties
 
-        public static GUIStyle Heading1 { get; private set; }
-
-        public static GUIStyle Heading2 { get; private set; }
-
-        public static GUIStyle Heading3 { get; private set; }
-
-        public static GUIStyle Normal { get; private set; }
-
-        public static GUIStyle Options { get; private set; }
-
-        public static GUIStyle Button { get; private set; }
-
-        public static GUIStyle InvisibleButton { get; private set; }
-
-        public static GUIStyle SelectableLabel { get; private set; }
-
-        public static GUIStyle Link { get; private set; }
-
-        public static GUIStyle ItemBackground { get; private set; }
-
-        public static GUIStyle GroupBackground { get; private set; }
-
-        public static Color BorderColor { get; private set; }
+        public static Color BorderColor => new Color(0.15f, 0.15f, 0.15f, 1f);
 
         #endregion
 
-        #region Constructors
+        #region Label styles
 
-        static CustomEditorStyles()
+        public static GUIStyle Heading1()
         {
-            LoadStyles();
+            return CreateLabel(baseStyle: EditorStyles.boldLabel,
+                               fontSize: 18,
+                               wordWrap: true,
+                               richText: true,
+                               alignment: TextAnchor.MiddleLeft);
+        }
+
+        public static GUIStyle Heading2()
+        {
+            return CreateLabel(baseStyle: EditorStyles.boldLabel,
+                               fontSize: 16,
+                               wordWrap: true,
+                               richText: true,
+                               alignment: TextAnchor.MiddleLeft);
+        }
+
+        public static GUIStyle Heading3()
+        {
+            return CreateLabel(baseStyle: EditorStyles.boldLabel,
+                               fontSize: 14,
+                               wordWrap: true,
+                               richText: true,
+                               alignment: TextAnchor.MiddleLeft);
+        }
+
+        public static GUIStyle Normal()
+        {
+            return CreateLabel(baseStyle: EditorStyles.label,
+                               fontSize: 14,
+                               wordWrap: true,
+                               richText: true);
+        }
+
+        public static GUIStyle Options()
+        {
+            return CreateLabel(baseStyle: EditorStyles.label,
+                               fontSize: 12,
+                               wordWrap: true,
+                               richText: true);
+        }
+
+        public static GUIStyle LinkLabel()
+        {
+            return CreateLabel(baseStyle: "LinkLabel",
+                               fontSize: 12,
+                               wordWrap: true,
+                               richText: true);
+        }
+
+        public static GUIStyle SelectableLabel()
+        {
+            var     normal          = EditorStyles.label;
+            var     baseStyle       = new GUIStyle()
+            {
+                border              = new RectOffset(0, 0, 0, 0),
+                font                = normal.font,
+                alignment           = normal.alignment,
+                active              = normal.active,
+                onActive            = normal.onActive,
+                focused             = normal.focused,
+                onFocused           = normal.onFocused,
+                normal              = normal.normal,
+                onNormal            = normal.onNormal,
+                hover               = normal.hover,
+                onHover             = normal.onHover,
+            };
+            return CreateLabel(baseStyle,
+                               fontSize: 14);
+        }
+
+        #endregion
+
+        #region Button styles
+
+        public static GUIStyle Button()
+        {
+            return CreateButton(baseStyle: "Button",
+                                fontSize: 14);
+        }
+
+        public static GUIStyle InvisibleButton()
+        {
+            return CreateButton(baseStyle: "InvisibleButton");
+        }
+
+        #endregion
+
+        #region Background styles
+
+        public static GUIStyle ItemBackground()
+        {
+            return CreateBackground(baseStyle: "AnimItemBackground");
+        }
+
+        public static GUIStyle GroupBackground()
+        {
+            GUIStyle    baseStyle   = "FrameBox";
+            var         baseMargin  = baseStyle.margin;
+            return CreateBackground(baseStyle: baseStyle,
+                                    border: new RectOffset(0, 0, 0, 0),
+                                    margin: new RectOffset(baseMargin.left, baseMargin.right, baseMargin.top, 5));
         }
 
         #endregion
 
         #region Static methods
 
-        private static void LoadStyles()
+        public static GUIStyle CreateLabel(GUIStyle baseStyle,
+                                           int? fontSize = null,
+                                           bool? wordWrap = null,
+                                           bool? richText = null,
+                                           TextAnchor? alignment = null)
         {
-            Heading1                = new GUIStyle(EditorStyles.boldLabel)
+            var     newStyle        = new GUIStyle(baseStyle);
+            if (fontSize != null)
             {
-                fontSize            = 18,
-                wordWrap            = true,
-                richText            = true,
-                alignment           = TextAnchor.MiddleLeft,
-            };
-            Heading2                = new GUIStyle(EditorStyles.boldLabel)
+                newStyle.fontSize   = fontSize.Value;
+            }
+            if (wordWrap != null)
             {
-                fontSize            = 16,
-                wordWrap            = true,
-                richText            = true,
-                alignment           = TextAnchor.MiddleLeft,
-            };
-            Heading3                = new GUIStyle(EditorStyles.boldLabel)
+                newStyle.wordWrap   = wordWrap.Value;
+            }
+            if (richText != null)
             {
-                fontSize            = 14,
-                wordWrap            = true,
-                richText            = true,
-                alignment           = TextAnchor.MiddleLeft,
-            };
-            Normal                  = new GUIStyle(EditorStyles.label)
+                newStyle.richText   = richText.Value;
+            }
+            if (alignment != null)
             {
-                fontSize            = 14,
-                wordWrap            = true,
-                richText            = true,
-            };
-            Options                 = new GUIStyle(EditorStyles.label)
+                newStyle.alignment  = alignment.Value;
+            }
+            return newStyle;
+        }
+
+        public static GUIStyle CreateButton(GUIStyle baseStyle,
+                                            int? fontSize = null,
+                                            int? fixedHeight = null,
+                                            TextAnchor? alignment = null)
+        {
+            var     newStyle            = new GUIStyle(baseStyle);
+            if (fontSize != null)
             {
-                fontSize            = 12,
-                wordWrap            = true,
-                richText            = true,
-            };
-            Button                  = new GUIStyle("Button")
+                newStyle.fontSize       = fontSize.Value;
+            }
+            if (fixedHeight != null)
             {
-                fontSize            = 14,
-            };
-            InvisibleButton         = new GUIStyle("InvisibleButton");
-            SelectableLabel         = new GUIStyle()
+                newStyle.fixedHeight    = fixedHeight.Value;
+            }
+            if (alignment != null)
             {
-                border              = new RectOffset(0, 0, 0, 0),
-                font                = Normal.font,
-                fontSize            = Normal.fontSize,
-                alignment           = Normal.alignment,
-                active              = Normal.active,
-                onActive            = Normal.onActive,
-                focused             = Normal.focused,
-                onFocused           = Normal.onFocused,
-                normal              = Normal.normal,
-                onNormal            = Normal.onNormal,
-                hover               = Normal.hover,
-                onHover             = Normal.onHover,
-            };
-            Link                    = new GUIStyle("LinkLabel")
+                newStyle.alignment      = alignment.Value;
+            }
+            return newStyle;
+        }
+
+        public static GUIStyle CreateBackground(GUIStyle baseStyle,
+                                                RectOffset border = null,
+                                                RectOffset margin = null)
+        {
+            var     newStyle        = new GUIStyle(baseStyle);
+            if (border != null)
             {
-                fontSize            = 12,
-                wordWrap            = true,
-                richText            = true,
-            };
-            ItemBackground          = new GUIStyle("AnimItemBackground");
-            GroupBackground         = new GUIStyle("FrameBox")
+                newStyle.border     = border;
+            }
+            if (margin != null)
             {
-                border              = new RectOffset(0, 0, 0, 0),
-            };
-            GroupBackground.margin  = new RectOffset(GroupBackground.margin.left, GroupBackground.margin.right, GroupBackground.margin.top, 5);
-            BorderColor             = new Color(0.15f, 0.15f, 0.15f, 1f);
+                newStyle.margin     = margin;
+            }
+            return newStyle;
         }
 
         #endregion

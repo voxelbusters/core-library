@@ -33,6 +33,16 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         private     Texture2D                   m_toggleOffIcon;
 
+        private     GUIStyle                    m_backgroundStyle;
+
+        private     GUIStyle                    m_titleLabelStyle;
+
+        private     GUIStyle                    m_subtitleLabelStyle;
+
+        private     GUIStyle                    m_selectableLabelStyle;
+
+        private     GUIStyle                    m_invisibleButtonStyle;
+
         #endregion
 
         #region Delegates
@@ -74,6 +84,13 @@ namespace VoxelBusters.CoreLibrary.Editor
             m_toggleOnIcon              = toggleOnIcon;
             m_toggleOffIcon             = toggleOffIcon;
 
+            // Update styles
+            m_backgroundStyle           = CustomEditorStyles.GroupBackground();
+            m_titleLabelStyle           = CustomEditorStyles.Heading2();
+            m_subtitleLabelStyle        = CustomEditorStyles.Options();
+            m_selectableLabelStyle      = CustomEditorStyles.SelectableLabel();
+            m_invisibleButtonStyle      = CustomEditorStyles.InvisibleButton();
+
             SetSelectedTab(m_tabs[0]);
         }
 
@@ -102,7 +119,7 @@ namespace VoxelBusters.CoreLibrary.Editor
                                 bool showDetails,
                                 bool selectable)
         {
-            EditorGUILayout.BeginVertical(CustomEditorStyles.GroupBackground);
+            EditorGUILayout.BeginVertical(m_backgroundStyle);
             bool    expanded        = DrawSectionHeader(section,
                                                         selectable);
             if (showDetails || expanded)
@@ -110,7 +127,7 @@ namespace VoxelBusters.CoreLibrary.Editor
                 if (section.DrawStyle == EditorSectionDrawStyle.Default)
                 {
                     EditorGUILayout.EndVertical();
-                    EditorGUILayout.BeginVertical(CustomEditorStyles.GroupBackground);
+                    EditorGUILayout.BeginVertical(m_backgroundStyle);
                 }
                 DrawSectionDetails(section);
             }
@@ -130,13 +147,13 @@ namespace VoxelBusters.CoreLibrary.Editor
         {
             if (m_tabs.Length > 1)
             {
-                m_tabBarScrollPosition  = GUILayout.BeginScrollView(m_tabBarScrollPosition, CustomEditorStyles.GroupBackground, GUILayout.Height(30f));
+                m_tabBarScrollPosition  = GUILayout.BeginScrollView(m_tabBarScrollPosition, m_backgroundStyle, GUILayout.Height(30f));
                 GUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
                 for (int iter = 0; iter < m_tabs.Length; iter++)
                 {
                     var     current = m_tabs[iter];
-                    if (GUILayout.Button(current, CustomEditorStyles.SelectableLabel, GUILayout.Width(80f)))
+                    if (GUILayout.Button(current, m_selectableLabelStyle, GUILayout.Width(80f)))
                     {
                         SetSelectedTab(current);
                     }
@@ -203,14 +220,14 @@ namespace VoxelBusters.CoreLibrary.Editor
                                                    rect.y + 4f,
                                                    rect.width * 0.8f,
                                                    22f);
-            EditorGUI.LabelField(titleRect, section.DisplayName, CustomEditorStyles.Heading3);
+            EditorGUI.LabelField(titleRect, section.DisplayName, m_titleLabelStyle);
             if (hasSubtitle)
             {
                 var     subtitleRect    = new Rect(rect.x + 5f,
                                                    rect.y + 30f,
                                                    rect.width * 0.8f,
                                                    18f);
-                EditorGUI.LabelField(subtitleRect, section.Description, CustomEditorStyles.Options);
+                EditorGUI.LabelField(subtitleRect, section.Description, m_subtitleLabelStyle);
             }
 
             // Draw selectable rect
@@ -234,10 +251,10 @@ namespace VoxelBusters.CoreLibrary.Editor
                                                    titleRect.yMin + ((titleRect.height - iconSize.y) * 0.5f),
                                                    iconSize.x,
                                                    iconSize.y);
-                if (GUI.Button(toggleRect, toggleIcon, CustomEditorStyles.InvisibleButton))
+                if (GUI.Button(toggleRect, toggleIcon, m_invisibleButtonStyle))
                 {
                     enabledProperty.boolValue       = !enabledProperty.boolValue;
-
+                     
                     // Raise an event to notify others, delay is added to ensure that modified properties are serialized
                     EditorApplication.delayCall    += () => { OnSectionStatusChange?.Invoke(section); };
                 }
@@ -320,8 +337,8 @@ namespace VoxelBusters.CoreLibrary.Editor
         private void DrawFocusSection()
         {
             var     property    = m_focusSection.Property;
-            EditorGUILayout.BeginHorizontal(CustomEditorStyles.GroupBackground);
-            if (GUILayout.Button($"{'\u2190'} Back To Main Menu", CustomEditorStyles.SelectableLabel))
+            EditorGUILayout.BeginHorizontal(m_backgroundStyle);
+            if (GUILayout.Button($"{'\u2190'} Back To Main Menu", m_selectableLabelStyle))
             {
                 SetFocusSection(null);
                 return;
