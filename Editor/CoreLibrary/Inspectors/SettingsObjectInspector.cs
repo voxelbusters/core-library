@@ -229,6 +229,15 @@ namespace VoxelBusters.CoreLibrary.Editor
             #endregion
         }
 
+        protected class DefaultTabs
+        {
+            public  const   string  kBasic      = "Basic";
+
+            public  const   string  kServices   = "Services";
+
+            public  const   string  kResources  = "Resources";
+        }
+
         #endregion
     }
 }

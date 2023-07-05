@@ -64,6 +64,11 @@ namespace VoxelBusters.CoreLibrary
             return CombinePath(pathA: package.MutableResourcesRelativePath, pathB: name);
         }
 
+        public static string GetExtrasPath(this UnityPackageDefinition package)
+        {
+            return CombinePath(pathA: package.DefaultInstallPath, pathB: "Extras");
+        }
+
         private static bool IsSupported() => Application.isEditor;
 
         private static string CombinePath(string pathA, string pathB)
