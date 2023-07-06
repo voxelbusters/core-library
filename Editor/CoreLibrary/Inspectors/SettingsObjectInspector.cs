@@ -32,7 +32,7 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         protected GUIStyle CustomMarginStyle { get; private set; }
 
-        protected GUIStyle BackgroundStyle { get; private set; }
+        protected GUIStyle GroupBackgroundStyle { get; private set; }
 
         protected GUIStyle ProductNameStyle { get; private set; }
 
@@ -77,7 +77,7 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         protected virtual void DrawTopBar(string tab)
         {
-            GUILayout.BeginHorizontal(BackgroundStyle);
+            GUILayout.BeginHorizontal(GroupBackgroundStyle);
 
             // logo section
             GUILayout.BeginVertical();
@@ -152,7 +152,7 @@ namespace VoxelBusters.CoreLibrary.Editor
             {
                 margin          = new RectOffset(2, 2, 0, 0),
             };
-            BackgroundStyle     = CustomEditorStyles.GroupBackground();
+            GroupBackgroundStyle     = CustomEditorStyles.GroupBackground();
             ProductNameStyle    = CustomEditorStyles.Heading1Label();
             NormalLabelStyle    = CustomEditorStyles.NormalLabel();
             OptionsLabelStyle   = CustomEditorStyles.OptionsLabel();
@@ -191,7 +191,7 @@ namespace VoxelBusters.CoreLibrary.Editor
                                         description: "You can install the package on UPM.",
                                         actionLabel: "Migrate To UPM",
                                         onClick: GetOwner().MigrateToUpm,
-                                        style: BackgroundStyle);
+                                        style: GroupBackgroundStyle);
         }
 
         #endregion
