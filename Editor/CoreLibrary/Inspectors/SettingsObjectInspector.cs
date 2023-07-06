@@ -153,9 +153,9 @@ namespace VoxelBusters.CoreLibrary.Editor
                 margin          = new RectOffset(2, 2, 0, 0),
             };
             BackgroundStyle     = CustomEditorStyles.GroupBackground();
-            ProductNameStyle    = CustomEditorStyles.Heading1();
-            NormalLabelStyle    = CustomEditorStyles.Normal();
-            OptionsLabelStyle   = CustomEditorStyles.Options();
+            ProductNameStyle    = CustomEditorStyles.Heading1Label();
+            NormalLabelStyle    = CustomEditorStyles.NormalLabel();
+            OptionsLabelStyle   = CustomEditorStyles.OptionsLabel();
         }
 
         private void LoadAssets()

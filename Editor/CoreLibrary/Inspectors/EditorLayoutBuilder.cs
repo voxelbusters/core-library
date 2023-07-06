@@ -86,8 +86,8 @@ namespace VoxelBusters.CoreLibrary.Editor
 
             // Update styles
             m_backgroundStyle           = CustomEditorStyles.GroupBackground();
-            m_titleLabelStyle           = CustomEditorStyles.Heading2();
-            m_subtitleLabelStyle        = CustomEditorStyles.Options();
+            m_titleLabelStyle           = CustomEditorStyles.Heading2Label();
+            m_subtitleLabelStyle        = CustomEditorStyles.OptionsLabel(wordWrap: false);
             m_selectableLabelStyle      = CustomEditorStyles.SelectableLabel();
             m_invisibleButtonStyle      = CustomEditorStyles.InvisibleButton();
 

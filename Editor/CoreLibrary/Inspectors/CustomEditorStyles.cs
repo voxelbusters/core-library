@@ -15,7 +15,7 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         #region Label styles
 
-        public static GUIStyle Heading1()
+        public static GUIStyle Heading1Label()
         {
             return CreateLabel(baseStyle: EditorStyles.boldLabel,
                                fontSize: 18,
@@ -24,7 +24,7 @@ namespace VoxelBusters.CoreLibrary.Editor
                                alignment: TextAnchor.MiddleLeft);
         }
 
-        public static GUIStyle Heading2()
+        public static GUIStyle Heading2Label()
         {
             return CreateLabel(baseStyle: EditorStyles.boldLabel,
                                fontSize: 16,
@@ -33,7 +33,7 @@ namespace VoxelBusters.CoreLibrary.Editor
                                alignment: TextAnchor.MiddleLeft);
         }
 
-        public static GUIStyle Heading3()
+        public static GUIStyle Heading3Label()
         {
             return CreateLabel(baseStyle: EditorStyles.boldLabel,
                                fontSize: 14,
@@ -42,7 +42,7 @@ namespace VoxelBusters.CoreLibrary.Editor
                                alignment: TextAnchor.MiddleLeft);
         }
 
-        public static GUIStyle Normal()
+        public static GUIStyle NormalLabel()
         {
             return CreateLabel(baseStyle: EditorStyles.label,
                                fontSize: 14,
@@ -50,12 +50,13 @@ namespace VoxelBusters.CoreLibrary.Editor
                                richText: true);
         }
 
-        public static GUIStyle Options()
+        public static GUIStyle OptionsLabel(bool wordWrap = true)
         {
             return CreateLabel(baseStyle: EditorStyles.label,
                                fontSize: 12,
-                               wordWrap: true,
-                               richText: true);
+                               wordWrap: wordWrap,
+                               richText: true,
+                               textClipping: TextClipping.Clip);
         }
 
         public static GUIStyle LinkLabel()
@@ -128,7 +129,8 @@ namespace VoxelBusters.CoreLibrary.Editor
                                            int? fontSize = null,
                                            bool? wordWrap = null,
                                            bool? richText = null,
-                                           TextAnchor? alignment = null)
+                                           TextAnchor? alignment = null,
+                                           TextClipping? textClipping = null)
         {
             var     newStyle        = new GUIStyle(baseStyle);
             if (fontSize != null)
@@ -146,6 +148,10 @@ namespace VoxelBusters.CoreLibrary.Editor
             if (alignment != null)
             {
                 newStyle.alignment  = alignment.Value;
+            }
+            if (textClipping != null)
+            {
+                newStyle.clipping   = textClipping.Value;
             }
             return newStyle;
         }
