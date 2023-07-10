@@ -1,7 +1,7 @@
 {
     "name": "VoxelBusters.CoreLibrary.Editor.Experimental",
     "references": [
-        "GUID:f712e8ae9bab041c2a043390d1a751a1"
+        "VoxelBusters.CoreLibrary.Parser"
     ],
     "includePlatforms": [
         "Editor"
