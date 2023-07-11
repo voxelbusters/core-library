@@ -74,6 +74,11 @@ namespace VoxelBusters.CoreLibrary
             return CombinePath(pathA: package.DefaultInstallPath, pathB: "Essentials");
         }
 
+        public static string GetGeneratedPath(this UnityPackageDefinition package)
+        {
+            return CombinePath(pathA: package.DefaultInstallPath, pathB: "Generated");
+        }
+
         private static bool IsSupported() => Application.isEditor;
 
         private static string CombinePath(string pathA, string pathB)
