@@ -39,6 +39,10 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         private     GUIStyle                    m_subtitleLabelStyle;
 
+        private     GUIStyle                    m_tabBarLabelNormalStyle;
+
+        private     GUIStyle                    m_tabBarLabelSelectedStyle;
+
         private     GUIStyle                    m_selectableLabelStyle;
 
         private     GUIStyle                    m_invisibleButtonStyle;
@@ -88,6 +92,8 @@ namespace VoxelBusters.CoreLibrary.Editor
             m_backgroundStyle           = CustomEditorStyles.GroupBackground();
             m_titleLabelStyle           = CustomEditorStyles.Heading2Label();
             m_subtitleLabelStyle        = CustomEditorStyles.OptionsLabel(wordWrap: false);
+            m_tabBarLabelNormalStyle    = CustomEditorStyles.SelectableLabel(fontSize: 16, textColor: Color.gray);
+            m_tabBarLabelSelectedStyle  = CustomEditorStyles.SelectableLabel(fontSize: 16, fontStyle: FontStyle.Bold);
             m_selectableLabelStyle      = CustomEditorStyles.SelectableLabel();
             m_invisibleButtonStyle      = CustomEditorStyles.InvisibleButton();
 
@@ -152,8 +158,9 @@ namespace VoxelBusters.CoreLibrary.Editor
                 GUILayout.FlexibleSpace();
                 for (int iter = 0; iter < m_tabs.Length; iter++)
                 {
-                    var     current = m_tabs[iter];
-                    if (GUILayout.Button(current, m_selectableLabelStyle, GUILayout.Width(80f)))
+                    var     current     = m_tabs[iter];
+                    var     labelStyle  = (current == m_selectedTab) ? m_tabBarLabelSelectedStyle : m_tabBarLabelNormalStyle;
+                    if (GUILayout.Button(current, labelStyle, GUILayout.Width(80f)))
                     {
                         SetSelectedTab(current);
                     }

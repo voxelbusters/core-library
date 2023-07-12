@@ -67,7 +67,9 @@ namespace VoxelBusters.CoreLibrary.Editor
                                richText: true);
         }
 
-        public static GUIStyle SelectableLabel()
+        public static GUIStyle SelectableLabel(FontStyle? fontStyle = null,
+                                               int? fontSize = null,
+                                               Color? textColor = null)
         {
             var     normal          = EditorStyles.label;
             var     baseStyle       = new GUIStyle()
@@ -85,7 +87,9 @@ namespace VoxelBusters.CoreLibrary.Editor
                 onHover             = normal.onHover,
             };
             return CreateLabel(baseStyle,
-                               fontSize: 14);
+                               fontStyle: fontStyle,
+                               fontSize: fontSize ?? 14,
+                               textColor: textColor);
         }
 
         #endregion
@@ -126,7 +130,9 @@ namespace VoxelBusters.CoreLibrary.Editor
         #region Static methods
 
         public static GUIStyle CreateLabel(GUIStyle baseStyle,
+                                           FontStyle? fontStyle = null,
                                            int? fontSize = null,
+                                           Color? textColor = null,
                                            bool? wordWrap = null,
                                            bool? richText = null,
                                            TextAnchor? alignment = null,
@@ -136,6 +142,21 @@ namespace VoxelBusters.CoreLibrary.Editor
             if (fontSize != null)
             {
                 newStyle.fontSize   = fontSize.Value;
+            }
+            if (fontStyle != null)
+            {
+                newStyle.fontStyle  = fontStyle.Value;
+            }
+            if (textColor != null)
+            {
+                newStyle.normal.textColor       = textColor.Value;
+                newStyle.onNormal.textColor     = textColor.Value;
+                newStyle.active.textColor       = textColor.Value;
+                newStyle.onActive.textColor     = textColor.Value;
+                newStyle.focused.textColor      = textColor.Value;
+                newStyle.onFocused.textColor    = textColor.Value;
+                newStyle.hover.textColor        = textColor.Value;
+                newStyle.onHover.textColor      = textColor.Value;
             }
             if (wordWrap != null)
             {
