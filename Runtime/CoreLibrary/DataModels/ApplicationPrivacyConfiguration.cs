@@ -11,6 +11,8 @@ namespace VoxelBusters.CoreLibrary
 
         public bool? IsAgeRestrictedUser { get; private set; } 
 
+        public ContentRating? PreferredContentRating { get; private set; } 
+
         public string Version { get; private set; }
 
         #endregion
@@ -19,12 +21,14 @@ namespace VoxelBusters.CoreLibrary
 
         public ApplicationPrivacyConfiguration(ConsentStatus usageConsent,
                                                bool? isAgeRestrictedUser = null,
+                                               ContentRating? preferredContentRating = null,
                                                string version = null)
         {
             // Set properties
-            UsageConsent        = usageConsent;
-            IsAgeRestrictedUser = isAgeRestrictedUser;
-            Version             = version;
+            UsageConsent            = usageConsent;
+            IsAgeRestrictedUser     = isAgeRestrictedUser;
+            PreferredContentRating  = preferredContentRating;
+            Version                 = version;
         }
 
         #endregion
