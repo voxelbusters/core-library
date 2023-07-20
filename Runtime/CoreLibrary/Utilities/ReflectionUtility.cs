@@ -77,6 +77,36 @@ namespace VoxelBusters.CoreLibrary
             return typeList.ToArray();
         }
 
+        public static bool TryGetCustomAttriute(this MethodInfo methodInfo,
+												Type attributeType,
+												out Attribute attribute,
+												bool inherit = false)
+		{
+			// Set default value
+			attribute	= null;
+
+			// Find custom attributes
+			var     attributes	= methodInfo.GetCustomAttributes(attributeType, inherit);
+            if (attributes.Length > 0)
+			{
+				attribute		= attributes[0] as Attribute;
+				return true;
+			}
+			return false;
+		}
+
+		public static bool TryGetCustomAttriute<TAttribute>(this MethodInfo methodInfo,
+															out TAttribute attribute,
+															bool inherit = false) where TAttribute : Attribute
+		{
+			bool	value	= TryGetCustomAttriute(methodInfo: methodInfo,
+												   attributeType: typeof(TAttribute),
+												   attribute: out Attribute genericAttr,
+												   inherit: inherit);
+			attribute		= genericAttr as TAttribute;
+			return value;
+		}
+
 		#endregion
 
 		#region Create instance methods
@@ -140,9 +170,14 @@ namespace VoxelBusters.CoreLibrary
 
         #region Invoke methods
 
+		public static object InvokeStaticMethod(this Type type, string method, params object[] parameters)
+        {
+            return type.GetMethod(method, BindingFlags.Public | BindingFlags.Static).Invoke(null, parameters);
+        }
+
         public static T InvokeStaticMethod<T>(this Type type, string method, params object[] parameters)
         {
-            return (T)type.GetMethod(method, BindingFlags.Public | BindingFlags.Static).Invoke(null, parameters);
+            return (T)InvokeStaticMethod(type, method, parameters);
         }
 
         #endregion

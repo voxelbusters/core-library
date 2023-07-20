@@ -33,5 +33,16 @@ namespace VoxelBusters.CoreLibrary
 
         #endregion
 
+        #region Public methods
+
+        public bool? IsCoppaApplicable()
+        {
+            if (IsAgeRestrictedUser == null) return null;
+
+            return (IsAgeRestrictedUser.Value == true) || (UsageConsent != ConsentStatus.Authorized);
+        }
+
+        #endregion
+
     }
 }
