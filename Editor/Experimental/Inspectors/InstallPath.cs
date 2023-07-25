@@ -18,6 +18,8 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
 
         public static string ReportingKit { get; private set; } = "https://u3d.as/2Q6p";
 
+        public static string AdsKit { get; private set; } = "https://u3d.as/2Q6p";
+
         #endregion
     }
 }

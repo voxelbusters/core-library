@@ -88,15 +88,7 @@ namespace VoxelBusters.CoreLibrary.Editor
             m_toggleOnIcon              = toggleOnIcon;
             m_toggleOffIcon             = toggleOffIcon;
 
-            // Update styles
-            m_backgroundStyle           = CustomEditorStyles.GroupBackground();
-            m_titleLabelStyle           = CustomEditorStyles.Heading2Label();
-            m_subtitleLabelStyle        = CustomEditorStyles.OptionsLabel(wordWrap: false);
-            m_tabBarLabelNormalStyle    = CustomEditorStyles.SelectableLabel(fontSize: 16, textColor: Color.gray);
-            m_tabBarLabelSelectedStyle  = CustomEditorStyles.SelectableLabel(fontSize: 16, fontStyle: FontStyle.Bold);
-            m_selectableLabelStyle      = CustomEditorStyles.SelectableLabel();
-            m_invisibleButtonStyle      = CustomEditorStyles.InvisibleButton();
-
+            LoadStyles();
             SetSelectedTab(m_tabs[0]);
         }
 
@@ -143,6 +135,17 @@ namespace VoxelBusters.CoreLibrary.Editor
         #endregion
 
         #region Private methods
+
+        private void LoadStyles()
+        {
+            m_backgroundStyle           = CustomEditorStyles.GroupBackground();
+            m_titleLabelStyle           = CustomEditorStyles.Heading2Label();
+            m_subtitleLabelStyle        = CustomEditorStyles.OptionsLabel(wordWrap: false);
+            m_tabBarLabelNormalStyle    = CustomEditorStyles.SelectableLabel(fontSize: 16, textColor: Color.gray);
+            m_tabBarLabelSelectedStyle  = CustomEditorStyles.SelectableLabel(fontSize: 16, fontStyle: FontStyle.Bold);
+            m_selectableLabelStyle      = CustomEditorStyles.SelectableLabel();
+            m_invisibleButtonStyle      = CustomEditorStyles.InvisibleButton();
+        }
 
         private bool CanShowFocusSection()
         {

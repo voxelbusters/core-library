@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 {
-    [Serializable, CreateAssetMenu(fileName = "PBXNativePluginsExporterObject", menuName = "VoxelBusters/NativePluginsExporterSettings", order = 0)]
+    [Serializable, CreateAssetMenu(fileName = "PBXNativePluginsExporterObject", menuName = "Native Plugins/PBX Exporter Object", order = 0)]
     public class PBXNativePluginsExporterObject : NativePluginsExporterObject
     {
         #region Fields

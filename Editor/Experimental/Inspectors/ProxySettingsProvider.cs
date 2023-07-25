@@ -27,8 +27,10 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
 
         #region Constructors
 
-        public ProxySettingsProvider(string name, string installUrl,
-            string path = null, SettingsScope scopes = SettingsScope.Project)
+        public ProxySettingsProvider(string name,
+                                     string installUrl,
+                                     string path = null,
+                                     SettingsScope scopes = SettingsScope.Project)
             : base(path ?? string.Format(kDefaultProjectSettingsPathFormat, name), scopes)
         {
             // set properties
@@ -45,9 +47,8 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
         [SettingsProvider]
         private static SettingsProvider CreateEssentialKitSettingsProvider()
         {
-            return new ProxySettingsProvider(
-                name: "Essential Kit",
-                installUrl: InstallPath.EssentialKit);
+            return new ProxySettingsProvider(name: "Essential Kit",
+                                             installUrl: InstallPath.EssentialKit);
         }
 #endif
 
@@ -55,9 +56,8 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
         [SettingsProvider]
         private static SettingsProvider CreateScreenRecorderKitSettingsProvider()
         {
-            return new ProxySettingsProvider(
-                name: "Screen Recorder Kit",
-                installUrl: InstallPath.ScreenRecorderKit);
+            return new ProxySettingsProvider(name: "Screen Recorder Kit",
+                                             installUrl: InstallPath.ScreenRecorderKit);
         }
 #endif
 
@@ -65,9 +65,8 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
         [SettingsProvider]
         private static SettingsProvider CreateSocialKitSettingsProvider()
         {
-            return new ProxySettingsProvider(
-                name: "Social Kit",
-                installUrl: InstallPath.SocialKit);
+            return new ProxySettingsProvider(name: "Social Kit",
+                                             installUrl: InstallPath.SocialKit);
         }
 #endif
 
@@ -75,9 +74,8 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
         [SettingsProvider]
         private static SettingsProvider CreateMLKitSettingsProvider()
         {
-            return new ProxySettingsProvider(
-                name: "ML Kit",
-                installUrl: InstallPath.MLKit);
+            return new ProxySettingsProvider(name: "ML Kit",
+                                             installUrl: InstallPath.MLKit);
         }
 #endif
 
@@ -85,9 +83,17 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
         [SettingsProvider]
         private static SettingsProvider CreateReportingKitSettingsProvider()
         {
-            return new ProxySettingsProvider(
-                name: "Reporting Kit",
-                installUrl: InstallPath.ReportingKit);
+            return new ProxySettingsProvider(name: "Reporting Kit",
+                                             installUrl: InstallPath.ReportingKit);
+        }
+#endif
+
+#if !ENABLE_VOXELBUSTERS_ADS_KIT
+        [SettingsProvider]
+        private static SettingsProvider CreateAdsKitSettingsProvider()
+        {
+            return new ProxySettingsProvider(name: "Ads Kit",
+                                             installUrl: InstallPath.AdsKit);
         }
 #endif
 

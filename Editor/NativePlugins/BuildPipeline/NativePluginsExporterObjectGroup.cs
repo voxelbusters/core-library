@@ -4,7 +4,7 @@ using UnityEditor;
 
 namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 {
-    [CreateAssetMenu(fileName = "NativePluginsExporterObjectGroup", menuName = "VoxelBusters/NativePluginsExporterGroup", order = 0)]
+    [CreateAssetMenu(fileName = "NativePluginsExporterObjectGroup", menuName = "Native Plugins/Exporter Object Group", order = 0)]
     public class NativePluginsExporterObjectGroup : ScriptableObject
     {
         #region Fields
