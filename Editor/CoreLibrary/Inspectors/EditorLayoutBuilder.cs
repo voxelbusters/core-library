@@ -94,204 +94,12 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         #endregion
 
-        #region Public methods
+        #region Static methods
 
-        public void DoLayout()
-        {
-            if (CanShowFocusSection())
-            {
-                DrawFocusSection();
-            }
-            else
-            {
-                m_drawTopBarCallback?.Invoke(m_selectedTab);
-                DrawTabBar();
-                DrawTabView();
-                m_drawFooterCallback?.Invoke(m_selectedTab);
-            }
-            m_serializedObject.ApplyModifiedProperties();
-            m_serializedObject.Update();
-        }
-
-        public void DrawSection(EditorSectionInfo section,
-                                bool showDetails,
-                                bool selectable)
-        {
-            EditorGUILayout.BeginVertical(m_backgroundStyle);
-            bool    expanded        = DrawSectionHeader(section,
-                                                        selectable);
-            if (showDetails || expanded)
-            {
-                if (section.DrawStyle == EditorSectionDrawStyle.Default)
-                {
-                    EditorGUILayout.EndVertical();
-                    EditorGUILayout.BeginVertical(m_backgroundStyle);
-                }
-                DrawSectionDetails(section);
-            }
-            EditorGUILayout.EndVertical();
-        }
-
-        #endregion
-
-        #region Private methods
-
-        private void LoadStyles()
-        {
-            m_backgroundStyle           = CustomEditorStyles.GroupBackground();
-            m_titleLabelStyle           = CustomEditorStyles.Heading2Label();
-            m_subtitleLabelStyle        = CustomEditorStyles.OptionsLabel(wordWrap: false);
-            m_tabBarLabelNormalStyle    = CustomEditorStyles.SelectableLabel(fontSize: 16, textColor: Color.gray);
-            m_tabBarLabelSelectedStyle  = CustomEditorStyles.SelectableLabel(fontSize: 16, fontStyle: FontStyle.Bold);
-            m_selectableLabelStyle      = CustomEditorStyles.SelectableLabel();
-            m_invisibleButtonStyle      = CustomEditorStyles.InvisibleButton();
-        }
-
-        private bool CanShowFocusSection()
-        {
-            return (m_focusSection != null) && (m_focusSection.DrawStyle == EditorSectionDrawStyle.Default);
-        }
-
-        private void DrawTabBar()
-        {
-            if (m_tabs.Length > 1)
-            {
-                m_tabBarScrollPosition  = GUILayout.BeginScrollView(m_tabBarScrollPosition, m_backgroundStyle, GUILayout.Height(30f));
-                GUILayout.BeginHorizontal();
-                GUILayout.FlexibleSpace();
-                for (int iter = 0; iter < m_tabs.Length; iter++)
-                {
-                    var     current     = m_tabs[iter];
-                    var     labelStyle  = (current == m_selectedTab) ? m_tabBarLabelSelectedStyle : m_tabBarLabelNormalStyle;
-                    if (GUILayout.Button(current, labelStyle, GUILayout.Width(80f)))
-                    {
-                        SetSelectedTab(current);
-                    }
-                }
-                GUILayout.FlexibleSpace();
-                GUILayout.EndHorizontal();
-                GUILayout.EndScrollView();
-            }
-        }
-
-        private void DrawTabView()
-        {
-            if ((m_drawTabViewCallback == null) || !m_drawTabViewCallback(m_selectedTab))
-            {
-                for (int iter = 0; iter < m_selectedTabSections.Length; iter++)
-                {
-                    var     current = m_selectedTabSections[iter];
-                    DrawSectionInternal(section: current,
-                                        showDetails: (current.DrawStyle == EditorSectionDrawStyle.Expand) && (current == m_focusSection));
-                }
-            }
-        }
-
-        private void DrawSectionInternal(EditorSectionInfo section,
-                                         bool showDetails = true,
-                                         bool selectable = true)
-        {
-            if (section.CustomDrawCallback != null)
-            {
-                section.CustomDrawCallback(section,
-                                           showDetails,
-                                           selectable);
-            }
-            else
-            {
-                DrawSection(section,
-                            showDetails,
-                            selectable);
-            }
-        }
-
-        private bool DrawSectionHeader(EditorSectionInfo section,
-                                       bool selectable = true)
-        {
-            bool    isSelected          = (section == m_focusSection);
-            bool    hasSubtitle         = (section.Description != null);
-            float   headerHeight        = hasSubtitle ? 52f : 30f;
-
-            // Draw rect
-            var     rect                = EditorGUILayout.GetControlRect(false, headerHeight);
-            //GUI.Box(rect, GUIContent.none, HeaderButtonStyle);
-
-            /*
-            // Draw expand control
-            if (drawStyle == PropertyGroupDrawStyle.Expand)
-            {
-                var     foldOutRect         = new Rect(rect.x + 5f, rect.y, 50f, rect.height);
-                EditorGUI.LabelField(foldOutRect, isSelected ? "-" : "+", CustomEditorStyles.Heading3);
-            }
-            */
-
-            // Draw text 
-            var     titleRect           = new Rect(rect.x + 5f,
-                                                   rect.y + 4f,
-                                                   rect.width * 0.8f,
-                                                   22f);
-            EditorGUI.LabelField(titleRect, section.DisplayName, m_titleLabelStyle);
-            if (hasSubtitle)
-            {
-                var     subtitleRect    = new Rect(rect.x + 5f,
-                                                   rect.y + 30f,
-                                                   rect.width * 0.8f,
-                                                   18f);
-                EditorGUI.LabelField(subtitleRect, section.Description, m_subtitleLabelStyle);
-            }
-
-            // Draw selectable rect
-            var     selectableRect      = new Rect(rect.x,
-                                                   rect.y,
-                                                   rect.width * 0.8f,
-                                                   rect.height);
-            if (selectable && EditorLayoutUtility.TransparentButton(selectableRect))
-            {
-                isSelected              = SetFocusSection(section);
-            }
-
-            // Draw toggle button
-            var     mainProperty        = section.Property;
-            var     enabledProperty     = mainProperty.FindPropertyRelative("m_isEnabled");
-            if (enabledProperty != null)
-            {
-                var     toggleIcon      = enabledProperty.boolValue ? m_toggleOnIcon : m_toggleOffIcon;
-                var     iconSize        = new Vector2(32f, 12f);
-                var     toggleRect      = new Rect(rect.xMax - (iconSize.x * 1.2f),
-                                                   titleRect.yMin + ((titleRect.height - iconSize.y) * 0.5f),
-                                                   iconSize.x,
-                                                   iconSize.y);
-                if (GUI.Button(toggleRect, toggleIcon, m_invisibleButtonStyle))
-                {
-                    enabledProperty.boolValue       = !enabledProperty.boolValue;
-                     
-                    // Raise an event to notify others, delay is added to ensure that modified properties are serialized
-                    EditorApplication.delayCall    += () => { OnSectionStatusChange?.Invoke(section); };
-                }
-            }
-            return isSelected;
-        }
-
-        private void DrawSectionDetails(EditorSectionInfo section)
-        {
-            var     property            = section.Property;
-            var     enabledProperty     = property.FindPropertyRelative("m_isEnabled");
-            bool    originalGUIState    = GUI.enabled;
-
-            // Update edit capability
-            GUI.enabled     = (enabledProperty == null) || enabledProperty.boolValue;
-
-            // Draw section properties
-            DrawChildProperties(property, ignoreProperties: "m_isEnabled");
-
-            // Reset gui state
-            GUI.enabled     = originalGUIState;
-        }
-
-        private void DrawChildProperties(SerializedProperty property,
-                                         string prefix = null,
-                                         bool indent = true,
-                                         params string[] ignoreProperties)
+        public static void DrawChildProperties(SerializedProperty property,
+                                               string prefix = null,
+                                               bool indent = true,
+                                               params string[] ignoreProperties)
         {
             try
             {
@@ -344,6 +152,213 @@ namespace VoxelBusters.CoreLibrary.Editor
             }
         }
 
+        #endregion
+
+        #region Public methods
+
+        public void DoLayout()
+        {
+            if (CanShowFocusSection())
+            {
+                DrawFocusSection();
+            }
+            else
+            {
+                m_drawTopBarCallback?.Invoke(m_selectedTab);
+                DrawTabBar();
+                DrawTabView();
+                m_drawFooterCallback?.Invoke(m_selectedTab);
+            }
+            m_serializedObject.ApplyModifiedProperties();
+            m_serializedObject.Update();
+        }
+
+        public void DrawSection(EditorSectionInfo section,
+                                bool showDetails = true,
+                                bool selectable = true)
+        {
+            EditorGUILayout.BeginVertical(m_backgroundStyle);
+            bool    expanded        = DrawSectionHeader(section,
+                                                        selectable);
+            bool    endGroup        = true;
+            if (showDetails || expanded)
+            {
+                if (section.DrawStyle == EditorSectionDrawStyle.Default)
+                {
+                    endGroup        = false;
+                    EditorGUILayout.EndVertical();
+                }
+
+                if (section.DrawDetailsCallback != null)
+                {
+                    section.DrawDetailsCallback(section);
+                }
+                else
+                {
+                    if (section.DrawStyle == EditorSectionDrawStyle.Default)
+                    {
+                        endGroup    = true;
+                        EditorGUILayout.BeginVertical(m_backgroundStyle);
+                    }
+                    DrawSectionDetails(section);
+                }
+            }
+            if (endGroup)
+            {
+                EditorGUILayout.EndVertical();
+            }
+        }
+
+        public void DrawSectionDetails(EditorSectionInfo section)
+        {
+            bool    originalGUIState    = GUI.enabled;
+            try
+            {
+                // Update edit capability
+                GUI.enabled     = section.IsEnabled;
+
+                // Draw section properties
+                DrawChildProperties(property: section.Property,
+                                    ignoreProperties: section.IgnoreProperties);
+            }
+            finally
+            {
+                // Reset gui state
+                GUI.enabled     = originalGUIState;
+            }
+        }
+
+        public void BeginVertical()
+        {
+            EditorGUILayout.BeginVertical(m_backgroundStyle);
+        }
+
+        public void EndVertical()
+        {
+            EditorGUILayout.EndVertical();
+        }
+
+        #endregion
+
+        #region Private methods
+
+        private void LoadStyles()
+        {
+            m_backgroundStyle           = CustomEditorStyles.GroupBackground();
+            m_titleLabelStyle           = CustomEditorStyles.Heading2Label();
+            m_subtitleLabelStyle        = CustomEditorStyles.OptionsLabel(wordWrap: false);
+            m_tabBarLabelNormalStyle    = CustomEditorStyles.SelectableLabel(fontSize: 16, textColor: Color.gray);
+            m_tabBarLabelSelectedStyle  = CustomEditorStyles.SelectableLabel(fontSize: 16, fontStyle: FontStyle.Bold);
+            m_selectableLabelStyle      = CustomEditorStyles.SelectableLabel();
+            m_invisibleButtonStyle      = CustomEditorStyles.InvisibleButton();
+        }
+
+        private bool CanShowFocusSection()
+        {
+            return (m_focusSection != null) && (m_focusSection.DrawStyle == EditorSectionDrawStyle.Default);
+        }
+
+        private void DrawTabBar()
+        {
+            if (m_tabs.Length > 1)
+            {
+                m_tabBarScrollPosition  = GUILayout.BeginScrollView(m_tabBarScrollPosition, m_backgroundStyle, GUILayout.Height(30f));
+                GUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace();
+                for (int iter = 0; iter < m_tabs.Length; iter++)
+                {
+                    var     current     = m_tabs[iter];
+                    var     labelStyle  = (current == m_selectedTab) ? m_tabBarLabelSelectedStyle : m_tabBarLabelNormalStyle;
+                    if (GUILayout.Button(current, labelStyle, GUILayout.Width(80f)))
+                    {
+                        SetSelectedTab(current);
+                    }
+                }
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+                GUILayout.EndScrollView();
+            }
+        }
+
+        private void DrawTabView()
+        {
+            if ((m_drawTabViewCallback == null) || !m_drawTabViewCallback(m_selectedTab))
+            {
+                for (int iter = 0; iter < m_selectedTabSections.Length; iter++)
+                {
+                    var     current = m_selectedTabSections[iter];
+                    DrawSection(section: current,
+                                showDetails: (current.DrawStyle == EditorSectionDrawStyle.Expand) && (current == m_focusSection));
+                }
+            }
+        }
+
+        private bool DrawSectionHeader(EditorSectionInfo section,
+                                       bool selectable = true)
+        {
+            bool    isSelected          = (section == m_focusSection);
+            bool    hasSubtitle         = (section.Description != null);
+            float   headerHeight        = hasSubtitle ? 52f : 30f;
+
+            // Draw rect
+            var     rect                = EditorGUILayout.GetControlRect(false, headerHeight);
+            //GUI.Box(rect, GUIContent.none, HeaderButtonStyle);
+
+            /*
+            // Draw expand control
+            if (drawStyle == PropertyGroupDrawStyle.Expand)
+            {
+                var     foldOutRect         = new Rect(rect.x + 5f, rect.y, 50f, rect.height);
+                EditorGUI.LabelField(foldOutRect, isSelected ? "-" : "+", CustomEditorStyles.Heading3);
+            }
+            */
+
+            // Draw text 
+            var     titleRect           = new Rect(rect.x + 5f,
+                                                   rect.y + 4f,
+                                                   rect.width * 0.8f,
+                                                   22f);
+            EditorGUI.LabelField(titleRect, section.DisplayName, m_titleLabelStyle);
+            if (hasSubtitle)
+            {
+                var     subtitleRect    = new Rect(rect.x + 5f,
+                                                   rect.y + 30f,
+                                                   rect.width * 0.8f,
+                                                   18f);
+                EditorGUI.LabelField(subtitleRect, section.Description, m_subtitleLabelStyle);
+            }
+
+            // Draw selectable rect
+            var     selectableRect      = new Rect(rect.x,
+                                                   rect.y,
+                                                   rect.width * 0.8f,
+                                                   rect.height);
+            if (selectable && EditorLayoutUtility.TransparentButton(selectableRect))
+            {
+                isSelected              = SetFocusSection(section);
+            }
+
+            // Draw toggle button
+            var     enabledProperty     = section.EnabledProperty;
+            if (enabledProperty != null)
+            {
+                var     toggleIcon      = enabledProperty.boolValue ? m_toggleOnIcon : m_toggleOffIcon;
+                var     iconSize        = new Vector2(32f, 12f);
+                var     toggleRect      = new Rect(rect.xMax - (iconSize.x * 1.2f),
+                                                   titleRect.yMin + ((titleRect.height - iconSize.y) * 0.5f),
+                                                   iconSize.x,
+                                                   iconSize.y);
+                if (GUI.Button(toggleRect, toggleIcon, m_invisibleButtonStyle))
+                {
+                    enabledProperty.boolValue       = !enabledProperty.boolValue;
+                     
+                    // Raise an event to notify others, delay is added to ensure that modified properties are serialized
+                    EditorApplication.delayCall    += () => { OnSectionStatusChange?.Invoke(section); };
+                }
+            }
+            return isSelected;
+        }
+
         private void DrawFocusSection()
         {
             var     property    = m_focusSection.Property;
@@ -357,8 +372,8 @@ namespace VoxelBusters.CoreLibrary.Editor
             EditorGUILayout.EndHorizontal();
 
             property.isExpanded = true;
-            DrawSectionInternal(section: m_focusSection,
-                                selectable: false);
+            DrawSection(section: m_focusSection,
+                        selectable: false);
         }
 
         #endregion
@@ -424,11 +439,17 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         public string Description { get; private set; }
 
+        public bool IsEnabled => (EnabledProperty == null) || EnabledProperty.boolValue;
+
         public SerializedProperty Property { get; private set; }
+
+        public SerializedProperty EnabledProperty { get; private set; }
 
         public EditorSectionDrawStyle DrawStyle { get; private set; }
 
-        public DrawCallback CustomDrawCallback { get; private set; }
+        public DrawCallback DrawDetailsCallback { get; private set; }
+
+        public string[] IgnoreProperties { get; private set; }
 
         public object Tag { get; private set; }
 
@@ -436,7 +457,7 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         #region Delegates
 
-        public delegate void DrawCallback(EditorSectionInfo section, bool showDetails, bool selectable);
+        public delegate void DrawCallback(EditorSectionInfo section);
 
         #endregion
 
@@ -444,10 +465,12 @@ namespace VoxelBusters.CoreLibrary.Editor
 
         public EditorSectionInfo(string displayName,
                                  SerializedProperty property,
+                                 SerializedProperty enabledProperty = null,
                                  string description = null,
                                  EditorSectionDrawStyle drawStyle = EditorSectionDrawStyle.Default,
-                                 DrawCallback customDrawCallback = null,
-                                 object tag = null)
+                                 DrawCallback drawDetailsCallback = null,
+                                 object tag = null,
+                                 params string[] ignoreProperties)
         {   
             Assert.IsArgNotNull(displayName, nameof(displayName));
             Assert.IsArgNotNull(property, nameof(property));
@@ -456,8 +479,10 @@ namespace VoxelBusters.CoreLibrary.Editor
             DisplayName             = displayName;
             Description             = description;
             Property                = property;
+            EnabledProperty         = enabledProperty ?? property.FindPropertyRelative("m_isEnabled");
             DrawStyle               = drawStyle;
-            CustomDrawCallback      = customDrawCallback;
+            DrawDetailsCallback     = drawDetailsCallback;
+            IgnoreProperties        = ignoreProperties ?? new string[] { "m_isEnabled" };
             Tag                     = tag;
         }
 
