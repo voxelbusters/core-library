@@ -19,7 +19,8 @@ namespace VoxelBusters.CoreLibrary.Editor
             GUI.enabled = true;
         }
 
-        public static bool TransparentButton(Rect rect, string label = "")
+        public static bool TransparentButton(Rect rect,
+                                             string label = "")
         {
             var     originalColor   = GUI.color;
             try
@@ -30,6 +31,18 @@ namespace VoxelBusters.CoreLibrary.Editor
             finally
             {
                 GUI.color   = originalColor;
+            }
+        }
+
+        public static void StringPopup(int selectedIndex,
+                                       string[] options,
+                                       Callback<int> onValueChange,
+                                       params GUILayoutOption[] layoutOptions)
+        {
+            int     newValue    = EditorGUILayout.Popup(selectedIndex, options, layoutOptions);
+            if (newValue != selectedIndex)
+            {
+                onValueChange?.Invoke(newValue);
             }
         }
 
@@ -52,7 +65,10 @@ namespace VoxelBusters.CoreLibrary.Editor
             }
         }
 
-        public static void Helpbox(string title, string description, System.Action drawFunc, GUIStyle style)
+        public static void Helpbox(string title,
+                                   string description,
+                                   System.Action drawFunc,
+                                   GUIStyle style)
         {
             GUILayout.BeginVertical(style);
             GUILayout.Label(title, EditorStyles.boldLabel);
@@ -61,7 +77,11 @@ namespace VoxelBusters.CoreLibrary.Editor
             GUILayout.EndVertical();
         }
 
-        public static void Helpbox(string title, string description, string actionLabel, System.Action onClick, GUIStyle style)
+        public static void Helpbox(string title,
+                                   string description,
+                                   string actionLabel,
+                                   System.Action onClick,
+                                   GUIStyle style)
         {
             Helpbox(
                 title: title,
@@ -76,7 +96,8 @@ namespace VoxelBusters.CoreLibrary.Editor
                 style: style);
         }
 
-        public static void BeginBottomBar(Color? borderColor = null, params GUILayoutOption[] options)
+        public static void BeginBottomBar(Color? borderColor = null,
+                                          params GUILayoutOption[] options)
         {
             var     bottomBarRect   = EditorGUILayout.BeginHorizontal(options);
             bottomBarRect.height    = 1f;
