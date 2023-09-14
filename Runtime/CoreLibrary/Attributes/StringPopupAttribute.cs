@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary
 {
+    /// <summary>
+    /// Base class to create custom string popup field in the inspector.
+    /// </summary>
+    [IncludeInDocs]
     public class StringPopupAttribute : PropertyAttribute 
     {
         #region Static fields
@@ -32,8 +36,9 @@ namespace VoxelBusters.CoreLibrary
 
         #region Constructors
 
-        public StringPopupAttribute(string preferencePropertyName = null, bool preferencePropertyValue = true,
-            params string[] fixedOptions)
+        public StringPopupAttribute(string preferencePropertyName = null,
+                                    bool preferencePropertyValue = true,
+                                    params string[] fixedOptions)
         {
             // set properties
             PreferencePropertyName  = preferencePropertyName;
