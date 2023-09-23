@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
+using VoxelBusters.CoreLibrary.NativePlugins;
 
 namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 {
@@ -20,8 +21,12 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
             { typeof(float), "float" },
             { typeof(double), "double" },
             { typeof(string), "const char*" },
-            { typeof(IntPtr), "void*" },
+            { typeof(IntPtr), "NPIntPtr" },
+            { typeof(int).MakeByRefType(), "int*" },
             { typeof(Delegate), "void*" },
+            { typeof(UnityAttachment), "NPUnityAttachment" },
+            { typeof(UnityRect), "NPUnityRect" },
+            { typeof(UnityColor), "NPUnityColor" },
         };
         
         private     static  Dictionary<Type, string>    s_defaultMethodImplMap  = new Dictionary<Type, string>()
