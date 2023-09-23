@@ -22,11 +22,12 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
             { typeof(double), "double" },
             { typeof(string), "const char*" },
             { typeof(IntPtr), "NPIntPtr" },
-            { typeof(int).MakeByRefType(), "int*" },
             { typeof(Delegate), "void*" },
             { typeof(UnityAttachment), "NPUnityAttachment" },
             { typeof(UnityRect), "NPUnityRect" },
             { typeof(UnityColor), "NPUnityColor" },
+            { typeof(UnityDateComponents), "NPUnityDateComponents" },
+            { typeof(UnityCircularRegion), "NPUnityCircularRegion" }
         };
         
         private     static  Dictionary<Type, string>    s_defaultMethodImplMap  = new Dictionary<Type, string>()
@@ -227,10 +228,17 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
             {
                 return GetTypeDefinition(type.GetElementType()) + "*";
             }
+
             if (s_dataTypeMap.TryGetValue(type, out string typeName))
             {
                 return typeName;
             }
+
+            if (type.IsByRef && s_dataTypeMap.TryGetValue(type.GetElementType(), out string typeNameOfElement))
+            {
+                return typeNameOfElement + "*";
+            }
+
             return type.Name;
         }
 
