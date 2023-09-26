@@ -343,9 +343,9 @@ namespace VoxelBusters.CoreLibrary.Editor
             if (enabledProperty != null)
             {
                 var     toggleIcon      = enabledProperty.boolValue ? m_toggleOnIcon : m_toggleOffIcon;
-                var     iconSize        = new Vector2(32f, 12f);
+                var     iconSize        = new Vector2(64f, 32f);
                 var     toggleRect      = new Rect(rect.xMax - (iconSize.x * 1.2f),
-                                                   titleRect.yMin + ((titleRect.height - iconSize.y) * 0.5f),
+                                                   titleRect.yMin + ((titleRect.height - iconSize.y/2)),
                                                    iconSize.x,
                                                    iconSize.y);
                 if (GUI.Button(toggleRect, toggleIcon, m_invisibleButtonStyle))

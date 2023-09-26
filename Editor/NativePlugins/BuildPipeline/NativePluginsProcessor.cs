@@ -22,6 +22,10 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 
         #region Preprocess message methods
 
+
+        public virtual void OnCheckConfiguration()
+        { }
+
         public virtual void OnUpdateExporterObjects()
         { }
 

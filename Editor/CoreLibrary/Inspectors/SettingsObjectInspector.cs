@@ -184,7 +184,7 @@ namespace VoxelBusters.CoreLibrary.Editor
         #endregion
 
         #region Misc methods
-
+#if NATIVE_PLUGINS_SHOW_UPM_MIGRATION
         protected void ShowMigrateToUpmOption()
         {
             EditorLayoutUtility.Helpbox(title: "UPM Support",
@@ -193,7 +193,7 @@ namespace VoxelBusters.CoreLibrary.Editor
                                         onClick: GetOwner().MigrateToUpm,
                                         style: GroupBackgroundStyle);
         }
-
+#endif
         #endregion
 
         #region Event handler methods
@@ -236,7 +236,7 @@ namespace VoxelBusters.CoreLibrary.Editor
 
             public  const   string  kServices   = "Services";
 
-            public  const   string  kMisc       = "Misc.";
+            public  const   string  kMisc       = "Help";
         }
 
         #endregion
