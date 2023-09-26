@@ -79,7 +79,6 @@ struct NPError
 };
 typedef struct NPError NPError;
 
-
 struct NPSize
 {
     float width;

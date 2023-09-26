@@ -23,11 +23,6 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
             { typeof(string), "const char*" },
             { typeof(IntPtr), "NPIntPtr" },
             { typeof(Delegate), "void*" },
-            { typeof(UnityAttachment), "NPUnityAttachment" },
-            { typeof(UnityRect), "NPUnityRect" },
-            { typeof(UnityColor), "NPUnityColor" },
-            { typeof(UnityDateComponents), "NPUnityDateComponents" },
-            { typeof(UnityCircularRegion), "NPUnityCircularRegion" }
         };
         
         private     static  Dictionary<Type, string>    s_defaultMethodImplMap  = new Dictionary<Type, string>()
@@ -48,16 +43,22 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
         #region Fields
 
         private     string                          m_headerFilePath;
+
         private     StreamWriter                    m_headerFileWriter;
+
         private     string                          m_implementationFilePath;
+
         private     StreamWriter                    m_implementationFileWriter;
+
         private     NativeBindingsGeneratorOptions  m_options;
+
         #endregion
 
         #region Constructors
 
-        public ObjectiveCBindingsWriter(string path, string fileName,
-            NativeBindingsGeneratorOptions options)
+        public ObjectiveCBindingsWriter(string path,
+                                        string fileName,
+                                        NativeBindingsGeneratorOptions options)
         {
             // Set properties
             m_options   = options;
@@ -75,6 +76,12 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 
         #endregion
 
+        #region Static methods
+
+        private static bool IsStructType(Type type) => type.IsValueType && !type.IsPrimitive && !type.IsEnum;
+
+        #endregion
+
         #region Private methods
 
         private bool NeedsHeaderFile() => m_options.HasFlag(NativeBindingsGeneratorOptions.Header);
@@ -85,26 +92,26 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 
         #region INativeBindingsGenerator implementation
 
-        public void WriteStart(string product = null, string author = null, string copyrights = null)
+        public void WriteStart(string product = null,
+                               string author = null,
+                               string copyrights = null)
         {
             // Header file
-            string  headerName  = null;
+            string  headerName          = null;
             if (NeedsHeaderFile())
             {
                 headerName      = IOServices.GetFileName(m_headerFilePath);
-                WriteHeaderComments(
-                    m_headerFileWriter,
-                    headerName,
-                    product,
-                    author,
-                    copyrights);
+                WriteHeaderComments(m_headerFileWriter,
+                                    headerName,
+                                    product,
+                                    author,
+                                    copyrights);
                 m_headerFileWriter.WriteLine();
 
-                WriteHeaderImports(
-                    m_headerFileWriter,
-                    "#import <Foundation/Foundation.h>",
-                    "#import \"NPDefines.h\"",
-                    "#import \"NPUnityDataTypes.h\"");
+                WriteHeaderImports(m_headerFileWriter,
+                                   "#import <Foundation/Foundation.h>",
+                                   "#import \"NPDefines.h\"",
+                                   "#import \"NPUnityDataTypes.h\"");
                 m_headerFileWriter.WriteLine();
             }
 
@@ -112,35 +119,52 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
             if (NeedsSourceFile())
             {
                 var     implementationName  = IOServices.GetFileName(m_implementationFilePath);
-                WriteHeaderComments(
-                    m_implementationFileWriter,
-                    implementationName,
-                    product,
-                    author,
-                    copyrights);
+                WriteHeaderComments(m_implementationFileWriter,
+                                    implementationName,
+                                    product,
+                                    author,
+                                    copyrights);
                 m_implementationFileWriter.WriteLine();
 
                 if (headerName != null)
                 {
-                    WriteHeaderImports(
-                        m_implementationFileWriter,
-                        $"#import \"{headerName}\"");
+                    WriteHeaderImports(m_implementationFileWriter,
+                                       $"#import \"{headerName}\"");
                 }
-                WriteHeaderImports(
-                    m_implementationFileWriter,
-                    "#import \"NPDefines.h\"",
-                    "#import \"NPUnityDataTypes.h\"");
+                WriteHeaderImports(m_implementationFileWriter,
+                                   "#import \"NPDefines.h\"",
+                                   "#import \"NPUnityDataTypes.h\"");
                 m_implementationFileWriter.WriteLine();
             }
+        }
+
+        public void WriteCustomTypeDeclarations(Type[] customTypes)
+        {
+            var     writer      = m_headerFileWriter ?? m_implementationFileWriter;
+            if (writer == null) return;
+
+            for (int iter = 0; iter < customTypes.Length; iter++)
+            {
+                var     item    = customTypes[iter];
+                if (iter != 0)
+                {
+                    writer.WriteLine();
+                }
+
+                if (IsStructType(item))
+                {
+                    WriteStructTypeDeclaration(writer, item);
+                }
+            }
+            writer.WriteLine();
         }
 
         public void WriteMethod(MethodInfo method)
         {
             var     returnTypeName  = GetTypeDefinition(method.ReturnType);
             string  methodName      = method.Name;
-            var     parameters      = Array.ConvertAll(
-                method.GetParameters(),
-                (pItem) => GetParameterDefinition(pItem));
+            var     parameters      = Array.ConvertAll(method.GetParameters(),
+                                                       (pItem) => GetParameterDefinition(pItem));
             var     methodBody      = GetDefaultMethodBodyDefinition(method.ReturnType);
             var     methodSignature = $"{returnTypeName} {methodName}({string.Join(", ", parameters)})";
 
@@ -180,9 +204,11 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 
         #region Write methods
 
-        private void WriteHeaderComments(StreamWriter writer, string fileName,
-            string product, string author,
-            string copyrights)
+        private void WriteHeaderComments(StreamWriter writer,
+                                         string fileName,
+                                         string product,
+                                         string author,
+                                         string copyrights)
         {
             writer.WriteLine("//");
             writer.WriteLine($"// {fileName}");
@@ -199,12 +225,22 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
             writer.WriteLine("//");
         }
 
-        private void WriteHeaderImports(StreamWriter writer, params string[] files)
+        private void WriteHeaderImports(StreamWriter writer,
+                                        params string[] files)
         {
             foreach (var item in files)
             {
                 writer.WriteLine($"{item}");
             }
+        }
+
+        private void WriteStructTypeDeclaration(StreamWriter writer,
+                                                Type structType)
+        {
+            writer.WriteLine($"struct {structType.Name}");
+            writer.WriteLine("{");
+            writer.WriteLine("};");
+            writer.WriteLine($"typedef struct {structType.Name} {structType.Name};");
         }
 
         #endregion
@@ -220,48 +256,78 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
             }
 
             // Match type to its representation in objective c
+            if (type.IsArray || type.IsByRef)
+            {
+                return GetTypeDefinition(type.GetElementType()) + "*";
+            }
             if (type.IsEnum)
             {
                 return "int";
-            }
-            if (type.IsArray)
-            {
-                return GetTypeDefinition(type.GetElementType()) + "*";
             }
 
             if (s_dataTypeMap.TryGetValue(type, out string typeName))
             {
                 return typeName;
             }
-
-            if (type.IsByRef && s_dataTypeMap.TryGetValue(type.GetElementType(), out string typeNameOfElement))
+            if (TryGetBuiltinTypeName(type, out string nativeTypeName))
             {
-                return typeNameOfElement + "*";
+                return nativeTypeName;
             }
-
             return type.Name;
         }
 
         private string GetParameterDefinition(ParameterInfo param)
         {
-            return $"{GetTypeDefinition(param.ParameterType)} {param.Name}";
+            var     paramType   = GetTypeDefinition(param.ParameterType);
+            var     paramName   = param.Name;
+            return $"{paramType} {paramName}";
         }
 
         public string GetDefaultMethodBodyDefinition(Type returnType)
         {
+            string methodBody   = null;
             if (returnType.IsEnum)
             {
-                returnType  = typeof(int);
+                returnType      = typeof(int);
             }
 
-            if (!s_defaultMethodImplMap.TryGetValue(returnType, out string methodBody))
+            if (!s_defaultMethodImplMap.TryGetValue(returnType, out methodBody))
             {
-                methodBody  = "";
+                if (TryGetBuiltinTypeName(returnType, out string nativeType))
+                {
+                    if (returnType.IsValueType)
+                    {
+                        methodBody  = $"return {nativeType}();";
+                    }
+                }
             }
-
             return string.IsNullOrEmpty(methodBody)
                 ? "{ }"
                 : $"{{\n\t{methodBody}\n}}";
+        }
+
+        private bool TryGetBuiltinTypeName(Type type, out string nativeType)
+        {
+            nativeType  = null;
+
+            if (type.FullName.StartsWith("VoxelBusters"))
+            {
+                if (IsStructType(type))
+                {
+                    string  typeName    = type.Name;
+                    if (typeName.StartsWith("Unity"))
+                    {
+                        nativeType      = $"NP{typeName}";
+                        return true;
+                    }
+                    if (typeName.StartsWith("Native"))
+                    {
+                        nativeType      = typeName.Replace("Native", "NP");
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         #endregion

@@ -32,7 +32,8 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 
         #region Constructors
 
-        public NativeBindingsGenerator(string outputPath, NativeBindingsGeneratorOptions options)
+        public NativeBindingsGenerator(string outputPath,
+                                       NativeBindingsGeneratorOptions options)
         {
             // Set properties
             m_output        = IOServices.GetAbsolutePath(outputPath);
@@ -43,8 +44,10 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
 
         #region Static methods
 
-        public static INativeBindingsWriter CreateBindingsWriter(string path, string fileName,
-            NativeBindingsGeneratorOptions options, BuildTarget buildTarget)
+        public static INativeBindingsWriter CreateBindingsWriter(string path,
+                                                                 string fileName,
+                                                                 NativeBindingsGeneratorOptions options,
+                                                                 BuildTarget buildTarget)
         {
             switch (buildTarget)
             {
@@ -84,26 +87,35 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
             return this;
         }
 
-        public void Generate(Type cScriptType, string fileName,
-            BuildTarget buildTarget, out string[] files)
+        public void Generate(Type cScriptType,
+                             string fileName,
+                             BuildTarget buildTarget,
+                             Type[] customTypes,
+                             out string[] files)
         {
             // Create output folder
             IOServices.CreateDirectory(m_output, false);
 
             // Create native files
-            var     bindingsWriter  = CreateBindingsWriter(
-                m_output,
-                fileName,
-                m_options,
-                buildTarget);
+            var     bindingsWriter  = CreateBindingsWriter(m_output,
+                                                           fileName,
+                                                           m_options,
+                                                           buildTarget);
             try
             {
-                var     externMethods   = Array.FindAll(
-                    cScriptType.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public),
-                    (method) => (method.GetMethodBody() == null && method.IsStatic));
-                bindingsWriter.WriteStart(m_product, m_author, m_copyrights);
+                var     externMethods   = Array.FindAll(cScriptType.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public),
+                                                        (method) => (method.GetMethodBody() == null) && method.IsStatic);
+                bindingsWriter.WriteStart(m_product,
+                                          m_author,
+                                          m_copyrights);
+                if (!customTypes.IsNullOrEmpty())
+                {
+                    bindingsWriter.WriteCustomTypeDeclarations(customTypes);
+                }
                 foreach (var method in externMethods)
+                {
                     bindingsWriter.WriteMethod(method);
+                }
             }
             finally
             {

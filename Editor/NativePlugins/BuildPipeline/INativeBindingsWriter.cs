@@ -9,7 +9,11 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
     {
         #region Methods
 
-        void WriteStart(string product = null, string author = null, string copyrights = null);
+        void WriteStart(string product = null,
+                        string author = null,
+                        string copyrights = null);
+
+        void WriteCustomTypeDeclarations(System.Type[] customTypes);
 
         void WriteMethod(MethodInfo method);
 
