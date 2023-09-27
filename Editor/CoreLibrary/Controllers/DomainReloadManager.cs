@@ -76,9 +76,9 @@ namespace VoxelBusters.CoreLibrary.Editor
                 DebugLogger.Log(CoreLibraryDomain.Default, $"Clearing field {fieldInfo.Name} to value {resetValue}.");
                 fieldInfo.SetValue(null, resetValue);
             }
-            catch
+            catch(Exception e)
             {
-                DebugLogger.LogWarning(CoreLibraryDomain.Default, $"Unable to clear field {fieldInfo.Name}.");
+                DebugLogger.LogWarning(CoreLibraryDomain.Default, $"Unable to clear field {fieldInfo.Name}." + e);
             }
         }
 

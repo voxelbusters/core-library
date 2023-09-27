@@ -7,7 +7,7 @@ using UnityEditor;
 
 namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Android
 {
-    public abstract class AndroidNativePluginsManager : NativePluginsManager, IActiveBuildTargetChanged
+    public abstract class AndroidNativePluginsManager : NativePluginsManager
     {
 
 #region Fields
@@ -19,17 +19,6 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Android
 #region Properties
 
         private AndroidNativePluginsProcessor[] PluginsProcessors => m_pluginsProcessors ?? (m_pluginsProcessors = FindPluginsProcessors<AndroidNativePluginsProcessor>(this));
-
-#endregion
-
-#region IActiveBuildTargetChanged implementation
-
-        public int callbackOrder => 99;
-
-        public void OnActiveBuildTargetChanged(BuildTarget previousTarget, BuildTarget newTarget)
-        {
-            OnPreprocessNativePlugins();
-        }
 
 #endregion
 
