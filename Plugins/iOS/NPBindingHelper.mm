@@ -17,6 +17,8 @@
 static NSMutableDictionary* _referenceHistory   = nil;
 static CGPoint _lastTouchPosition = CGPointMake(0, 0);
 
+UIImage* NPFixOrientation(UIImage* image, BOOL isOpaque);
+
 #pragma mark - String operations
 
 char* NPCreateCStringFromNSString(NSString* nsString)
@@ -205,14 +207,27 @@ NSData* NPEncodeImageAsData(UIImage* image, UIImageEncodeType encodeType)
     switch (encodeType)
     {
         case UIImageEncodeTypePNG:
-            return UIImagePNGRepresentation(image);
+            return UIImagePNGRepresentation(NPFixOrientation(image, false));
             
         case UIImageEncodeTypeJPEG:
-            return UIImageJPEGRepresentation(image, 1);
+            return UIImageJPEGRepresentation(NPFixOrientation(image, true), 1);
             
         default:
             return nil;
     }
+}
+
+UIImage* NPFixOrientation(UIImage* image, bool isOpaque) //This is used as unity fails to consider exif flags for jpegs and also UIImageRepresentation fails to save orientation info when saved in png format. One shot - Two birds :D
+{
+    if (image.imageOrientation == UIImageOrientationUp) return image;
+    CGSize size = image.size;
+    float scale = image.scale;
+    
+    UIGraphicsBeginImageContextWithOptions(size, isOpaque, scale);
+    [image drawInRect:(CGRect){0, 0, size}];
+    UIImage *orientedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return orientedImage;
 }
 
 UIImage* NPCaptureScreenshotAsImage()

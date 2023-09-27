@@ -525,7 +525,21 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 			Project.AddFile(relativeDestination, entitlementFileName);
 			Project.SetBuildProperty(mainTargetGuid, BuildConfigurationKey.kCodeSignEntitlements, relativeDestination);
 
-			return entitlementsPath;
+
+            //@@ Adding patch to avoid build errors on windows (Need to cross check on windows system. This patch is provided by Baldrekr developer (ref: https://discord.com/channels/672868273779507223/760780555947474944/1097242018255732756))
+            // If these are both absolute paths, strip off the common part from entitlements.
+            if (entitlementsPath.Contains(':') && ProjectFilePath.Contains(':'))
+            {
+                int maxStrip = Math.Min(entitlementsPath.Length, ProjectFilePath.Length);
+                int i = 0;
+                while (i < maxStrip && ProjectFilePath[i] == entitlementsPath[i])
+                {
+                    i++;
+                }
+                entitlementsPath = entitlementsPath.Substring(i);
+            }
+
+            return entitlementsPath;
 		}
 
         private void ClearPluginsData()
