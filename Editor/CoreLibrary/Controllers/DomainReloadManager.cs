@@ -66,7 +66,10 @@ namespace VoxelBusters.CoreLibrary.Editor
         private static void ClearField(FieldInfo fieldInfo, ClearOnReloadAttribute clearAttribute)
         {
             var     fieldType   = fieldInfo.FieldType;
-            if (fieldType.IsGenericParameter) return;
+            if (fieldType.IsGenericParameter || fieldInfo.DeclaringType.ContainsGenericParameters)
+            {
+                return;
+            }
 
             // Access attribute parameters
             object  resetValue  = FindMemberResetValue(fieldType, clearAttribute);

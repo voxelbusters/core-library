@@ -87,7 +87,21 @@ namespace VoxelBusters.CoreLibrary.Editor
             foreach (var mapItem in s_typeMap)
             {
                 var     currentType = mapItem.Key;
-                foreach (var memberInfo in currentType.FindMembers(memberTypes, bindingAttr, null, null))
+
+                AddMembersWithRequiredAttributes(currentType);
+
+                //When we create a "concrete" class derived from a generic class, it will internally constructs a new class (replacing generic parameters with actual types). We need to query this type for required attributes as well.
+                if (IsConstructedClosedGenericType(currentType.BaseType)) 
+                {
+                    AddMembersWithRequiredAttributes(currentType.BaseType);
+                }
+            }
+            return collection;
+
+            void AddMembersWithRequiredAttributes(Type type)
+            {
+                var members = type.FindMembers(memberTypes, bindingAttr, null, null);
+                foreach (var memberInfo in members)
                 {
                     var     attributes  = memberInfo.GetCustomAttributes(attributeType, false);
                     if (attributes.IsNullOrEmpty()) continue;
@@ -95,7 +109,12 @@ namespace VoxelBusters.CoreLibrary.Editor
                     collection.Add(memberInfo as TMemberInfo, attributes[0] as TAttribute);
                 }
             }
-            return collection;
+
+        }
+
+        private static bool IsConstructedClosedGenericType(Type type)
+        {
+            return type != null && type.IsConstructedGenericType && !type.ContainsGenericParameters;
         }
 
         #endregion
