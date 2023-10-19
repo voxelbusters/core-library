@@ -363,7 +363,7 @@ namespace VoxelBusters.CoreLibrary.Editor
         {
             var     property    = m_focusSection.Property;
             EditorGUILayout.BeginHorizontal(m_backgroundStyle);
-            if (GUILayout.Button($"{'\u2190'} Back To Main Menu", m_selectableLabelStyle))
+            if (GUILayout.Button($"{'\u2190'} Back To Main Menu", m_titleLabelStyle))
             {
                 SetFocusSection(null);
                 return;

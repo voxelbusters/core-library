@@ -13,7 +13,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 {
     public class PBXNativePluginsManager : NativePluginsManager, IPostprocessBuildWithReport
     {
-        #region Constants
+#region Constants
 
         private const string                kPluginRelativePath     = "VoxelBusters/";
         
@@ -29,9 +29,9 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             ".cs"
         };
 
-        #endregion
+#endregion
 
-        #region Fields
+#region Fields
 
         private     PBXProject                      m_project;
         
@@ -41,9 +41,9 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
         
         private     PBXNativePluginsProcessor[]     m_pluginsProcessors;
         
-        #endregion
+#endregion
 
-        #region Properties
+#region Properties
 
         public PBXProject Project => ObjectHelper.CreateInstanceIfNull(
             ref m_project,
@@ -66,9 +66,9 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 
         private string ProjectFilePath => PBXProject.GetPBXProjectPath(OutputPath);
 
-        #endregion
+#endregion
 
-        #region Base class methods
+#region Base class methods
 
         protected override bool IsSupported(BuildTarget target)
         {
@@ -99,9 +99,9 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             UpdateProjectConfiguation();
         }
 
-        #endregion
+#endregion
 
-        #region Public methods
+#region Public methods
 
         public void AddFile(string sourceFilePath, string parentGroup, string[] compileFlags)
         {
@@ -113,9 +113,9 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                 compileFlags);
         }
 
-        #endregion
+#endregion
 
-        #region Private methods
+#region Private methods
 
         private void UpdateProjectConfiguation()
         {
@@ -139,7 +139,9 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             string  frameworkTargetGuid = project.GetFrameworkGuid();
             DebugLogger.Log(CoreLibraryDomain.NativePlugins, $"Project File Path: {projectFilePath} targetGuid: {frameworkTargetGuid} ProjectPath: {OutputPath}");
 
-            project.AddSourcesBuildPhase(frameworkTargetGuid);//@@ fix for "does not refer to a file in a known build section"
+            //@@ fix for "does not refer to a file in a known build section"
+            project.AddSourcesBuildPhase(frameworkTargetGuid);
+            project.AddHeadersBuildPhase(frameworkTargetGuid);
 
             // Read exporter settings for adding native files 
             foreach (var exporterObject in ActiveExporterObjects)
@@ -392,9 +394,9 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             }
         }
 
-        #endregion
+#endregion
 
-        #region Misc methods
+#region Misc methods
 
         private void UpdateInfoPlistDocument()
         {
@@ -548,7 +550,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             IOServices.DeleteDirectory(pluginExportPath);
         }
 
-        #endregion
+#endregion
     }
 }
 #endif
