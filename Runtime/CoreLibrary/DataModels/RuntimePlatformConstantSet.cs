@@ -41,7 +41,7 @@ namespace VoxelBusters.CoreLibrary
             return GetConstantForPlatform(platform, defaultValue);
         }
 
-        public string GetConstantForActiveOrSimulationPlatform(string defaultValue = null)
+        public string GetConstantForActiveOrSimulationPlatform(string defaultValue = null)//Why this is not used?
         {
             var     platform    = ApplicationServices.GetActiveOrSimulationPlatform();
             return GetConstantForPlatform(platform, defaultValue);
@@ -68,7 +68,8 @@ namespace VoxelBusters.CoreLibrary
                     targetValue = defaultValue;
                     break;
             }
-            return targetValue;
+
+            return string.IsNullOrEmpty(targetValue) ? defaultValue : targetValue;
         }
 
         #endregion
