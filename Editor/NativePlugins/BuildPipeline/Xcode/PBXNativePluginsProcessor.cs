@@ -11,9 +11,12 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 {
     public abstract class PBXNativePluginsProcessor : NativePluginsProcessor
     {
-        #region Postprocess message methods
+#region Postprocess message methods
 
         public virtual void OnUpdateInfoPlist(PlistDocument doc)
+        { }
+
+        public virtual void OnUpdateEntitlementsPlist(PlistDocument doc)
         { }
 
         public virtual void OnUpdateCapabilities(ProjectCapabilityManager capabilityManager)
@@ -22,7 +25,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
         public virtual void OnUpdateMacroDefinitions(MacroDefinitionsManager manager)
         { }
 
-        #endregion
+#endregion
     }
 }
 #endif

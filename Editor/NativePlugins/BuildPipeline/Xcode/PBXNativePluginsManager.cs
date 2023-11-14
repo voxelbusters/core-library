@@ -13,6 +13,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 {
     public class PBXNativePluginsManager : NativePluginsManager, IPostprocessBuildWithReport
     {
+
 #region Constants
 
         private const string                kPluginRelativePath     = "VoxelBusters/";
@@ -123,6 +124,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             UpdateInfoPlistDocument();
             UpdateProjectCapabilities();
             UpdateMacroDefinitions();
+            UpdateEntitlementsPlistDocument();
 
             // Apply changes
             File.WriteAllText(ProjectFilePath, Project.WriteToString());
@@ -417,6 +419,27 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             // Save changes
             plistDoc.WriteToFile(plistPath);
         }
+
+        private void UpdateEntitlementsPlistDocument()
+        {
+            DebugLogger.Log(CoreLibraryDomain.Default, "Updating entitlements plist configuration.");
+
+            // Open the file
+            string plistPath = Path.Combine(OutputPath, GetEntitlementsPath());
+            var plistDoc = new PlistDocument();
+            plistDoc.ReadFromString(File.ReadAllText(plistPath));
+
+            // Send message to all the NativeProcessors
+            PluginsProcessors.ForEach(
+                (item) =>
+                {
+                    item.OnUpdateEntitlementsPlist(plistDoc);
+                });
+
+            // Save changes
+            plistDoc.WriteToFile(plistPath);
+        }
+
 
         private void UpdateProjectCapabilities()
         {
