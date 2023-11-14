@@ -513,8 +513,8 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 				var     fullPath    = Path.Combine(OutputPath, relativePath);
 				if (IOServices.FileExists(fullPath))
 				{
-					return fullPath;
-				}
+					return relativePath;//This should be relative path (if we pass full path it behaves differently on windows as internally PBXPath.Combine only checks for starting / but not windows style)
+                }
 			}
 
             //  Make new file
@@ -530,21 +530,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 			Project.AddFile(relativeDestination, entitlementFileName);
 			Project.SetBuildProperty(mainTargetGuid, BuildConfigurationKey.kCodeSignEntitlements, relativeDestination);
 
-
-            //@@ Adding patch to avoid build errors on windows (Need to cross check on windows system. This patch is provided by Baldrekr developer (ref: https://discord.com/channels/672868273779507223/760780555947474944/1097242018255732756))
-            // If these are both absolute paths, strip off the common part from entitlements.
-            if (entitlementsPath.Contains(':') && ProjectFilePath.Contains(':'))
-            {
-                int maxStrip = Math.Min(entitlementsPath.Length, ProjectFilePath.Length);
-                int i = 0;
-                while (i < maxStrip && ProjectFilePath[i] == entitlementsPath[i])
-                {
-                    i++;
-                }
-                entitlementsPath = entitlementsPath.Substring(i);
-            }
-
-            return entitlementsPath;
+            return relativeDestination;
 		}
 
         private void ClearPluginsData()
