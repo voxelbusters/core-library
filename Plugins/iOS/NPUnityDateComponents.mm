@@ -157,31 +157,43 @@ NSDateComponents* NPUnityDateComponents::ToNSDateComponents()
         NSCalendar*     nsCalendar      = [NSCalendar calendarWithIdentifier:NPGetCalendarIdentifier(this->calendar)];
         [dateComponents setCalendar:nsCalendar];
     }
-    if (this->year > 0)
+    if (this->year != -1)
     {
         [dateComponents setYear:this->year];
     }
-    if (this->month > 0)
+    if (this->month != -1)
     {
         [dateComponents setMonth:this->month];
     }
-    if (this->day > 0)
+    if (this->day != -1)
     {
         [dateComponents setDay:this->day];
     }
-    [dateComponents setHour:this->hour];
-    [dateComponents setMinute:this->minute];
-    [dateComponents setSecond:this->second];
-    [dateComponents setNanosecond:this->nanosecond];
-    if (this->weekday > 0)
+    if (this->hour != -1)
+    {
+        [dateComponents setHour:this->hour];
+    }
+    if (this->minute != -1)
+    {
+        [dateComponents setMinute:this->minute];
+    }
+    if (this->second != -1)
+    {
+        [dateComponents setSecond:this->second];
+    }
+    if (this->nanosecond != -1)
+    {
+        [dateComponents setNanosecond:this->nanosecond];
+    }
+    if (this->weekday != -1)
     {
         [dateComponents setWeekday:this->weekday];
     }
-    if (this->weekOfMonth > 0)
+    if (this->weekOfMonth != -1)
     {
         [dateComponents setWeekOfMonth:this->weekOfMonth];
     }
-    if (this->weekOfYear > 0)
+    if (this->weekOfYear != -1)
     {
         [dateComponents setWeekOfYear:this->weekOfYear];
     }
