@@ -166,16 +166,16 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         {
             // set default values
             m_calendar      = (Calendar)0;
-            m_year          = 0;
-            m_month         = 0;
-            m_day           = 0;
-            m_hour          = 0;
-            m_minute        = 0;
-            m_second        = 0;
-            m_nanosecond    = 0;
-            m_weekday       = 0;
-            m_weekOfMonth   = 0;
-            m_weekOfYear    = 0;
+            m_year          = -1;
+            m_month         = -1;
+            m_day           = -1;
+            m_hour          = -1;
+            m_minute        = -1;
+            m_second        = -1;
+            m_nanosecond    = -1;
+            m_weekday       = -1;
+            m_weekOfMonth   = -1;
+            m_weekOfYear    = -1;
         }
 
         #endregion
