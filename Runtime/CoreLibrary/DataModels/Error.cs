@@ -60,7 +60,7 @@ namespace VoxelBusters.CoreLibrary
 
         public override string ToString()
         {
-            return string.Format("Error Domain: {0} Code: {1} Description: {2}", Domain, Code, Description);
+            return string.Format("Error Domain: {0}\nCode: {1}\nDescription: {2}", Domain, Code, Description);
         }
 
         #endregion

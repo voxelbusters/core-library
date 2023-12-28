@@ -32,7 +32,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.DemoKit
 		{
 			if (append)
 			{
-                m_text.text    = m_text.text + "\n" + message;
+                m_text.text    = m_text.text + "\n---------------\n" + message;
 			}
 			else
 			{
