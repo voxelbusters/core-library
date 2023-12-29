@@ -322,7 +322,7 @@ namespace VoxelBusters.CoreLibrary.Editor
             if (hasSubtitle)
             {
                 var     subtitleRect    = new Rect(rect.x + 5f,
-                                                   rect.y + 30f,
+                                                   rect.y + 25f,
                                                    rect.width * 0.8f,
                                                    18f);
                 EditorGUI.LabelField(subtitleRect, section.Description, m_subtitleLabelStyle);
