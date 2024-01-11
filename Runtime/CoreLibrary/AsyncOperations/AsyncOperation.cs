@@ -2,6 +2,7 @@
 
 namespace VoxelBusters.CoreLibrary
 {
+    [IncludeInDocs]
     public abstract class AsyncOperation<T> : IAsyncOperation, IAsyncOperation<T>, IAsyncOperationUpdateHandler
     {
         #region Events
