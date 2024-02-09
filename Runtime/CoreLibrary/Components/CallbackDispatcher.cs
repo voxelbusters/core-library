@@ -51,7 +51,7 @@ namespace VoxelBusters.CoreLibrary
 
         #region Static methods
 
-        internal static CallbackDispatcher Initialize()
+        public static CallbackDispatcher Initialize()
         {
             return GetSingleton();
         }

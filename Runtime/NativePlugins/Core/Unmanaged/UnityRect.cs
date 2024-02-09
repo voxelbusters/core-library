@@ -6,7 +6,7 @@ using UnityEngine;
 namespace VoxelBusters.CoreLibrary.NativePlugins
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct UnityRect
+    public struct UnityRect
     {
         #region Properties
 

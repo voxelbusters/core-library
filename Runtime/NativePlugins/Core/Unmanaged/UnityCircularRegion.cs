@@ -7,7 +7,7 @@ using UnityEngine;
 namespace VoxelBusters.CoreLibrary.NativePlugins
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct UnityCircularRegion
+    public struct UnityCircularRegion
     {
         #region Properties
 

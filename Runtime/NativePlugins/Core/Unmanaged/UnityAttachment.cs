@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 namespace VoxelBusters.CoreLibrary.NativePlugins
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct UnityAttachment
+    public struct UnityAttachment
     {
         #region Properties
 

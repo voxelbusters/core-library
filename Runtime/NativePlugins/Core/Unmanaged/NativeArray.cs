@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace VoxelBusters.CoreLibrary.NativePlugins
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct NativeArray
+    public struct NativeArray
     {
         #region Properties
 

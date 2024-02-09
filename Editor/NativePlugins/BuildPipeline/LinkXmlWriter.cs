@@ -69,13 +69,35 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
             var packageConfiguration = runtimeConfiguration.GetPackageForPlatform(platform);
             if (packageConfiguration == null || useFallbackPackage)
             {
-                DebugLogger.LogWarning(CoreLibraryDomain.Default, $"Using fallback configuration for : {name}.");
-                var fallbackConfiguration = runtimeConfiguration.FallbackPackage;
-                AddRequiredType(fallbackConfiguration.Assembly, fallbackConfiguration.NativeInterfaceType);
+                if(useFallbackPackage)
+                {
+                    DebugLogger.LogWarning(CoreLibraryDomain.Default, $"Using fallback configuration for : {name}.");
+                    var fallbackConfiguration = runtimeConfiguration.FallbackPackage;
+                    AddRequiredType(fallbackConfiguration.Assembly, fallbackConfiguration.NativeInterfaceType);
+                    AddIgnoreType(packageConfiguration.Assembly, packageConfiguration.NativeInterfaceType);
+                }
             }
             else
             {
                 AddRequiredNamespace(packageConfiguration.Assembly, packageConfiguration.Namespace);
+            }
+        }
+
+        public void AddConfiguration(NativeFeatureRuntimeConfiguration runtimeConfiguration)
+        {
+            
+            var packages = runtimeConfiguration.Packages;
+
+            foreach(var eachPackage in packages)
+            {
+                AddRequiredType(eachPackage.Assembly, eachPackage.NativeInterfaceType);
+            }
+
+            var fallbackPackage = runtimeConfiguration.FallbackPackage;
+
+            if(fallbackPackage != null)
+            {
+                AddRequiredType(fallbackPackage.Assembly, fallbackPackage.NativeInterfaceType);
             }
         }
 

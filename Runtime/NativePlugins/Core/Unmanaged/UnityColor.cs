@@ -6,7 +6,7 @@ using UnityEngine;
 namespace VoxelBusters.CoreLibrary.NativePlugins
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct UnityColor
+    public struct UnityColor
     {
         #region Properties
 

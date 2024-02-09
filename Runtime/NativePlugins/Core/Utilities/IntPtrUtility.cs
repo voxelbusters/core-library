@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary.NativePlugins
 {
-    internal static class IntPtrUtility
+    public static class IntPtrUtility
     {
         public static string AsString(this IntPtr ptr)
         {

@@ -5,7 +5,7 @@ using VoxelBusters.CoreLibrary;
 
 namespace VoxelBusters.CoreLibrary.NativePlugins
 {
-    internal static class MarshalUtility
+    public static class MarshalUtility
     {
         #region Marshalling methods
 

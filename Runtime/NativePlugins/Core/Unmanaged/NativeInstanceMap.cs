@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace VoxelBusters.CoreLibrary.NativePlugins
 {
-    internal static class NativeInstanceMap
+    public static class NativeInstanceMap
     {
         #region Static fields
 
