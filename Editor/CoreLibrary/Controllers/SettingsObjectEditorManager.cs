@@ -13,7 +13,10 @@ namespace VoxelBusters.CoreLibrary.Editor
              var    settingsObjects = AssetDatabaseUtility.FindAssetObjects<SettingsObject>();  
              foreach (var obj in settingsObjects)         
              {
-                obj.OnEditorReload();
+                if(obj != null)
+                {
+                    obj.OnEditorReload();
+                }
              }
         }
     }
