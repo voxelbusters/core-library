@@ -18,6 +18,12 @@ namespace VoxelBusters.CoreLibrary.Editor
                 $"\n\t\"includePlatforms\":{Jsonify(includePlatforms)}," +
                 $"\n\t\"references\":{Jsonify(references)}" +
                 $"\n}}";
+
+            if (!IOServices.DirectoryExists(path))
+            {
+                IOServices.CreateDirectory(path);
+            }
+            
             IOServices.CreateFile(IOServices.CombinePath(path, $"{name}.asmdef"), json);
         }
 
