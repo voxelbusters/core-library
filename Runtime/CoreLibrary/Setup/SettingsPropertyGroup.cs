@@ -10,6 +10,7 @@ namespace VoxelBusters.CoreLibrary
         #region Fields
 
         [SerializeField]
+        [HideInInspector]
         private     bool        m_isEnabled     = true;
 
         #endregion
