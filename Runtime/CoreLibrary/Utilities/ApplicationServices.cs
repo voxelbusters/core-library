@@ -10,7 +10,8 @@ namespace VoxelBusters.CoreLibrary
     {
         #region Static fields
 
-        public static float OriginalTimeScale { get; set; }
+        //public static float OriginalTimeScale { get; set; }
+        private static float s_originalTimeScale;
 
         #endregion
 
@@ -28,7 +29,7 @@ namespace VoxelBusters.CoreLibrary
         [ExecuteOnReload]
         private static void Initialize()
         {
-            OriginalTimeScale   = Time.timeScale;
+            //OriginalTimeScale   = Time.timeScale;
         }
 
         public static void SetApplicationPaused(bool pause)
@@ -36,14 +37,16 @@ namespace VoxelBusters.CoreLibrary
             if (pause)
             {
                 // cache original value
-                OriginalTimeScale = Time.timeScale;
+                //OriginalTimeScale = Time.timeScale;
+                s_originalTimeScale = Time.timeScale;
 
                 // set new value
                 Time.timeScale      = 0f;
             }
             else
             {
-                Time.timeScale      = OriginalTimeScale;
+                //Time.timeScale      = OriginalTimeScale;
+                Time.timeScale = s_originalTimeScale;
             }
         }
 
