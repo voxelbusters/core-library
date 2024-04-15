@@ -49,7 +49,7 @@ char* NPCreateCStringFromNSError(NSError* error)
 {
     if (error)
     {
-        return (char*)[[error description] UTF8String];
+        return (char*)[[error localizedDescription] UTF8String];
     }
     
     return nil;

@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEditor.iOS.Xcode;
+using UnityEditor.iOS.Xcode.Extensions;
 using UnityEngine;
 
 namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
@@ -261,6 +262,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             else if (string.Equals(fileExtension, ".framework", StringComparison.InvariantCultureIgnoreCase))
             {
                 CacheFrameworkSearchPath(destinationFilePath);
+                project.AddFileToEmbedFrameworks(Project.GetMainTargetGuid(), fileGuid);
             }
         }
 
@@ -284,13 +286,26 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             // add folders placed within this folder
             foreach (var subFolderInfo in sourceFolderInfo.GetDirectories())
             {
-                string  folderGroup     = parentGroup + subFolderInfo.Name + "/";
-                AddFolderToProject(
-                    project,
-                    subFolderInfo.FullName,
-                    targetGuid,
-                    folderGroup,
-                    compileFlags);
+                if(subFolderInfo.Name.EndsWith(".framework"))
+                {
+                    AddFileToProject(
+                        project,
+                        subFolderInfo.FullName,
+                        targetGuid,
+                        parentGroup,
+                        compileFlags);
+                }
+                else
+                {
+                    string  folderGroup     = parentGroup + subFolderInfo.Name + "/";
+
+                    AddFolderToProject(
+                        project,
+                        subFolderInfo.FullName,
+                        targetGuid,
+                        folderGroup,
+                        compileFlags);
+                }
             }
         }
 
