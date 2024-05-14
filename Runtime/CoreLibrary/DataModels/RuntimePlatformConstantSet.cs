@@ -26,9 +26,9 @@ namespace VoxelBusters.CoreLibrary
         public RuntimePlatformConstantSet(string ios = null, string tvos = null, string android = null)
         {
             // set properties
-            m_ios       = ios;
-            m_tvos      = tvos;
-            m_android   = android;
+            m_ios       = ios?.Trim();
+            m_tvos      = tvos?.Trim();
+            m_android   = android?.Trim();
         }
 
         #endregion

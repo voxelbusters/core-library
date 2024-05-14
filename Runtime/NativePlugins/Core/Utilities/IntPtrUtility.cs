@@ -22,10 +22,10 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
             
             if (value != null)
             {
-                return DateTime.ParseExact(value, kZuluFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+                return DateTime.ParseExact(value, kZuluFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal).ToUniversalTime();
             }
 
-            return default(DateTime);
+            return default;
         }
 
         public static DateTime? AsOptionalDateTime(this IntPtr ptr)

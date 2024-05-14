@@ -63,6 +63,18 @@ NPError NPCreateError(int code, NSString* description)
     return error;
 }
 
+NPError NPCreateError(NSError* error)
+{
+    if (error)
+    {
+        return NPCreateError((int) error.code, error.localizedDescription);
+    }
+    else
+    {
+        return NPNullError();
+    }
+}
+
 NPError NPNullError()
 {
     NPError error = {-1, NULL};
