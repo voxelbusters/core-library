@@ -130,12 +130,22 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 
         /// <summary>
         /// Gets or sets the weekday.
+        /// Note: Weekday starts from Monday(1) to Sunday(7) - As per ISO 8601 standard
         /// </summary>
         /// <value>The weekday.</value>
         public int Weekday
         {
             get => m_weekday;
-            set => m_weekday = value;
+
+            set   
+            {
+                if(value == 0)
+                {
+                    DebugLogger.LogError(CoreLibraryDomain.NativePlugins, "Weekday cannot be 0. Weekday starts from Monday(1) to Sunday(7)");    
+                }
+
+                m_weekday = value;
+            }
         }
 
         /// <summary>

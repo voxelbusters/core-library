@@ -144,7 +144,7 @@ void NPUnityDateComponents::CopyProperties(NSDateComponents* dateComponents)
     this->minute        = [dateComponents minute];
     this->second        = [dateComponents second];
     this->nanosecond    = [dateComponents nanosecond];
-    this->weekday       = [dateComponents weekday];
+    this->weekday       = [dateComponents weekday] == 1 ? 7 : [dateComponents weekday] - 1; //Converting from  1(SUNDAY) to 7(SATURDAY) => 1(MONDAY) to 7(SUNDAY)
     this->weekOfMonth   = [dateComponents weekOfMonth];
     this->weekOfYear    = [dateComponents weekOfYear];
 }
@@ -187,7 +187,7 @@ NSDateComponents* NPUnityDateComponents::ToNSDateComponents()
     }
     if (this->weekday != -1)
     {
-        [dateComponents setWeekday:this->weekday];
+        [dateComponents setWeekday: (this->weekday == 7) ? 1 : this->weekday + 1]; //Input will be from 1(MONDAY) to 7(SUNDAY) => 1(SUNDAY) to 7(SATURDAY)
     }
     if (this->weekOfMonth != -1)
     {
