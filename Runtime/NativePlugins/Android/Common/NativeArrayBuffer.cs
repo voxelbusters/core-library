@@ -22,7 +22,18 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.Android
             if (m_nativeObject == null)
                 return default(T);
 
-            return m_nativeObject.Call<T>("get", index);
+            T instance;
+            if(IsStringOrPrimitive(typeof(T)))
+            {
+                instance = Call<T>("get", index);
+            }
+            else
+            {
+                AndroidJavaObject androidJavaObject = Call<AndroidJavaObject>("get", index);
+                instance = (T)Activator.CreateInstance(typeof(T), new object[] { androidJavaObject });
+            }
+            
+            return instance;        
         }
 
         public T[] GetArray()
@@ -39,6 +50,23 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.Android
             }
 
             return list.ToArray();
+        }
+
+        private static bool IsStringOrPrimitive(Type type)
+        {
+            // Check if the type is string
+            if (type == typeof(string))
+            {
+                return true;
+            }
+
+            // Check if the type is a primitive type
+            if (type.IsPrimitive)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
