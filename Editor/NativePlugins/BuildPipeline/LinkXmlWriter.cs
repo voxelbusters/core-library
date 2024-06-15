@@ -73,8 +73,14 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
                 {
                     DebugLogger.LogWarning(CoreLibraryDomain.Default, $"Using fallback configuration for : {name}.");
                     var fallbackConfiguration = runtimeConfiguration.FallbackPackage;
-                    AddRequiredType(fallbackConfiguration.Assembly, fallbackConfiguration.NativeInterfaceType);
-                    AddIgnoreType(packageConfiguration.Assembly, packageConfiguration.NativeInterfaceType);
+                    if(fallbackConfiguration != null)
+                    {
+                        AddRequiredType(fallbackConfiguration.Assembly, fallbackConfiguration.NativeInterfaceType);
+                    }
+                    if(packageConfiguration != null)
+                    {
+                        AddIgnoreType(packageConfiguration.Assembly, packageConfiguration.NativeInterfaceType);
+                    }
                 }
             }
             else
