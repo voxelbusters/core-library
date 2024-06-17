@@ -10,6 +10,7 @@ using JsonUtility = VoxelBusters.CoreLibrary.Parser.JsonUtility;
 
 namespace VoxelBusters.CoreLibrary.Editor.Experimental
 {
+    /*
     public class UnityPackageManifestKey
     {
         public const string kDependencies = "dependencies";
@@ -158,5 +159,5 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
         }
 
         #endregion
-    }
+    }*/
 }
