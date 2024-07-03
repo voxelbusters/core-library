@@ -17,7 +17,7 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
 
     public class AssetPackageDependencyResolver : AssetPostprocessor
     {
-        #region Constants
+       /* #region Constants
 
         private const string kMainManifestPath  = "Packages/manifest.json";
 
@@ -157,6 +157,6 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
             }
         }
 
-        #endregion
+        #endregion*/
     }
 }
