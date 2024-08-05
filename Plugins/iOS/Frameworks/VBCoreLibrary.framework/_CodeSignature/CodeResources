@@ -14,11 +14,11 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		xdF420V4GnRMeoImYvzjMiC6GQk=
+		iGTZBwqK+wPNDcLXTUUbFx0/s7c=
 		</data>
 		<key>Modules/VBCoreLibrary.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo</key>
 		<data>
-		GDbo2El4c4/L7IAOP8zIu5q3AYE=
+		HqM6QpEa5dSBPEprdBevXPxqCjI=
 		</data>
 		<key>Modules/VBCoreLibrary.swiftmodule/arm64-apple-ios.abi.json</key>
 		<data>
@@ -26,11 +26,11 @@
 		</data>
 		<key>Modules/VBCoreLibrary.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<data>
-		9OcjOCp839fpDvpadNA3QKxX4Y0=
+		OC8eAG/Q46MrIcxdWg43y35La2E=
 		</data>
 		<key>Modules/VBCoreLibrary.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		MCVjiMBUiZOGNA7l+Cx2wyzg69U=
+		kIE4GMt1xHpxgngk/lqBaPux1n0=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -57,7 +57,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			FWc4fnvN0TxX7vQ5NpgWpXfcdXy3At4mAl+QALKnu24=
+			bsW3fnPxYC9STaekMJqzGHMFZeFVqw8k6G1bJogmgkM=
 			</data>
 		</dict>
 		<key>Modules/VBCoreLibrary.swiftmodule/arm64-apple-ios.abi.json</key>
@@ -71,14 +71,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			3sEPqLXKcL1O6eFv0/MNSyKO0X315R0a3+2Mc1aK12w=
+			E3gQjoHGFfaVziTMaYJ81c1e7u9HqWI8AJy/JxJp8yI=
 			</data>
 		</dict>
 		<key>Modules/VBCoreLibrary.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			nbzFAxDX0MknP5lO+vZX2/FJLUKPaFWuq0JHkxmuWOY=
+			JeV0ItpuaafvBSBRABnpbbWeddUcR9Wd2OQ31LmTVa0=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

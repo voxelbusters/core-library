@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System;
 
 namespace VoxelBusters.CoreLibrary.Editor
 {
@@ -101,47 +102,44 @@ namespace VoxelBusters.CoreLibrary.Editor
                                                bool indent = true,
                                                params string[] ignoreProperties)
         {
+            EditorGUILayout.BeginVertical(CustomEditorStyles.GroupBackground());
             try
             {
+                float maxWidth = 0;
+                //Calculate max label width first
+                IterateThroughValidChildren(property, ignoreProperties, (eachChildProperty) =>
+                {
+                    var currentDisplayName  = (prefix != null) ? $"{prefix} {eachChildProperty.displayName}" : eachChildProperty.displayName;
+                    float currentLabelWidth = GUI.skin.label.CalcSize(new GUIContent(currentDisplayName)).x;
+
+                    if(maxWidth < currentLabelWidth)
+                    {
+                        maxWidth = currentLabelWidth;
+                    }
+
+                });
+
+
                 if (indent)
                 {
                     EditorGUI.indentLevel++;
                 }
 
-                // Move pointer to first element
-                var     currentProperty  = property.Copy();
-                var     endProperty      = default(SerializedProperty);
-
-                // Start iterating through the properties
-                bool    firstTime       = true;
-                while (currentProperty.NextVisible(enterChildren: firstTime))
+                var oldLabelWidth = EditorGUIUtility.labelWidth;
+                EditorGUIUtility.labelWidth = ((maxWidth / 128) + 1)  * 128; //Adding some extra 128 pixels buffer.
+                IterateThroughValidChildren(property, ignoreProperties, (eachChildProperty) =>
                 {
-                    if (firstTime)
-                    {
-                        endProperty      = property.GetEndProperty();
-                        firstTime        = false;
-                    }
-                    if (SerializedProperty.EqualContents(currentProperty, endProperty))
-                    {
-                        break;
-                    }
-
-                    // Exclude specified properties
-                    if ((ignoreProperties != null) && System.Array.Exists(ignoreProperties, (item) => string.Equals(item, currentProperty.name)))
-                    {
-                        continue;
-                    }
-
                     // Display the property
                     if (prefix != null)
                     {
-                        EditorGUILayout.PropertyField(currentProperty, new GUIContent($"{prefix} {currentProperty.displayName}", currentProperty.tooltip), true);
+                        EditorGUILayout.PropertyField(eachChildProperty, new GUIContent($"{prefix} {eachChildProperty.displayName}", eachChildProperty.tooltip), true);
                     }
                     else
                     {
-                        EditorGUILayout.PropertyField(currentProperty, true);
+                        EditorGUILayout.PropertyField(eachChildProperty, true);
                     }
-                }
+                });
+                EditorGUIUtility.labelWidth = oldLabelWidth;
             }
             finally
             {
@@ -149,6 +147,37 @@ namespace VoxelBusters.CoreLibrary.Editor
                 {
                     EditorGUI.indentLevel--;
                 }
+            }
+            EditorGUILayout.EndVertical();
+        }
+
+        private static void IterateThroughValidChildren(SerializedProperty property, string[] ignoreProperties, Action<SerializedProperty> callbackOnEachChild)
+        {
+            // Move pointer to first element
+            var currentProperty = property.Copy();
+            var endProperty = default(SerializedProperty);
+
+            // Start iterating through the properties
+            bool firstTime = true;
+            while (currentProperty.NextVisible(enterChildren: firstTime))
+            {
+                if (firstTime)
+                {
+                    endProperty = property.GetEndProperty();
+                    firstTime = false;
+                }
+                if (SerializedProperty.EqualContents(currentProperty, endProperty))
+                {
+                    break;
+                }
+
+                // Exclude specified properties
+                if ((ignoreProperties != null) && System.Array.Exists(ignoreProperties, (item) => string.Equals(item, currentProperty.name)))
+                {
+                    continue;
+                }
+
+                callbackOnEachChild(currentProperty);
             }
         }
 

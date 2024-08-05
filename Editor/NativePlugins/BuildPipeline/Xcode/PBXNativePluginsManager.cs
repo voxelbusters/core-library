@@ -263,6 +263,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             {
                 CacheFrameworkSearchPath(destinationFilePath);
                 project.AddFileToEmbedFrameworks(Project.GetMainTargetGuid(), fileGuid);
+                //@@project.AddFileToBuildSection(targetGuid, project.GetFrameworksBuildPhaseByTarget(targetGuid), fileGuid);
             }
         }
 
@@ -519,8 +520,8 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                 headerComments: "//  NPConfig.h" +
                     "//  Native Plugins" +
                     "//" +
-                    "//  Created by Ashwin kumar on 22/01/19." +
-                    "//  Copyright (c) 2019 Voxel Busters Interactive LLP. All rights reserved." +
+                    "//  Created by Ashwin kumar" +
+                    "//  Copyright (c) 2024 Voxel Busters Interactive LLP. All rights reserved." +
                     "//");
 
             // Add macros from Settings file

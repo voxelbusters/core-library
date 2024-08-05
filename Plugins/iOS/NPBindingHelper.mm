@@ -186,6 +186,8 @@ NSString* NPExtractTokenFromNSData(id token)
 
 NPArray* NPCreateNativeArrayFromNSArray(NSArray* array)
 {
+    //It's not possible to create an empty array (with no elements) with calloc/malloc and in that place need to use null. But it beats the purpose as there can be empty arrays. So better to use NPArrayWrapper which is not a dynamic struct in those cases.
+    //Note on managed side, Length with zero is different from Length with -1. Length with zero means empty collection, where as length with -1 means no array exists.
     if (array)// && [array count] > 0
     {
         int         length      = (int)[array count];

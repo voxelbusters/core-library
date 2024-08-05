@@ -65,7 +65,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         public static IntPtr[] CreateManagedArray(IntPtr arrayPtr, int length)
         {
             // check whether array is valid
-            if (arrayPtr == IntPtr.Zero)
+            if (length == -1) //Not checking arrayPtr is zero or not - as it's possible to have an array with no elements too. If null needs to be created, length needs to be -1.
             {
                 return null;
             }
@@ -79,7 +79,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
 
         public static string[] CreateStringArray(IntPtr arrayPtr, int length)
         {
-            if (IntPtr.Zero == arrayPtr)
+            if (length == -1) //Not checking arrayPtr is zero or not - as it's possible to have an array with no elements too. If null needs to be created, length needs to be -1.
             {
                 return null;
             }
