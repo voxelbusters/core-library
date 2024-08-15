@@ -90,7 +90,7 @@ namespace VoxelBusters.CoreLibrary.Editor
             GUILayout.BeginVertical();
             GUILayout.Label(m_productName, ProductNameStyle);
             GUILayout.Label(m_productVersion, NormalLabelStyle);
-            GUILayout.Label("Copyright © 2023 Voxel Busters Interactive LLP.", OptionsLabelStyle);
+            GUILayout.Label("Copyright © 2024 Voxel Busters Interactive LLP.", OptionsLabelStyle);
             GUILayout.EndVertical();
 
             GUILayout.FlexibleSpace();

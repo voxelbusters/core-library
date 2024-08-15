@@ -123,7 +123,15 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         public System.Type[] GetBindingTypeReferences()
         {
             var     assembly    = ReflectionUtility.FindAssemblyWithName(Assembly);
-            return System.Array.ConvertAll(BindingTypes, (item) => assembly.GetType(item));
+            return System.Array.ConvertAll(BindingTypes, (item) => 
+            {
+                System.Type type = assembly.GetType(item);
+                if(type == null)
+                {
+                    DebugLogger.LogError($"Expected type missing for {item}. Contact developer.");
+                }
+                return type;
+            });
         }
 
         public bool IsMatch(RuntimePlatform platform, string custom)
