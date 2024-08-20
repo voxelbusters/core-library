@@ -46,6 +46,7 @@ namespace VoxelBusters.CoreLibrary
         #region Fields
 
         private     Queue<Action>       m_queue;
+        private readonly object queueLock = new object();
 
         #endregion
 
@@ -196,11 +197,14 @@ namespace VoxelBusters.CoreLibrary
         {
             try
             {
-                // execute pending actions
-                while (m_queue.Count > 0)
+                lock(queueLock)
                 {
-                    var     action  = m_queue.Dequeue();
-                    action();
+                    // execute pending actions
+                    while (m_queue.Count > 0)
+                    {
+                        var     action  = m_queue.Dequeue();
+                        action();
+                    }
                 }
             }
             catch (Exception expection)
@@ -215,7 +219,10 @@ namespace VoxelBusters.CoreLibrary
 
         private void AddAction(Action action)
         {
-            m_queue.Enqueue(action);
+            lock(queueLock)
+            {
+                m_queue.Enqueue(action);
+            }
         }
 
         #endregion

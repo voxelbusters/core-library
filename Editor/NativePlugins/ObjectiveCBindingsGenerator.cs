@@ -237,10 +237,15 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
         private void WriteStructTypeDeclaration(StreamWriter writer,
                                                 Type structType)
         {
-            writer.WriteLine($"struct {structType.Name}");
+            if(!TryGetBuiltinTypeName(structType, out string nativeTypeName))
+            {
+               nativeTypeName = structType.Name;
+            }
+
+            writer.WriteLine($"struct {nativeTypeName}");
             writer.WriteLine("{");
             writer.WriteLine("};");
-            writer.WriteLine($"typedef struct {structType.Name} {structType.Name};");
+            writer.WriteLine($"typedef struct {nativeTypeName} {nativeTypeName};");
         }
 
         #endregion
