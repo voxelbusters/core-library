@@ -4,11 +4,20 @@ using System.Collections.Generic;
 
 namespace VoxelBusters.CoreLibrary
 {
-    internal class RuntimeScheduler : SingletonBehaviour<RuntimeScheduler>, IScheduler
+    internal class RuntimeScheduler : PrivateSingletonBehaviour<RuntimeScheduler>, IScheduler
 	{
         #region Fields
 
         private event Callback UpdateEvent;  
+
+        #endregion
+
+        #region Static methods
+
+        public static RuntimeScheduler Initialize()
+        {
+            return GetSingleton();
+        }
 
         #endregion
 

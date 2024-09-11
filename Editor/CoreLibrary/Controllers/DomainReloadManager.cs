@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using UnityEditor;
 
 // Credits: https://github.com/joshcamas/unity-domain-reload-helper
 namespace VoxelBusters.CoreLibrary.Editor
@@ -32,6 +31,7 @@ namespace VoxelBusters.CoreLibrary.Editor
             var     members = TypeCache.GetMembersWithAttribute<ClearOnReloadAttribute>(
                 memberTypes: MemberTypes.Field | MemberTypes.Property | MemberTypes.Event,
                 bindingAttr: kDefaultBindingAttr);
+            
             foreach (var item in members)
             {
                 var     member      = item.Key;
@@ -76,7 +76,7 @@ namespace VoxelBusters.CoreLibrary.Editor
 
             try
             {
-                DebugLogger.Log(CoreLibraryDomain.Default, $"Clearing field {fieldInfo.Name} to value {resetValue}.");
+                DebugLogger.Log(CoreLibraryDomain.Default, $"Clearing field {fieldInfo.Name} to value {resetValue} for type {fieldType}.");
                 fieldInfo.SetValue(null, resetValue);
             }
             catch(Exception e)

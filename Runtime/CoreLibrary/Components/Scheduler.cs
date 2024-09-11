@@ -66,7 +66,7 @@ namespace VoxelBusters.CoreLibrary
             else
         #endif
             {
-                s_scheduler = RuntimeScheduler.Instance;
+                s_scheduler = RuntimeScheduler.Initialize(); //Need to find out why RuntimeScheduler when using Singleton base class not working with domain reload, but PrivateSingleton do work.
             }
         }
 

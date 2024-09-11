@@ -72,6 +72,10 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
                 // Send appropriate message
                 OnPreprocessNativePlugins();
             }
+            catch(Exception e)
+            {
+                throw new BuildFailedException(e);
+            }
             finally
             {
                 // Reset properties

@@ -84,6 +84,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             PluginsProcessors.ForEach(
                 (item) =>
                 {
+                    item.OnCheckConfiguration();
                     item.OnUpdateExporterObjects();
                     item.OnUpdateLinkXml(linkerFileWriter);
                 });
