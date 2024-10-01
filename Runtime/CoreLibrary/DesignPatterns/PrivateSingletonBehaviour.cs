@@ -51,7 +51,7 @@ namespace VoxelBusters.CoreLibrary
                 if (s_sharedInstance == null)
                 {
                     // find all the instances that exist in the screen
-                    var     sceneInstances  = FindObjectsOfType(objectType) as T[];
+                    var     sceneInstances  = FindObjectsByType(objectType, FindObjectsSortMode.None) as T[];
                     if (sceneInstances.Length > 0)
                     {
                         // save first element and remove others
