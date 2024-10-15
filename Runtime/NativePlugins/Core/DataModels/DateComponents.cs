@@ -133,6 +133,7 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
         /// Note: Weekday starts from Monday(1) to Sunday(7) - As per ISO 8601 standard
         /// </summary>
         /// <value>The weekday.</value>
+        [Obsolete("Use DayOfWeek property instead", true)]
         public int Weekday
         {
             get => m_weekday;
@@ -142,6 +143,26 @@ namespace VoxelBusters.CoreLibrary.NativePlugins
                 if(value == 0)
                 {
                     DebugLogger.LogError(CoreLibraryDomain.NativePlugins, "Weekday cannot be 0. Weekday starts from Monday(1) to Sunday(7)");    
+                }
+
+                m_weekday = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the weekday.
+        /// Note: DayOfWeek starts from Monday(1) to Sunday(7) - As per ISO 8601 standard
+        /// </summary>
+        /// <value>The day of the week.</value>
+        public int DayOfWeek
+        {
+            get => m_weekday;
+
+            set   
+            {
+                if(value == 0)
+                {
+                    DebugLogger.LogError(CoreLibraryDomain.NativePlugins, "DayOfWeek cannot be 0. DayOfWeek starts from Monday(1) to Sunday(7) (ISO 8601 standard)");    
                 }
 
                 m_weekday = value;
