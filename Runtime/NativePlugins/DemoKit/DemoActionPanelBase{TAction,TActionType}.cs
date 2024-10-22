@@ -69,6 +69,9 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.DemoKit
 
         protected void Log(string message, bool append = true)
         {
+            #if NATIVE_PLUGINS_DEBUG
+            Debug.Log(message);
+            #endif
             m_consoleRect.Log(message, append);
         }
 
