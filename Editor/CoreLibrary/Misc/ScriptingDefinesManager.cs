@@ -133,7 +133,7 @@ namespace VoxelBusters.CoreLibrary.Editor
                     // set values if there are modifications
                     if (isModified)
                     {
-                        PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, string.Join(";", updatedDefines.ToArray()));
+                        PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(targetGroup), string.Join(";", updatedDefines.ToArray()));
                     }
                 }
             }
