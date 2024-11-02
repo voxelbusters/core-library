@@ -14,15 +14,8 @@ namespace VoxelBusters.CoreLibrary
 
         #region Base methods
 
-        protected virtual void Awake()
-        {
-            UpdateLoggerSettings();
-        }
-
         protected virtual void OnValidate()
         {
-            UpdateLoggerSettings();
-
             OnSettingsUpdated?.Invoke();
         }
 
@@ -34,7 +27,6 @@ namespace VoxelBusters.CoreLibrary
 
         internal virtual void OnEditorReload()
         {
-            UpdateLoggerSettings();
         }
 
         #endregion

@@ -67,6 +67,15 @@ namespace VoxelBusters.CoreLibrary.Editor
                                richText: true);
         }
 
+        public static GUIStyle MiniLabel(bool wordWrap = true)
+        {
+            return CreateLabel(baseStyle: EditorStyles.miniLabel,
+                               fontSize: 12,
+                               wordWrap: wordWrap,
+                               richText: true);
+        }
+
+
         public static GUIStyle SelectableLabel(FontStyle? fontStyle = null,
                                                int? fontSize = null,
                                                Color? textColor = null)
