@@ -20,4 +20,17 @@
     return error;
 }
 
+
++ (id)createFromError:(NSError*) error
+                 withDomain:(NSString*) domain
+                   withCode:(int) code
+{
+    if(error == nil)
+        return nil;
+    
+    return [self errorWithDomain:domain
+                               code:code
+                           userInfo: @{NSLocalizedDescriptionKey: error.description}];
+}
+
 @end
