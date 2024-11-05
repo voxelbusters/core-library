@@ -39,8 +39,6 @@ namespace VoxelBusters.CoreLibrary
     /// </summary>
     public delegate void EventCallback<TResult>(TResult result, Error error);
 
-    public delegate void CompletionCallbackLegacy(Error error);
-
     public class CallbackDispatcher : PrivateSingletonBehaviour<CallbackDispatcher>
     {
         #region Fields
