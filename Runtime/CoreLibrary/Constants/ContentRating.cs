@@ -3,6 +3,12 @@ using System.Collections;
 
 namespace VoxelBusters.CoreLibrary
 {
+    /// <summary>
+    /// Enum specifying the level of content maturity for an app.
+    /// </summary>
+    /// <description>
+    /// This enum is used to specify the level of content maturity for an app.
+    /// </description>
     public enum ContentRating
     {
         Unspecified = 0,

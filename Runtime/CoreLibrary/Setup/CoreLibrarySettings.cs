@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary> 
+/// A common library for all Voxel Busters's plugins.
+/// </summary>
 namespace VoxelBusters.CoreLibrary
 {
     public class CoreLibrarySettings
