@@ -31,10 +31,10 @@ namespace VoxelBusters.CoreLibrary.NativePlugins.Android
             return dateTime.AddSeconds(epoch);
         }
 
-        public DateTime? GetDateTimeOptional()
+        public DateTime? GetDateTimeOptional(DateTime? defaultValue = null)
         {
             if(IsNull())
-                return null;
+                return defaultValue;
 
             return GetDateTime();
         }
