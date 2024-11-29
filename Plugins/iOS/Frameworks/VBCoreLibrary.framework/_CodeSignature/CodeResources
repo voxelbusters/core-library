@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/VBCoreLibrary-Swift.h</key>
 		<data>
-		ydaITRxe6SbXmbT30+iCyEBKtnA=
+		Hjdqx8WxHOvG9hzlOg7nZRtw+Vo=
 		</data>
 		<key>Headers/VBCoreLibrary.h</key>
 		<data>
@@ -14,23 +14,23 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		7Tc2KHBOoNaAmGSNcZQi2/PcS6g=
+		pxo5gtPQWRFPCoOE8Gl4uo9iwvg=
 		</data>
 		<key>Modules/VBCoreLibrary.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo</key>
 		<data>
-		ML3znFQS5pPfMENMpmH8KCxivGI=
+		oqG6wlhwZaunU350nJA8bVC5q94=
 		</data>
 		<key>Modules/VBCoreLibrary.swiftmodule/arm64-apple-ios.abi.json</key>
 		<data>
-		FSPnLbho3G+LL9smI3XgVOqBIQ4=
+		gcwBsH4BgyFY4sVtNt+/xOKS3vY=
 		</data>
 		<key>Modules/VBCoreLibrary.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<data>
-		OC8eAG/Q46MrIcxdWg43y35La2E=
+		JOvwORQkDM+/MNGPMdJUBUkPgqs=
 		</data>
 		<key>Modules/VBCoreLibrary.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		kIE4GMt1xHpxgngk/lqBaPux1n0=
+		h+4O81uw4s9EyQeIipgYg5onn40=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -43,7 +43,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			WxkOkkCeEOnac/ZMmSNhEGe/ujZaZ1S8asBF0h/PgNM=
+			tVGO+jGwI7HIKW4WEQ4l605l4nUpQcp9iVLqnJmUjeg=
 			</data>
 		</dict>
 		<key>Headers/VBCoreLibrary.h</key>
@@ -57,28 +57,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			3L4ZyHu0M0MDuVdnzstcKy/GVQ+2uvwQAaieR66Ogbc=
+			d6pdNrKLngNj3oB+W2YtrUIX0evvCTtZw+V4+LtC2bE=
 			</data>
 		</dict>
 		<key>Modules/VBCoreLibrary.swiftmodule/arm64-apple-ios.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			KnRdWE4y6t4QM5zi5JDptPdHFgJy1Tku+7GLkZS2aNM=
+			Qnesa0n4URGWAopawg9bGx36dUwkYV00BoCJ8LFzlyg=
 			</data>
 		</dict>
 		<key>Modules/VBCoreLibrary.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			E3gQjoHGFfaVziTMaYJ81c1e7u9HqWI8AJy/JxJp8yI=
+			EZV99gTgcNlcE/M3FBcb9E/8eoctajeSCkFoFONBZHg=
 			</data>
 		</dict>
 		<key>Modules/VBCoreLibrary.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			JeV0ItpuaafvBSBRABnpbbWeddUcR9Wd2OQ31LmTVa0=
+			zzOdzP8tXFR13Twnwa0CSsvJ7G5ZXrZiXRtVzmBUQZY=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

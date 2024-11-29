@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using UnityEngine;
+using System.Linq;
 
 namespace VoxelBusters.CoreLibrary
 {
@@ -66,7 +67,7 @@ namespace VoxelBusters.CoreLibrary
 			var		typeList	= new List<Type>();
 			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
 			{
-				foreach (var type in assembly.GetTypes())
+				foreach (var type in GetLoadableTypes(assembly))
 				{
 					if ((predicate == null) || predicate(type))
 					{
@@ -130,7 +131,7 @@ namespace VoxelBusters.CoreLibrary
 			var		collection	= new Dictionary<Type, Attribute[]>();
 			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-				foreach (var type in assembly.GetTypes())
+				foreach (var type in GetLoadableTypes(assembly))
                 {
 					if (type.IsClass == false) continue;
 
@@ -280,5 +281,18 @@ namespace VoxelBusters.CoreLibrary
 		}
 
         #endregion
+
+		#region Private methods
+
+		private static IEnumerable<Type> GetLoadableTypes(Assembly assembly) {
+			if (assembly == null) throw new ArgumentNullException("assembly");
+			try {
+				return assembly.GetTypes();
+			} catch (ReflectionTypeLoadException e) {
+				return e.Types.Where(t => t != null);
+			}
+    	}
+
+		#endregion
     }
 }
