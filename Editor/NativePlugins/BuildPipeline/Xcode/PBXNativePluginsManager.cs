@@ -200,7 +200,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             }
 
             // Add resources
-            CopyAssetsFromStreamingAssets();
+            CopyAssetsToRootTarget();
 
             // Send message to all the NativeProcessors
             PluginsProcessors.ForEach(
@@ -381,24 +381,30 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
         }
 
         // Added for supporting notification services custom sound files
-        private void CopyAssetsFromStreamingAssets()
+        private void CopyAssetsToRootTarget()
         {
             string  mainTargetGuid  = Project.GetMainTargetGuid();
-
+            
             // Copy audio files from streaming assets if any to Raw folder
             string  path            = UnityEngine.Application.streamingAssetsPath;
+            var     formats         = new string[]
+            {
+                ".mp3",
+                ".wav",
+                ".ogg",
+                ".aiff"
+            };
+            CopyFrom(path, formats, mainTargetGuid);
+        }
+        private void CopyFrom(string path, string[] formats, string mainTargetGuid)
+        {
+
             if (IOServices.DirectoryExists(path))
             {
                 var     files               = System.IO.Directory.GetFiles(path);
                 string  destinationFolder   = OutputPath;
 
-                var     formats             = new string[]
-                {
-                    ".mp3",
-                    ".wav",
-                    ".ogg",
-                    ".aiff"
-                };
+                
                 for (int i=0; i< files.Length; i++)
                 {
                     string  extension   = IOServices.GetExtension(files[i]);
@@ -413,7 +419,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             }
         }
 
-#endregion
+        #endregion
 
 #region Misc methods
 

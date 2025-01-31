@@ -13,6 +13,11 @@ static HandleUrlSchemeCallback _handleUrlSchemeCallback = nil;
 static HandleUniversalLinkCallback _handleUniversalLinkCallback = nil;
 #endif
 
+#if NATIVE_PLUGINS_USES_APP_SHORTCUTS
+static HandleShortcutItemClickCallback  _handleShortcutClickedCallback = nil;
+static UIApplicationShortcutItem*       _cachedClickedShortcut = nil;
+#endif
+
 @interface NPUnityAppController ()
 
 #if NATIVE_PLUGINS_USES_DEEP_LINK
@@ -137,9 +142,44 @@ static HandleUniversalLinkCallback _handleUniversalLinkCallback = nil;
 }
 #endif
 
+#if NATIVE_PLUGINS_USES_APP_SHORTCUTS
+
+- (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void(^)(BOOL succeeded))completionHandler API_AVAILABLE(ios(9.0)) API_UNAVAILABLE(tvos);
+{
+    [self handleShortcutClicked: shortcutItem];
+    completionHandler(TRUE);
+}
+
++(void) registerShortcutActionHandler:(HandleShortcutItemClickCallback) callback
+{
+    _handleShortcutClickedCallback = callback;
+    
+    if(_cachedClickedShortcut != nil)
+    {
+        //Trigger with as async as by this time event receivers may not be setup yet.
+        dispatch_async(dispatch_get_main_queue(), ^{
+                callback(_cachedClickedShortcut);
+                _cachedClickedShortcut = nil;
+            });
+    }
+}
+
+-(void) handleShortcutClicked:(UIApplicationShortcutItem*) shortcutItem
+{
+    if(_handleShortcutClickedCallback == nil)
+    {
+        _cachedClickedShortcut = shortcutItem;
+    }
+    else
+    {
+        _handleShortcutClickedCallback(shortcutItem);
+    }
+}
+#endif
+
 @end
 
-#if NATIVE_PLUGINS_USES_DEEP_LINK
+#if NATIVE_PLUGINS_USES_DEEP_LINK || NATIVE_PLUGINS_USES_APP_SHORTCUTS
 // inform Unity to use UnityDeeplinksAppController as the main app controller:
 IMPL_APP_CONTROLLER_SUBCLASS(NPUnityAppController)
 #endif
