@@ -19,7 +19,9 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
         public static string ReportingKit { get; private set; } = "https://link.voxelbusters.com/reporting-kit";
 
         public static string AdsKit { get; private set; } = "https://link.voxelbusters.com/ads-kit";
-
+        
+        public static string PermissionsKit { get; private set; } = "https://link.voxelbusters.com/permissions-kit";
+        
         #endregion
     }
 }

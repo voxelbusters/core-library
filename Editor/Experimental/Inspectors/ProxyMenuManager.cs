@@ -54,6 +54,14 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
             OpenInstallPath(InstallPath.ReportingKit);
         }
 #endif
+        
+#if !ENABLE_VOXELBUSTERS_PERMISSIONS_KIT
+        [MenuItem(kMenuItemPath + "/Permissions Kit/Learn More", priority = 0)]
+        public static void InstallEssentialKit()
+        {
+            OpenInstallPath(InstallPath.PermissionsKit);
+        }
+#endif
 
         private static void OpenInstallPath(string path)
         {

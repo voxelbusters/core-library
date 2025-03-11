@@ -528,7 +528,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                     "//  Native Plugins" +
                     "//" +
                     "//  Created by Ashwin kumar" +
-                    "//  Copyright (c) 2024 Voxel Busters Interactive LLP. All rights reserved." +
+                    "//  Copyright (c) 2025 Voxel Busters Interactive LLP. All rights reserved." +
                     "//");
 
             // Add macros from Settings file
