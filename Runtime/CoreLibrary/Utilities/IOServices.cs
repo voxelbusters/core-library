@@ -250,17 +250,13 @@ namespace VoxelBusters.CoreLibrary
 
         public static void DeleteFileOrDirectory(string path, bool throwError = false)
         {
-            var     fileInfo    = new FileInfo(path);
-            if (fileInfo.Exists)
+            if (File.Exists(path))
             {
-                if ((fileInfo.Attributes & FileAttributes.Directory) != 0)
-                {
-                    DeleteDirectory(path, true, throwError);
-                }
-                else
-                {
-                    DeleteFile(path, throwError);
-                }
+                DeleteFile(path, throwError);
+            }
+            else if (Directory.Exists(path))
+            {
+                DeleteDirectory(path, true, throwError);
             }
         }
 
