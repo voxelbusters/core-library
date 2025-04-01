@@ -7,11 +7,13 @@ namespace VoxelBusters.CoreLibrary
     {
         #region Properties
 
-        public ConsentStatus UsageConsent { get; private set; }
+        public ConsentStatus UsageConsent { get; private set; } //GDPR
 
-        public bool? IsAgeRestrictedUser { get; private set; } 
+        public bool? IsAgeRestrictedUser { get; private set; } //COPPA  (Directed to children)
 
         public ContentRating? PreferredContentRating { get; private set; } 
+
+        public bool? DoNotSell { get; set; } //U.S. State Privacy Laws
 
         public string Version { get; private set; }
 
@@ -22,12 +24,14 @@ namespace VoxelBusters.CoreLibrary
         public ApplicationPrivacyConfiguration(ConsentStatus usageConsent,
                                                bool? isAgeRestrictedUser = null,
                                                ContentRating? preferredContentRating = null,
+                                               bool? doNotSell = null,
                                                string version = null)
         {
             // Set properties
             UsageConsent            = usageConsent;
             IsAgeRestrictedUser     = isAgeRestrictedUser;
             PreferredContentRating  = preferredContentRating;
+            DoNotSell               = doNotSell;
             Version                 = version;
         }
 
@@ -39,7 +43,7 @@ namespace VoxelBusters.CoreLibrary
         {
             if (IsAgeRestrictedUser == null) return null;
 
-            return (IsAgeRestrictedUser.Value == true) || (UsageConsent != ConsentStatus.Authorized);
+            return IsAgeRestrictedUser.Value || (UsageConsent != ConsentStatus.Authorized);
         }
 
         #endregion

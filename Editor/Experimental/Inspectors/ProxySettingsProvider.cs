@@ -96,6 +96,15 @@ namespace VoxelBusters.CoreLibrary.Editor.Experimental
                                              installUrl: InstallPath.AdsKit);
         }
 #endif
+        
+#if !ENABLE_VOXELBUSTERS_PERMISSIONS_KIT
+        [SettingsProvider]
+        private static SettingsProvider CreatePermissionsKitSettingsProvider()
+        {
+            return new ProxySettingsProvider(name: "Permissions Kit",
+                                             installUrl: InstallPath.PermissionsKit);
+        }
+#endif
 
         #endregion
 
