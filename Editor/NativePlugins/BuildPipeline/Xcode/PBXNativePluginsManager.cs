@@ -277,12 +277,19 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             // Add files placed within this folder
             foreach (var fileInfo in FindFiles(sourceFolderInfo))
             {
-                AddFileToProject(
-                    project,
-                    fileInfo.FullName,
-                    targetGuid,
-                    parentGroup,
-                    compileFlags);
+                if (fileInfo.FullName.EndsWith(".sh"))
+                {
+                    CopyShellScript(fileInfo);
+                }
+                else
+                {
+                    AddFileToProject(
+                        project,
+                        fileInfo.FullName,
+                        targetGuid,
+                        parentGroup,
+                        compileFlags);
+                }
             }
 
             // add folders placed within this folder
@@ -297,10 +304,36 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                         parentGroup,
                         compileFlags);
                 }
+                else if (subFolderInfo.Name.EndsWith(".xcodeproj"))
+                {
+                    var subProjectName = subFolderInfo.Name.Replace(".xcodeproj", "");
+                    project.AddFile(subFolderInfo.FullName, parentGroup + subFolderInfo.Name, PBXSourceTree.Source);
+                    
+                    string subProjectFramework = $"{subProjectName}.framework";
+                    string frameworkFileGuid = project.AddFile($"{subProjectFramework}",
+                        "Frameworks/" + subProjectFramework,
+                        PBXSourceTree.Build);
+                    
+                    // Add to unity framework target
+                    project.AddFileToBuild(targetGuid, frameworkFileGuid);
+
+                    // Add shell script for copying the required framework from Dependencies folder (the framework will automatically get copied to Dependencies folder in BUILD_DIR).
+                    // Reason why we copy is because the sub-project may not have schemes similar to the main project. So it may not end up in the right folder when built with a different xcode project scheme.
+                    // So on sub-project build success, we copy to BUILD_DIR/Dependencies folder and below shell script will copy from there to the final BUILD_PRODUCTS_DIR
+
+                    AddShellScriptForCopyingDependencyFramework(project, targetGuid, subProjectFramework);
+                }
                 else
                 {
+                    string fullPath = Path.GetFullPath(subFolderInfo.FullName);
+                    //check if a folder with .xcodeproj exists. If so just skip it, as it will be considered in the above step.
+                    if (Directory.Exists(fullPath + ".xcodeproj"))
+                    {
+                        continue;
+                    }
+                    
+                    
                     string  folderGroup     = parentGroup + subFolderInfo.Name + "/";
-
                     AddFolderToProject(
                         project,
                         subFolderInfo.FullName,
@@ -309,6 +342,32 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                         compileFlags);
                 }
             }
+        }
+        private static void AddShellScriptForCopyingDependencyFramework(PBXProject project, string targetGuid, string subProjectFramework)
+        {
+
+            string scriptName   = $"Copy {subProjectFramework}";
+            string shellScript  = $"\"${{SRCROOT}}/VoxelBusters/copy_dependent_framework.sh\" \"{subProjectFramework}\"";
+            string shellPath    = "/bin/bash";
+
+            if (project.GetShellScriptBuildPhaseForTarget(targetGuid, scriptName, shellPath, shellScript) == null)
+            {
+                var inserted = project.InsertShellScriptBuildPhase(
+                    0, //Adding at very top as these are dependencies
+                    targetGuid,
+                    scriptName,
+                    shellPath,
+                    shellScript
+                );                
+            }
+        }
+        private void CopyShellScript(FileInfo fileInfo)
+        {
+            // Just copy these shell scripts to  Path.Combine(OutputPath, kPluginRelativePath) and no need to add to the xcode project.
+            string  pluginExportPath    = Path.Combine(OutputPath, kPluginRelativePath);
+            string  targetScriptsPath = Path.Combine(pluginExportPath, Path.GetFileName(fileInfo.FullName));
+            IOServices.CreateDirectory(pluginExportPath);
+            IOServices.CopyFile(Path.GetFullPath(fileInfo.FullName), targetScriptsPath, overwrite: true);
         }
 
         private string CopyFileToProject(string filePath, string targetFolder)

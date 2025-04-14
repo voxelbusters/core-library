@@ -1,7 +1,6 @@
 ﻿#if UNITY_IOS || UNITY_TVOS
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -25,7 +24,11 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
         public virtual void OnUpdateMacroDefinitions(MacroDefinitionsManager manager)
         { }
 
+        public virtual void OnUpdateConfiguration()
+        { }
+
 #endregion
     }
+
 }
 #endif
