@@ -316,6 +316,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                     
                     // Add to unity framework target
                     project.AddFileToBuild(targetGuid, frameworkFileGuid);
+                    project.AddFileToEmbedFrameworks(project.GetMainTargetGuid(), frameworkFileGuid);
 
                     // Add shell script for copying the required framework from Dependencies folder (the framework will automatically get copied to Dependencies folder in BUILD_DIR).
                     // Reason why we copy is because the sub-project may not have schemes similar to the main project. So it may not end up in the right folder when built with a different xcode project scheme.
@@ -625,6 +626,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             //  Make new file
 			var     entitlementsPath    = Path.Combine(OutputPath, mainTargetName, $"{mainTargetName}.entitlements");
 			var     entitlementsPlist   = new PlistDocument();
+            IOServices.CreateDirectory(Path.GetDirectoryName(entitlementsPath));
 			entitlementsPlist.WriteToFile(entitlementsPath);
 
 			// Copy the entitlement file to the xcode project

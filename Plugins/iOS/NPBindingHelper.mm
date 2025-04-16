@@ -407,13 +407,14 @@ NSDate* NPCreateNSDateFromNSString(NSString* dateStr)
 
 CGFloat GetStatusBarHeight()
 {
+#if !TARGET_OS_TV
     UIApplication*  sharedApplication   = [UIApplication sharedApplication];
     if (![sharedApplication isStatusBarHidden])
     {
         CGRect      statusBarFrame      = [sharedApplication statusBarFrame];
         return statusBarFrame.size.height;
     }
-    
+#endif
     return 0;
 }
 

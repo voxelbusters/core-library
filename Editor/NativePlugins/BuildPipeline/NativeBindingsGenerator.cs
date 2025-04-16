@@ -52,6 +52,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
             switch (buildTarget)
             {
                 case BuildTarget.iOS:
+                case BuildTarget.tvOS:
                     return new ObjectiveCBindingsWriter(path, fileName, options);
 
                 default:

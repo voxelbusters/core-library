@@ -95,11 +95,7 @@ static UIApplicationShortcutItem*       _cachedClickedShortcut = nil;
     {
         originalResult      = [super application:application openURL:url options:options];
     }
-    else if ([super respondsToSelector:@selector(application:openURL:sourceApplication:annotation:)])
-    {
-        NSString*   sourceApplication   = options[UIApplicationOpenURLOptionsSourceApplicationKey];
-        originalResult                  = [super application:application openURL:url sourceApplication:sourceApplication annotation:[NSDictionary dictionary]];
-    }
+
     
     // check the availability of the service and process the incoming request
     // store the event information for later usage incase if the service is not active
