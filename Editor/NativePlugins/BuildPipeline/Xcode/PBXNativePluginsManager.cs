@@ -348,8 +348,8 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
         {
 
             string scriptName   = $"Copy {subProjectFramework}";
-            string shellScript  = $"\"${{SRCROOT}}/VoxelBusters/copy_dependent_framework.sh\" \"{subProjectFramework}\"";
             string shellPath    = "/bin/bash";
+            string shellScript  = $"{shellPath} \"${{SRCROOT}}/VoxelBusters/copy_dependent_framework.sh\" \"{subProjectFramework}\"";
 
             if (project.GetShellScriptBuildPhaseForTarget(targetGuid, scriptName, shellPath, shellScript) == null)
             {
