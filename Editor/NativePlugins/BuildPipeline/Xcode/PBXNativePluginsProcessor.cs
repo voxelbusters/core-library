@@ -24,9 +24,6 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
         public virtual void OnUpdateMacroDefinitions(MacroDefinitionsManager manager)
         { }
 
-        public virtual void OnUpdateConfiguration()
-        { }
-
 #endregion
     }
 

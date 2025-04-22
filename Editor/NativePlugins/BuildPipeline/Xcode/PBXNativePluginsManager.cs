@@ -249,10 +249,14 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 
             // Add copied file to the project
             string  fileGuid            = project.AddFile(FormatFilePathInProject(destinationFilePath, rooted: false),  parentGroup + fileName);
-            project.AddFileToBuildWithFlags(
-                targetGuid,
-                fileGuid,
-                compileFlags.IsNullOrEmpty() ? string.Empty : string.Join(" ", compileFlags));
+
+            if (targetGuid != null)
+            {
+                project.AddFileToBuildWithFlags(
+                    targetGuid,
+                    fileGuid,
+                    compileFlags.IsNullOrEmpty() ? string.Empty : string.Join(" ", compileFlags));
+            }
 
             // Add search path project
             string  fileExtension       = Path.GetExtension(destinationFilePath);
@@ -295,7 +299,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             // add folders placed within this folder
             foreach (var subFolderInfo in sourceFolderInfo.GetDirectories())
             {
-                if(subFolderInfo.Name.EndsWith(".framework"))
+                if (subFolderInfo.Name.EndsWith(".framework"))
                 {
                     AddFileToProject(
                         project,
@@ -306,39 +310,46 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                 }
                 else if (subFolderInfo.Name.EndsWith(".xcodeproj"))
                 {
-                    var subProjectName = subFolderInfo.Name.Replace(".xcodeproj", "");
-                    project.AddFile(subFolderInfo.FullName, parentGroup + subFolderInfo.Name, PBXSourceTree.Source);
-                    
-                    string subProjectFramework = $"{subProjectName}.framework";
-                    string frameworkFileGuid = project.AddFile($"{subProjectFramework}",
-                        "Frameworks/" + subProjectFramework,
-                        PBXSourceTree.Build);
-                    
-                    // Add to unity framework target
+                    var     subProjectName          = subFolderInfo.Name.Replace(".xcodeproj", "");
+                    string  subProjectFramework     = $"{subProjectName}.framework";
+                    string  frameworkFileGuid       = project.AddFile($"{subProjectFramework}",
+                                                                        "Frameworks/" + subProjectFramework,
+                                                                        PBXSourceTree.Build);
+
+                    // Add framework to UnityFramework and Embed in main as it's dynamic framework.
                     project.AddFileToBuild(targetGuid, frameworkFileGuid);
                     project.AddFileToEmbedFrameworks(project.GetMainTargetGuid(), frameworkFileGuid);
 
                     // Add shell script for copying the required framework from Dependencies folder (the framework will automatically get copied to Dependencies folder in BUILD_DIR).
                     // Reason why we copy is because the sub-project may not have schemes similar to the main project. So it may not end up in the right folder when built with a different xcode project scheme.
                     // So on sub-project build success, we copy to BUILD_DIR/Dependencies folder and below shell script will copy from there to the final BUILD_PRODUCTS_DIR
-
                     AddShellScriptForCopyingDependencyFramework(project, targetGuid, subProjectFramework);
-                }
-                else
-                {
-                    string fullPath = Path.GetFullPath(subFolderInfo.FullName);
-                    //check if a folder with .xcodeproj exists. If so just skip it, as it will be considered in the above step.
-                    if (Directory.Exists(fullPath + ".xcodeproj"))
-                    {
-                        continue;
-                    }
-                    
-                    
-                    string  folderGroup     = parentGroup + subFolderInfo.Name + "/";
-                    AddFolderToProject(
+
+
+                    //Copy the .xcodeproj file
+                    AddFileToProject(
                         project,
                         subFolderInfo.FullName,
                         targetGuid,
+                        parentGroup,
+                        compileFlags);
+                }
+                else
+                {
+                    var finalTargetGuid = targetGuid;
+                    string fullPath = Path.GetFullPath(subFolderInfo.FullName);
+                    //check if a folder with .xcodeproj exists with same name. If so just don't add the folder to any target as it's already considered in above step but just reference to the project.
+                    if (Directory.Exists(fullPath + ".xcodeproj"))
+                    {
+                        finalTargetGuid = null;
+                    }
+                    
+
+                    string folderGroup = parentGroup + subFolderInfo.Name + "/";
+                    AddFolderToProject(
+                        project,
+                        subFolderInfo.FullName,
+                        finalTargetGuid,
                         folderGroup,
                         compileFlags);
                 }
@@ -398,8 +409,8 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
 #if NATIVE_PLUGINS_DEBUG
             return sourcePath;
 #else
-            string  relativePath        = IOServices.GetRelativePath(parentFolder, sourcePath);
-            string  destinationFolder   = IOServices.CombinePath(OutputPath, parentGroup);
+            string relativePath = IOServices.GetRelativePath(parentFolder, sourcePath);
+            string destinationFolder = IOServices.CombinePath(OutputPath, parentGroup);
             return IOServices.CombinePath(destinationFolder, relativePath);
 #endif
         }

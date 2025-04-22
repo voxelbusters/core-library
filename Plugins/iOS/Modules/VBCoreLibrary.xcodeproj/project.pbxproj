@@ -56,7 +56,7 @@
 				8DDAC0702BB555D5002EB17B /* Extensions */,
 			);
 			path = VBCoreLibrary;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		8DDAC0702BB555D5002EB17B /* Extensions */ = {
 			isa = PBXGroup;
@@ -162,7 +162,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\n# Only WORKSPACE_DIR is nearly giving the root project directory. Rest all are giving the directory where this sub-project exists.\nROOT_DIR=\"$(dirname \"$WORKSPACE_DIR\")\"\nsource \"${ROOT_DIR}/VoxelBusters/copy_framework_as_dependency.sh\"\n";
+			shellScript = "#!/bin/bash\n# Only WORKSPACE_DIR is nearly giving the root project directory. Rest all are giving the directory where this sub-project exists.\nROOT_DIR=\"\"\n\nif [[ \"$WORKSPACE_DIR\" == *.xcodeproj ]]; then\n    ROOT_DIR=\"$(dirname \"$WORKSPACE_DIR\")\"\nelse\n    ROOT_DIR=\"$WORKSPACE_DIR\"\nfi\n\nsource \"${ROOT_DIR}/VoxelBusters/copy_framework_as_dependency.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
