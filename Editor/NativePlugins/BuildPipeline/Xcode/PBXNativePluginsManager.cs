@@ -199,9 +199,6 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                 project.AddFrameworkSearchPath(frameworkTargetGuid, FormatFilePathInProject(path));
             }
 
-            // Add resources
-            CopyAssetsToRootTarget();
-
             // Send message to all the NativeProcessors
             PluginsProcessors.ForEach(
                 (item) =>
@@ -449,45 +446,6 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
                 string  fileExtension   = fileInfo.Extension;
                 return !Array.Exists(kIgnoreFileExtensions, (ignoreExt) => string.Equals(fileExtension, ignoreExt, StringComparison.InvariantCultureIgnoreCase));
             }).ToArray();
-        }
-
-        // Added for supporting notification services custom sound files
-        private void CopyAssetsToRootTarget()
-        {
-            string  mainTargetGuid  = Project.GetMainTargetGuid();
-            
-            // Copy audio files from streaming assets if any to Raw folder
-            string  path            = UnityEngine.Application.streamingAssetsPath;
-            var     formats         = new string[]
-            {
-                ".mp3",
-                ".wav",
-                ".ogg",
-                ".aiff"
-            };
-            CopyFrom(path, formats, mainTargetGuid);
-        }
-        private void CopyFrom(string path, string[] formats, string mainTargetGuid)
-        {
-
-            if (IOServices.DirectoryExists(path))
-            {
-                var     files               = System.IO.Directory.GetFiles(path);
-                string  destinationFolder   = OutputPath;
-
-                
-                for (int i=0; i< files.Length; i++)
-                {
-                    string  extension   = IOServices.GetExtension(files[i]);
-                    if (formats.Contains(extension.ToLower()))
-                    {
-                        string destinationRelativePath = files[i].Replace(path, ".");
-                        IOServices.CopyFile(files[i], IOServices.CombinePath(destinationFolder, IOServices.GetFileName(files[i])));
-                        DebugLogger.Log(CoreLibraryDomain.NativePlugins, $"Coping asset with relativePath: {destinationRelativePath}.");
-                        Project.AddFileToBuild(mainTargetGuid, Project.AddFile(destinationRelativePath, destinationRelativePath));
-                    }
-                }
-            }
         }
 
         #endregion

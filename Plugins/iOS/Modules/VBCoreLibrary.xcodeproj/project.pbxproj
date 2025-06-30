@@ -162,7 +162,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\n# Only WORKSPACE_DIR is nearly giving the root project directory. Rest all are giving the directory where this sub-project exists.\nROOT_DIR=\"\"\n\nif [[ \"$WORKSPACE_DIR\" == *.xcodeproj ]]; then\n    ROOT_DIR=\"$(dirname \"$WORKSPACE_DIR\")\"\nelse\n    ROOT_DIR=\"$WORKSPACE_DIR\"\nfi\n\nsource \"${ROOT_DIR}/VoxelBusters/copy_framework_as_dependency.sh\"\n";
+			shellScript = "#!/bin/bash\n# Only WORKSPACE_DIR is nearly giving the root project directory. Rest all are giving the directory where this sub-project exists.\nROOT_DIR=\"\"\n\nif [[ \"$WORKSPACE_DIR\" == *.xcodeproj ]]; then\n    ROOT_DIR=\"$(dirname \"$WORKSPACE_DIR\")\"\nelse\n    ROOT_DIR=\"$WORKSPACE_DIR\"\nfi\n\n# Check if ROOT_DIR is empty or unset\nif [[ -z \"$ROOT_DIR\" ]]; then\n    # Remove the path from /VoxelBusters onward in PROJECT_DIR\n    ROOT_DIR=\"${PROJECT_DIR%%/VoxelBusters/*}\"\nfi\n\nsource \"${ROOT_DIR}/VoxelBusters/copy_framework_as_dependency.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
