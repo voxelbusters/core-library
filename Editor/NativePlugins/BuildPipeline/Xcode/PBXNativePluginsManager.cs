@@ -261,7 +261,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             {
                 CacheLibrarySearchPath(destinationFilePath);
             }
-            else if (string.Equals(fileExtension, ".framework", StringComparison.InvariantCultureIgnoreCase))
+            else if (string.Equals(fileExtension, ".framework", StringComparison.InvariantCultureIgnoreCase) || string.Equals(fileExtension, ".xcframework", StringComparison.InvariantCultureIgnoreCase))
             {
                 CacheFrameworkSearchPath(destinationFilePath);
                 project.AddFileToEmbedFrameworks(Project.GetMainTargetGuid(), fileGuid);
@@ -296,7 +296,7 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             // add folders placed within this folder
             foreach (var subFolderInfo in sourceFolderInfo.GetDirectories())
             {
-                if (subFolderInfo.Name.EndsWith(".framework"))
+                if (subFolderInfo.Name.EndsWith(".framework") || subFolderInfo.Name.EndsWith(".xcframework"))
                 {
                     AddFileToProject(
                         project,
