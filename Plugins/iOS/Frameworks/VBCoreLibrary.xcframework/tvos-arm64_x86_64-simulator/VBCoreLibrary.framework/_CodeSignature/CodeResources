@@ -30,7 +30,7 @@
 		</data>
 		<key>Modules/VBCoreLibrary.swiftmodule/arm64-apple-tvos-simulator.swiftmodule</key>
 		<data>
-		fwMjqBYMYyvgNzRo0GFwS7n0MGs=
+		xKTllf502M9Hr3AinxNT87OM4oM=
 		</data>
 		<key>Modules/VBCoreLibrary.swiftmodule/x86_64-apple-tvos-simulator.abi.json</key>
 		<data>
@@ -50,7 +50,7 @@
 		</data>
 		<key>Modules/VBCoreLibrary.swiftmodule/x86_64-apple-tvos-simulator.swiftmodule</key>
 		<data>
-		+gucKP+n0ZCEDpqVxtSKnwi3XKo=
+		q49W4qsKf65Y1Fufs++Gf/DtPaA=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -98,7 +98,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			SAAVIRGmEMk3ext/RjtMSWvYCFdUCSetrXogQFnoeGc=
+			x7o4dxT1lerE7BYMaCkmHgilKZs6bY27GteLydwURuo=
 			</data>
 		</dict>
 		<key>Modules/VBCoreLibrary.swiftmodule/x86_64-apple-tvos-simulator.abi.json</key>
@@ -133,7 +133,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			wAAT7wqB1DTTA8PZNXO0PNdw3t/Ki555ulgdW4p+Nj4=
+			XF+jZ02w3Lu6LOIcPg6MoHfqnlpftv5toq2K1QJKb9o=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

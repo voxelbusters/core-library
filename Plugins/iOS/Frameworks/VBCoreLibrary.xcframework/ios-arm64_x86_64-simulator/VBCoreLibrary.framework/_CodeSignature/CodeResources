@@ -30,7 +30,7 @@
 		</data>
 		<key>Modules/VBCoreLibrary.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		RMezNUR3V5dCZD95JTxnLqDFiik=
+		xAmheN/OMkRh9klA7RMNIugE7Nw=
 		</data>
 		<key>Modules/VBCoreLibrary.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
@@ -50,7 +50,7 @@
 		</data>
 		<key>Modules/VBCoreLibrary.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		HCYhrlHA0/lZb7eOMEc3bPnoQuc=
+		eEGu4RL9hlPgrAgSF8OkGeFhb+U=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -98,7 +98,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			4+Qd11Dq4JSpE8Hc++fR+YF8lZMouhBQJANLMNwcUPQ=
+			W63CHsUBlO1/DlWDqH/6iNdKnN6mT9RTGnj3iyi1DEU=
 			</data>
 		</dict>
 		<key>Modules/VBCoreLibrary.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
@@ -133,7 +133,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			z2Tj3EEbVc5nDqFUPgMD+X3z5VvrGSFqR10VGQl8Qy4=
+			BvqqJ0zuU+S0Cx7eULFZ//VgUBjb5Bz4T7X+HxSSsu4=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

@@ -1,6 +1,6 @@
 ---
 triple:          'arm64-apple-darwin'
-binary-path:     '/var/folders/y2/vpk_ts955x546mxqd7fgdvw00000gn/T/tmp.IunJoGyEMn/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/VBCoreLibrary/InstallationBuildProductsLocation/Library/Frameworks/VBCoreLibrary.framework/VBCoreLibrary'
+binary-path:     '/var/folders/y2/vpk_ts955x546mxqd7fgdvw00000gn/T/tmp.jWO6ziZr6V/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/VBCoreLibrary/InstallationBuildProductsLocation/Library/Frameworks/VBCoreLibrary.framework/VBCoreLibrary'
 relocations:
   - { offset: 0x32AC5, size: 0x8, addend: 0x0, symName: _VBCoreLibraryVersionString, symObjAddr: 0x0, symBinAddr: 0x3B88, symSize: 0x0 }
   - { offset: 0x32AF9, size: 0x8, addend: 0x0, symName: _VBCoreLibraryVersionNumber, symObjAddr: 0x38, symBinAddr: 0x3BC0, symSize: 0x0 }
