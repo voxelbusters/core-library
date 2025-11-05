@@ -1,9 +1,9 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
 namespace VoxelBusters.CoreLibrary
 {
+    
     internal class RuntimeScheduler : PrivateSingletonBehaviour<RuntimeScheduler>, IScheduler
 	{
         #region Fields
