@@ -7,10 +7,16 @@ namespace VoxelBusters.CoreLibrary
     /// </summary>
     public class EditorOnlyObject : MonoBehaviour
     {
+        [SerializeField]
+        private bool m_allowInEditorRuntime = false;
+
         void Awake()
         {
             #if !UNITY_EDITOR
-            Destroy(gameObject);
+                Destroy(gameObject);
+            #else
+                if (!m_allowInEditorRuntime)
+                    Destroy(gameObject);
             #endif
         }
     }

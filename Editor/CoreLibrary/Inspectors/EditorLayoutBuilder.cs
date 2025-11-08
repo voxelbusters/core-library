@@ -357,34 +357,44 @@ namespace VoxelBusters.CoreLibrary.Editor
                 EditorGUI.LabelField(subtitleRect, section.Description, m_subtitleLabelStyle);
             }
 
+            // Draw toggle button
+            var     enabledProperty     = section.EnabledProperty;
+            if (enabledProperty != null)
+            {
+                var toggleIcon = enabledProperty.boolValue ? m_toggleOnIcon : m_toggleOffIcon;
+                var iconSize = new Vector2(64f, 32f);
+                var toggleRect = new Rect(rect.xMax - (iconSize.x * (isSelected ? 1.2f : 2.0f)),
+                                                   titleRect.yMin + ((titleRect.height - iconSize.y / 2)),
+                                                   iconSize.x,
+                                                   iconSize.y);
+                if (GUI.Button(toggleRect, toggleIcon, m_invisibleButtonStyle))
+                {
+                    enabledProperty.boolValue = !enabledProperty.boolValue;
+
+                    // Raise an event to notify others, delay is added to ensure that modified properties are serialized
+                    EditorApplication.delayCall += () => { OnSectionStatusChange?.Invoke(section); };
+                }
+            }
+
             // Draw selectable rect
             var     selectableRect      = new Rect(rect.x,
                                                    rect.y,
-                                                   rect.width * 0.8f,
+                                                   rect.width,
                                                    rect.height);
             if (selectable && EditorLayoutUtility.TransparentButton(selectableRect))
             {
                 isSelected              = SetFocusSection(section);
             }
 
-            // Draw toggle button
-            var     enabledProperty     = section.EnabledProperty;
-            if (enabledProperty != null)
+
+            if (!isSelected && enabledProperty != null)
             {
-                var     toggleIcon      = enabledProperty.boolValue ? m_toggleOnIcon : m_toggleOffIcon;
-                var     iconSize        = new Vector2(64f, 32f);
-                var     toggleRect      = new Rect(rect.xMax - (iconSize.x * 1.2f),
-                                                   titleRect.yMin + ((titleRect.height - iconSize.y/2)),
-                                                   iconSize.x,
-                                                   iconSize.y);
-                if (GUI.Button(toggleRect, toggleIcon, m_invisibleButtonStyle))
-                {
-                    enabledProperty.boolValue       = !enabledProperty.boolValue;
-                     
-                    // Raise an event to notify others, delay is added to ensure that modified properties are serialized
-                    EditorApplication.delayCall    += () => { OnSectionStatusChange?.Invoke(section); };
-                }
+                var settingsRect = new Rect(selectableRect.width - 30f, selectableRect.y, 30f, selectableRect.height);
+                Texture2D configTexture = EditorGUIUtility.FindTexture("Settings");
+
+                GUI.DrawTexture(settingsRect, configTexture, ScaleMode.ScaleToFit);
             }
+            
             return isSelected;
         }
 
