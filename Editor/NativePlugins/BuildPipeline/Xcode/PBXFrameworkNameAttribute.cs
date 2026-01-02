@@ -23,7 +23,8 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build
             "WebKit.framework",
             "ReplayKit.framework",
             "PhotosUI.framework",
-            "UniformTypeIdentifiers.framework"
+            "UniformTypeIdentifiers.framework",
+            "DeclaredAgeRange.framework"
         };
 
         #endregion
