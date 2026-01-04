@@ -498,8 +498,14 @@ namespace VoxelBusters.CoreLibrary.Editor.NativePlugins.Build.Xcode
             var     capabilityManager   = new ProjectCapabilityManager(
                 ProjectFilePath,
                 GetEntitlementsPath(),
+#if UNITY_CHINA
+                "Tuanjie-iPhone", 
+                null
+#else
                 Project.GetMainTargetName(),
-                Project.GetMainTargetGuid());
+                Project.GetMainTargetGuid()
+#endif
+                );
 
             // Add the capabilities specified in the Exporters
             foreach (var exporterObject in ActiveExporterObjects)
