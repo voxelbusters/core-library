@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿#if USE_VOXELBUSTERS_CORELIBRARY_REST_CLIENT
+using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -27,11 +28,11 @@ namespace VoxelBusters.CoreLibrary
 
         public RestClient()
         {
-            var     settings        = new JsonSerializerSettings
+            var settings = new JsonSerializerSettings
             {
-                NullValueHandling       = NullValueHandling.Ignore,
-                Formatting              = Formatting.None,
-                MissingMemberHandling   = MissingMemberHandling.Ignore,
+                NullValueHandling = NullValueHandling.Ignore,
+                Formatting = Formatting.None,
+                MissingMemberHandling = MissingMemberHandling.Ignore,
             };
             JsonConvert.DefaultSettings = () => settings;
         }
@@ -59,12 +60,12 @@ namespace VoxelBusters.CoreLibrary
                 if ((request.responseCode >= 200) && (request.responseCode <= 301))
                 {
                     DebugLogger.Log(CoreLibraryDomain.Default, $"Status: {request.responseCode} Result: {request.downloadHandler.text}.");
-                    var     result  = JsonConvert.DeserializeObject<TResult>(request.downloadHandler.text);
+                    var result = JsonConvert.DeserializeObject<TResult>(request.downloadHandler.text);
                     onSuccess(result);
                 }
                 else
                 {
-                    var     error   = request.downloadHandler.text;
+                    var error = request.downloadHandler.text;
                     DebugLogger.LogError(CoreLibraryDomain.Default, $"Status: {request.responseCode} Error: {error}.");
                     onError(error);
                 }
@@ -73,10 +74,11 @@ namespace VoxelBusters.CoreLibrary
 
         public byte[] ConvertObjectToBytes<TData>(TData data)
         {
-            var     jsonStr = JsonConvert.SerializeObject(data);
+            var jsonStr = JsonConvert.SerializeObject(data);
             return System.Text.Encoding.UTF8.GetBytes(jsonStr);
         }
 
         #endregion
     }
 }
+#endif
