@@ -15,18 +15,6 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
         {
             public PluginProductDescriptor Descriptor;
             public Action<PluginProductDescriptor> Callback;
-
-            public bool IsRelated(string productRoot)
-            {
-                if (Descriptor == null || string.IsNullOrEmpty(productRoot))
-                {
-                    return false;
-                }
-
-                string productRootPath = PluginProductDescriptorUtility.GetProductRootPath(Descriptor);
-                return !string.IsNullOrEmpty(productRootPath) &&
-                       string.Equals(productRootPath, productRoot, StringComparison.Ordinal);
-            }
         }
 
         private static readonly List<Registration> s_registrations = new List<Registration>();
@@ -74,21 +62,21 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
                                                    string[] movedAssets,
                                                    string[] movedFromAssetPaths)
         {
-            var affectedProductRootPaths = new HashSet<string>(StringComparer.Ordinal);
-            AddProductRoots(importedAssets, affectedProductRootPaths);
-            AddProductRoots(movedAssets, affectedProductRootPaths);
+            var affectedDescriptors = new HashSet<PluginProductDescriptor>();
+            AddAffectedDescriptors(importedAssets, affectedDescriptors);
+            AddAffectedDescriptors(movedAssets, affectedDescriptors);
 
-            if (affectedProductRootPaths.Count == 0)
+            if (affectedDescriptors.Count == 0)
             {
                 return;
             }
 
-            NotifyRegistrations(affectedProductRootPaths);
+            NotifyRegistrations(affectedDescriptors);
         }
 
-        private static void NotifyRegistrations(HashSet<string> productRoots)
+        private static void NotifyRegistrations(HashSet<PluginProductDescriptor> affectedDescriptors)
         {
-            if (productRoots == null || productRoots.Count == 0)
+            if (affectedDescriptors == null || affectedDescriptors.Count == 0)
             {
                 return;
             }
@@ -101,7 +89,7 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
                     continue;
                 }
 
-                if (IsRegistrationRelatedToAnyProductRoot(registration, productRoots))
+                if (registration.Descriptor != null && affectedDescriptors.Contains(registration.Descriptor))
                 {
                     registration.Callback.Invoke(registration.Descriptor);
                 }
@@ -130,22 +118,9 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
             }
         }
 
-        private static bool IsRegistrationRelatedToAnyProductRoot(Registration registration, HashSet<string> productRoots)
+        private static void AddAffectedDescriptors(string[] paths, HashSet<PluginProductDescriptor> affectedDescriptors)
         {
-            foreach (string root in productRoots)
-            {
-                if (registration.IsRelated(root))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private static void AddProductRoots(string[] paths, HashSet<string> productRoots)
-        {
-            if (paths == null || productRoots == null)
+            if (paths == null || affectedDescriptors == null)
             {
                 return;
             }
@@ -163,12 +138,82 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
                     continue;
                 }
 
-                string productRoot = PlatformConfigurationUtility.GetProductRootFromPath(path);
-                if (!string.IsNullOrEmpty(productRoot))
+                PluginProductDescriptor descriptor = FindDescriptorForPath(path);
+                if (descriptor != null)
                 {
-                    productRoots.Add(productRoot);
+                    affectedDescriptors.Add(descriptor);
                 }
             }
+        }
+
+        private static PluginProductDescriptor FindDescriptorForPath(string assetPath)
+        {
+            if (string.IsNullOrEmpty(assetPath))
+            {
+                return null;
+            }
+
+            for (int i = 0; i < s_registrations.Count; i++)
+            {
+                var registration = s_registrations[i];
+                if (registration == null || registration.Descriptor == null)
+                {
+                    continue;
+                }
+
+                string root = GetDescriptorRootPath(registration.Descriptor);
+                if (!string.IsNullOrEmpty(root) && IsPathUnderRoot(assetPath, root))
+                {
+                    return registration.Descriptor;
+                }
+
+                string assetsRoot = GetDescriptorAssetsRootPath(registration.Descriptor);
+                if (!string.IsNullOrEmpty(assetsRoot) && IsPathUnderRoot(assetPath, assetsRoot))
+                {
+                    return registration.Descriptor;
+                }
+            }
+
+            return null;
+        }
+
+        private static string GetDescriptorRootPath(PluginProductDescriptor descriptor)
+        {
+            if (descriptor == null)
+            {
+                return null;
+            }
+
+            string descriptorPath = AssetDatabase.GetAssetPath(descriptor);
+            if (string.IsNullOrEmpty(descriptorPath))
+            {
+                return null;
+            }
+
+            string root = System.IO.Path.GetDirectoryName(descriptorPath);
+            return string.IsNullOrEmpty(root) ? null : root.Replace('\\', '/');
+        }
+
+        private static string GetDescriptorAssetsRootPath(PluginProductDescriptor descriptor)
+        {
+            return PluginProductDescriptorUtility.GetAssetsProductRootPath(descriptor);
+        }
+
+        private static bool IsPathUnderRoot(string assetPath, string root)
+        {
+            if (string.IsNullOrEmpty(assetPath) || string.IsNullOrEmpty(root))
+            {
+                return false;
+            }
+
+            string normalizedPath = assetPath.Replace('\\', '/');
+            string normalizedRoot = root.Replace('\\', '/').TrimEnd('/');
+            if (string.Equals(normalizedPath, normalizedRoot, StringComparison.Ordinal))
+            {
+                return true;
+            }
+
+            return normalizedPath.StartsWith(normalizedRoot + "/", StringComparison.Ordinal);
         }
 
         private static bool IsPlatformConfigurationAsset(string path)

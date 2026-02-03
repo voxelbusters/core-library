@@ -12,23 +12,7 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
     /// </summary>
     internal static class PlatformConfigurationUtility
     {
-        private const string kVoxelBustersRoot = "Assets/Plugins/VoxelBusters";
-
-        public static string GetProductRootPath(string productRootRelativePath)
-        {
-            if (string.IsNullOrEmpty(productRootRelativePath))
-            {
-                return kVoxelBustersRoot;
-            }
-
-            string trimmed = productRootRelativePath.Trim().Replace('\\', '/').Trim('/');
-            if (trimmed.StartsWith("Assets/", StringComparison.Ordinal))
-            {
-                return trimmed;
-            }
-
-            return string.Concat(kVoxelBustersRoot, "/", trimmed);
-        }
+        private const string kTemplateSuffix = "Template.asset";
 
         public static List<T> FindAll<T>() where T : PlatformConfigurationObject
         {
@@ -67,28 +51,122 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
             return results;
         }
 
-        public static string GetProductRootFromPath(string assetPath)
+        public static List<T> GetOrCreateEditableConfigs<T>(string templateRoot, string assetsRoot)
+            where T : PlatformConfigurationObject
         {
-            if (string.IsNullOrEmpty(assetPath))
+            if (string.IsNullOrEmpty(assetsRoot))
+            {
+                return new List<T>();
+            }
+
+            if (!string.IsNullOrEmpty(templateRoot))
+            {
+                EnsureEditableCopies<T>(templateRoot, assetsRoot);
+            }
+
+            var configs = FindAll<T>(assetsRoot);
+            configs.RemoveAll(config => IsTemplateAssetPath(AssetDatabase.GetAssetPath(config)));
+            return configs;
+        }
+
+        private static void EnsureEditableCopies<T>(string templateRoot, string assetsRoot)
+            where T : PlatformConfigurationObject
+        {
+            if (string.IsNullOrEmpty(templateRoot) || string.IsNullOrEmpty(assetsRoot))
+            {
+                return;
+            }
+
+            string normalizedTemplateRoot = NormalizePath(templateRoot);
+            string normalizedAssetsRoot = NormalizePath(assetsRoot);
+            if (string.IsNullOrEmpty(normalizedTemplateRoot) || string.IsNullOrEmpty(normalizedAssetsRoot))
+            {
+                return;
+            }
+
+            string[] guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}", new[] { normalizedTemplateRoot });
+            for (int i = 0; i < guids.Length; i++)
+            {
+                string templatePath = NormalizePath(AssetDatabase.GUIDToAssetPath(guids[i]));
+                if (string.IsNullOrEmpty(templatePath))
+                {
+                    continue;
+                }
+
+                string targetPath = GetEditableAssetPath(templatePath, normalizedTemplateRoot, normalizedAssetsRoot);
+                if (string.IsNullOrEmpty(targetPath))
+                {
+                    continue;
+                }
+
+                if (string.Equals(templatePath, targetPath, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                if (File.Exists(targetPath))
+                {
+                    continue;
+                }
+
+                string targetDirectory = Path.GetDirectoryName(targetPath);
+                if (!string.IsNullOrEmpty(targetDirectory) && !Directory.Exists(targetDirectory))
+                {
+                    Directory.CreateDirectory(targetDirectory);
+                }
+
+                AssetDatabase.CopyAsset(templatePath, targetPath);
+                AssetDatabase.ImportAsset(targetPath, ImportAssetOptions.ForceUpdate);
+            }
+        }
+
+        private static string GetEditableAssetPath(string templatePath, string templateRoot, string assetsRoot)
+        {
+            if (!IsPathUnderRoot(templatePath, templateRoot))
             {
                 return null;
             }
 
-            const string kRootMarker = kVoxelBustersRoot + "/";
-            int index = assetPath.IndexOf(kRootMarker, StringComparison.Ordinal);
-            if (index < 0)
+            string relativePath = templatePath.Substring(templateRoot.Length).TrimStart('/');
+            string fileName = Path.GetFileName(relativePath);
+            if (fileName.EndsWith(kTemplateSuffix, StringComparison.OrdinalIgnoreCase))
             {
-                return null;
+                fileName = fileName.Substring(0, fileName.Length - kTemplateSuffix.Length) + ".asset";
             }
 
-            int start = index + kRootMarker.Length;
-            int slashIndex = assetPath.IndexOf('/', start);
-            if (slashIndex < 0)
+            string relativeDir = Path.GetDirectoryName(relativePath);
+            string targetPath = string.IsNullOrEmpty(relativeDir)
+                ? Path.Combine(assetsRoot, fileName)
+                : Path.Combine(assetsRoot, relativeDir, fileName);
+            return NormalizePath(targetPath);
+        }
+
+        private static bool IsTemplateAssetPath(string assetPath)
+        {
+            return !string.IsNullOrEmpty(assetPath) &&
+                   assetPath.EndsWith(kTemplateSuffix, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsPathUnderRoot(string assetPath, string rootPath)
+        {
+            if (string.IsNullOrEmpty(assetPath) || string.IsNullOrEmpty(rootPath))
             {
-                return assetPath;
+                return false;
             }
 
-            return assetPath.Substring(0, slashIndex);
+            string normalizedPath = NormalizePath(assetPath);
+            string normalizedRoot = NormalizePath(rootPath).TrimEnd('/');
+            if (string.Equals(normalizedPath, normalizedRoot, StringComparison.Ordinal))
+            {
+                return true;
+            }
+
+            return normalizedPath.StartsWith(normalizedRoot + "/", StringComparison.Ordinal);
+        }
+
+        private static string NormalizePath(string path)
+        {
+            return string.IsNullOrEmpty(path) ? null : path.Replace('\\', '/');
         }
     }
 }

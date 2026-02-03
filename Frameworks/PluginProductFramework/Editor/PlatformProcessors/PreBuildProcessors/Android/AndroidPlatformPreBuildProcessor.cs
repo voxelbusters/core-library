@@ -20,35 +20,38 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
                 return;
             }
 
-            string productRootPath = PluginProductDescriptorUtility.GetProductRootPath(descriptor);
-            if (string.IsNullOrEmpty(productRootPath))
+            string assetsRootPath = PluginProductDescriptorUtility.GetAssetsProductRootPath(descriptor);
+            if (string.IsNullOrEmpty(assetsRootPath))
             {
                 return;
             }
 
-            ProcessAll(productRootPath, descriptor.ProductCodeName);
+            string templateRootPath = PluginProductDescriptorUtility.GetProductRootPath(descriptor);
+            ProcessAll(templateRootPath, assetsRootPath, descriptor.ProductCodeName);
         }
 
-        public static void ProcessAll(string productRootPath, string productCodeName)
+        public static void ProcessAll(string templateRootPath, string assetsRootPath, string productCodeName)
         {
-            if (string.IsNullOrEmpty(productRootPath))
+            if (string.IsNullOrEmpty(assetsRootPath))
             {
                 return;
             }
 
-            var configs = PlatformConfigurationUtility.FindAll<AndroidPlatformConfiguration>(productRootPath);
-            UpdateDependenciesXml(productRootPath, configs);
-            UpdateManifestFile(productRootPath, productCodeName, configs);
+            var configs = PlatformConfigurationUtility.GetOrCreateEditableConfigs<AndroidPlatformConfiguration>(
+                templateRootPath,
+                assetsRootPath);
+            UpdateDependenciesXml(assetsRootPath, configs);
+            UpdateManifestFile(assetsRootPath, productCodeName, configs);
         }
 
-        private static void UpdateDependenciesXml(string productRootPath, List<AndroidPlatformConfiguration> configs)
+        private static void UpdateDependenciesXml(string assetsRootPath, List<AndroidPlatformConfiguration> configs)
         {
             var dependencies = CollectDependencies(configs);
-            string resolvedPath = ResolveDependenciesPath(productRootPath);
+            string resolvedPath = ResolveDependenciesPath(assetsRootPath);
             WriteDependenciesXml(resolvedPath, dependencies);
         }
 
-        private static void UpdateManifestFile(string productRootPath,
+        private static void UpdateManifestFile(string assetsRootPath,
                                                string productCodeName,
                                                List<AndroidPlatformConfiguration> configs)
         {
@@ -58,7 +61,7 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
             }
 
             string packageName = BuildAndroidLibraryPackageName(productCodeName);
-            string manifestPath = ResolveManifestPath(productRootPath, packageName);
+            string manifestPath = ResolveManifestPath(assetsRootPath, packageName);
             var manifest = new AndroidManifestDocument(manifestPath, packageName);
 
             for (int i = 0; i < configs.Count; i++)
@@ -254,14 +257,14 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
             return dependency.Group + ":" + dependency.Artifact + ":" + dependency.Version;
         }
 
-        private static string ResolveDependenciesPath(string productRootPath)
+        private static string ResolveDependenciesPath(string assetsRootPath)
         {
-            return Path.Combine(productRootPath, PluginProductFrameworkConstants.AndroidDependenciesOutputRelativePath);
+            return Path.Combine(assetsRootPath, PluginProductFrameworkConstants.AndroidDependenciesOutputRelativePath);
         }
 
-        private static string ResolveManifestPath(string productRootPath, string packageName)
+        private static string ResolveManifestPath(string assetsRootPath, string packageName)
         {
-            return Path.Combine(productRootPath, PluginProductFrameworkConstants.AndroidPluginsFolder, packageName, "AndroidManifest.xml");
+            return Path.Combine(assetsRootPath, PluginProductFrameworkConstants.AndroidPluginsFolder, packageName, "AndroidManifest.xml");
         }
 
         private static string BuildAndroidLibraryPackageName(string productCodeName)

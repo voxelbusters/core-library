@@ -14,6 +14,8 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
         internal const string SettingsStatusUxmlName = "PluginProductSettingsStatus";
         internal const string SettingsResourceRowUxmlName = "PluginProductSettingsResourceRow";
 
+        internal const string AssetsProductsRootPath = "Assets/Plugins/VoxelBusters";
+
         internal const string AndroidDependenciesOutputRelativePath = "Editor/AndroidDependencies.xml";
         internal const string IosDependenciesOutputRelativePath = "Editor/IosDependencies.xml";
         internal const string AndroidPluginsFolder = "Plugins/Android";

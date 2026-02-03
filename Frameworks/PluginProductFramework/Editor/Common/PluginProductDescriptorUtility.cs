@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 
 namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
 {
     public static class PluginProductDescriptorUtility
     {
-        private const string kAllProductsRootSearchPath = "Assets/Plugins/VoxelBusters";
-
         public static PluginProductDescriptor FindDescriptorByCodeName(string productCodeName)
         {
             if (string.IsNullOrEmpty(productCodeName))
@@ -36,7 +35,25 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
             }
 
             string assetPath = AssetDatabase.GetAssetPath(descriptor);
-            return PlatformConfigurationUtility.GetProductRootFromPath(assetPath);
+            if (string.IsNullOrEmpty(assetPath))
+            {
+                return null;
+            }
+
+            string rootPath = Path.GetDirectoryName(assetPath);
+            return NormalizeAssetPath(rootPath);
+        }
+
+        public static string GetAssetsProductRootPath(PluginProductDescriptor descriptor)
+        {
+            if (descriptor == null || string.IsNullOrEmpty(descriptor.ProductCodeName))
+            {
+                return null;
+            }
+
+            string rootPath = Path.Combine(PluginProductFrameworkConstants.AssetsProductsRootPath,
+                descriptor.ProductCodeName);
+            return NormalizeAssetPath(rootPath);
         }
 
         public static PluginProductDescriptor FindPluginProductDescriptorForSettingsAsset(string settingsAssetPath)
@@ -72,7 +89,7 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
         public static List<PluginProductDescriptor> FindAllPluginProductDescriptors()
         {
             var results = new List<PluginProductDescriptor>();
-            string[] guids = AssetDatabase.FindAssets($"t:{nameof(PluginProductDescriptor)}", new[] { kAllProductsRootSearchPath });
+            string[] guids = AssetDatabase.FindAssets($"t:{nameof(PluginProductDescriptor)}");
             for (int i = 0; i < guids.Length; i++)
             {
                 string path = AssetDatabase.GUIDToAssetPath(guids[i]);

@@ -13,16 +13,40 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
     /// </summary>
     internal static class IosPlatformPreBuildProcessor
     {
-        public static void ProcessAll(string productRootPath)
+        public static void ProcessAll(PluginProductDescriptor descriptor)
         {
-            UpdateDependenciesXml(productRootPath);
+            if (descriptor == null)
+            {
+                return;
+            }
+
+            string assetsRootPath = PluginProductDescriptorUtility.GetAssetsProductRootPath(descriptor);
+            if (string.IsNullOrEmpty(assetsRootPath))
+            {
+                return;
+            }
+
+            string templateRootPath = PluginProductDescriptorUtility.GetProductRootPath(descriptor);
+            ProcessAll(templateRootPath, assetsRootPath);
         }
 
-        private static void UpdateDependenciesXml(string productRootPath)
+        public static void ProcessAll(string templateRootPath, string assetsRootPath)
         {
-            var configs = PlatformConfigurationUtility.FindAll<IosPlatformConfiguration>(productRootPath);
+            UpdateDependenciesXml(templateRootPath, assetsRootPath);
+        }
+
+        private static void UpdateDependenciesXml(string templateRootPath, string assetsRootPath)
+        {
+            if (string.IsNullOrEmpty(assetsRootPath))
+            {
+                return;
+            }
+
+            var configs = PlatformConfigurationUtility.GetOrCreateEditableConfigs<IosPlatformConfiguration>(
+                templateRootPath,
+                assetsRootPath);
             var dependencies = CollectDependencies(configs);
-            string resolvedPath = ResolveOutputPath(productRootPath);
+            string resolvedPath = ResolveOutputPath(assetsRootPath);
             WriteDependenciesXml(resolvedPath, dependencies);
         }
 
@@ -101,9 +125,9 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
             }
         }
 
-        private static string ResolveOutputPath(string productRootPath)
+        private static string ResolveOutputPath(string assetsRootPath)
         {
-            return Path.Combine(productRootPath, PluginProductFrameworkConstants.IosDependenciesOutputRelativePath);
+            return Path.Combine(assetsRootPath, PluginProductFrameworkConstants.IosDependenciesOutputRelativePath);
         }
     }
 }

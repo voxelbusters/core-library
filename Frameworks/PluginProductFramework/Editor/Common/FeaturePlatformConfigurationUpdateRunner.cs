@@ -48,30 +48,39 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
                 return;
             }
 
-            string productRootPath = PluginProductDescriptorUtility.GetProductRootPath(descriptor);
-            if (string.IsNullOrEmpty(productRootPath))
+            string templateProductRoot = PluginProductDescriptorUtility.GetProductRootPath(descriptor);
+            string assetsProductRoot = PluginProductDescriptorUtility.GetAssetsProductRootPath(descriptor);
+            if (string.IsNullOrEmpty(templateProductRoot) && string.IsNullOrEmpty(assetsProductRoot))
             {
                 return;
             }
 
-            string featureRoot = Path.Combine(productRootPath, "Features", featureCodeName).Replace('\\', '/');
-            UpdateFeatureConfigurations(descriptor, featureSettings, featureRoot);
+            string templateFeatureRoot = string.IsNullOrEmpty(templateProductRoot)
+                ? null
+                : Path.Combine(templateProductRoot, "Features", featureCodeName).Replace('\\', '/');
+            string assetsFeatureRoot = string.IsNullOrEmpty(assetsProductRoot)
+                ? null
+                : Path.Combine(assetsProductRoot, "Features", featureCodeName).Replace('\\', '/');
+
+            UpdateFeatureConfigurations(descriptor, featureSettings, templateFeatureRoot, assetsFeatureRoot);
         }
 
         private static void UpdateFeatureConfigurations(PluginProductDescriptor descriptor,
                                                         FeatureSettings featureSettings,
-                                                        string featureRoot)
+                                                        string templateFeatureRoot,
+                                                        string assetsFeatureRoot)
         {
-            if (string.IsNullOrEmpty(featureRoot))
+            if (string.IsNullOrEmpty(assetsFeatureRoot))
             {
                 return;
             }
 
-            string[] guids = AssetDatabase.FindAssets($"t:{nameof(PlatformConfigurationObject)}", new[] { featureRoot });
-            for (int i = 0; i < guids.Length; i++)
+            var configs = PlatformConfigurationUtility.GetOrCreateEditableConfigs<PlatformConfigurationObject>(
+                templateFeatureRoot,
+                assetsFeatureRoot);
+            for (int i = 0; i < configs.Count; i++)
             {
-                string path = AssetDatabase.GUIDToAssetPath(guids[i]);
-                var config = AssetDatabase.LoadAssetAtPath<PlatformConfigurationObject>(path);
+                var config = configs[i];
                 if (config == null)
                 {
                     continue;

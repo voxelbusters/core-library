@@ -42,13 +42,16 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework.Editor
                     continue;
                 }
 
-                string productRootPath = PluginProductDescriptorUtility.GetProductRootPath(descriptor);
-                if (string.IsNullOrEmpty(productRootPath))
+                string assetsRootPath = PluginProductDescriptorUtility.GetAssetsProductRootPath(descriptor);
+                if (string.IsNullOrEmpty(assetsRootPath))
                 {
                     continue;
                 }
 
-                configs.AddRange(PlatformConfigurationUtility.FindAll<IosPlatformConfiguration>(productRootPath));
+                string templateRootPath = PluginProductDescriptorUtility.GetProductRootPath(descriptor);
+                configs.AddRange(PlatformConfigurationUtility.GetOrCreateEditableConfigs<IosPlatformConfiguration>(
+                    templateRootPath,
+                    assetsRootPath));
             }
 
             if (configs.Count == 0)
