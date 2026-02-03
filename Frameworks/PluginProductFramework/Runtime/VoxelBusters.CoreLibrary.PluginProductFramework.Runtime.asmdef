@@ -1,0 +1,16 @@
+{
+    "name": "VoxelBusters.CoreLibrary.PluginProductFramework.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:46ee17e5fcc7f436f9df354a1efda6a4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,21 @@
+{
+    "name": "VoxelBusters.CoreLibrary.PluginProductFramework.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:2e305d2a5092a465db2a72838d17a500",
+        "GUID:46ee17e5fcc7f436f9df354a1efda6a4",
+        "GUID:b26b55e8c8c3048eebf8103d71fd130c",
+        "GUID:9d427e098d356479a8a5f4a061295747"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

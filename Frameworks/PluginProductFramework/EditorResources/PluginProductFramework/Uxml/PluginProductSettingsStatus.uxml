@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:ui="UnityEngine.UIElements"
+    xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement class="vb-status vb-status-info" name="status-root">
+        <ui:Label name="status-text" class="vb-status-text" text="Settings status will appear here." />
+    </ui:VisualElement>
+</ui:UXML>

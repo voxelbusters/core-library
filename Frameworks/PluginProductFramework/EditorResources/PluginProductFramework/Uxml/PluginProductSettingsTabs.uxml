@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:ui="UnityEngine.UIElements"
+    xmlns:uie="UnityEditor.UIElements">
+    <uie:Toolbar class="vb-tabs">
+        <uie:ToolbarToggle name="tab-general" text="General" class="vb-tab" />
+        <uie:ToolbarToggle name="tab-features" text="Features" class="vb-tab" />
+        <uie:ToolbarToggle name="tab-resources" text="Resources" class="vb-tab" />
+    </uie:Toolbar>
+</ui:UXML>

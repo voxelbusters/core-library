@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:ui="UnityEngine.UIElements"
+    xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement class="vb-feature-row">
+        <ui:VisualElement name="feature-header" class="vb-feature-header">
+        <ui:VisualElement class="vb-feature-layout">
+            <ui:VisualElement class="vb-feature-main">
+                <ui:Label name="feature-name" class="vb-feature-name" />
+                <ui:Label name="feature-description" class="vb-feature-description" />
+            </ui:VisualElement>
+            <ui:VisualElement class="vb-feature-toggle-column">
+                <ui:Toggle name="feature-toggle" class="vb-feature-toggle" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="feature-details" class="vb-feature-details" />
+    </ui:VisualElement>
+</ui:UXML>

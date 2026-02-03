@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:ui="UnityEngine.UIElements"
+    xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement class="vb-resource-row">
+        <ui:Label name="resource-label" class="vb-resource-label" />
+        <ui:VisualElement name="resource-value" />
+    </ui:VisualElement>
+</ui:UXML>

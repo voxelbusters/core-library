@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:ui="UnityEngine.UIElements"
+    xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement class="vb-header">
+        <ui:VisualElement class="vb-header-left">
+            <ui:Image name="product-icon" class="vb-header-icon" />
+            <ui:VisualElement class="vb-header-title">
+                <ui:Label name="product-title" class="vb-title" />
+                <ui:Label name="product-version" class="vb-version" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement class="vb-header-meta">
+            <ui:Label name="product-meta" class="vb-meta" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:ui="UnityEngine.UIElements"
+    xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement class="vb-settings-root">
+        <ui:VisualElement name="header-host" />
+        <ui:VisualElement class="vb-tab-panel" name="tabs-panel">
+            <ui:VisualElement name="tabs-host" />
+            <ui:ScrollView name="general-container" class="vb-section" />
+            <ui:ScrollView name="features-container" class="vb-section" />
+            <ui:ScrollView name="resources-container" class="vb-section" />
+        </ui:VisualElement>
+        <ui:VisualElement name="status-host" />
+    </ui:VisualElement>
+</ui:UXML>
