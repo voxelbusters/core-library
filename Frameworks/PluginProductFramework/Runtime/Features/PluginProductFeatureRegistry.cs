@@ -21,9 +21,9 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework
         where TSettings : FeatureSettings
     {
         /// <summary>
-        /// Registers the feature with the product using provided settings.
+        /// Handles plugin product settings after they are loaded.
         /// </summary>
-        void Register(IPluginProductSettingsSummary settingsSummary, TSettings featureSettings);
+        void OnPluginProductSettingsLoaded(IPluginProductSettingsSummary settingsSummary, TSettings featureSettings);
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework
         private interface IFeatureBootstrapEntry
         {
             Type SettingsType { get; }
-            void Register(IPluginProductSettingsSummary settingsSummary, FeatureSettings featureSettings);
+            void OnPluginProductSettingsLoaded(IPluginProductSettingsSummary settingsSummary, FeatureSettings featureSettings);
         }
 
         private sealed class FeatureBootstrapEntry<TSettings> : IFeatureBootstrapEntry
@@ -49,11 +49,11 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework
 
             public Type SettingsType => typeof(TSettings);
 
-            public void Register(IPluginProductSettingsSummary settingsSummary, FeatureSettings featureSettings)
+            public void OnPluginProductSettingsLoaded(IPluginProductSettingsSummary settingsSummary, FeatureSettings featureSettings)
             {
                 if (featureSettings is TSettings typedSettings)
                 {
-                    m_bootstrap.Register(settingsSummary, typedSettings);
+                    m_bootstrap.OnPluginProductSettingsLoaded(settingsSummary, typedSettings);
                 }
             }
         }
@@ -63,7 +63,7 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework
 
         public static int Count => s_bootstraps.Count;
 
-        public static void Register<TSettings>(IPluginProductFeatureBootstrap<TSettings> bootstrap)
+        public static void RegisterBootstrap<TSettings>(IPluginProductFeatureBootstrap<TSettings> bootstrap)
             where TSettings : FeatureSettings
         {
             if (bootstrap == null)
@@ -98,7 +98,7 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework
                 }
 
                 FeatureSettings featureSettings = settings.GetFeatureSettings(entry.SettingsType);
-                entry.Register(settings, featureSettings);
+                entry.OnPluginProductSettingsLoaded(settings, featureSettings);
             }
         }
 
