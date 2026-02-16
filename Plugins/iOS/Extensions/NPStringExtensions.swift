@@ -1,5 +1,5 @@
 //
-//  StringExtensions.swift
+//  NPStringExtensions.swift
 //  VBCoreLibrary
 //
 //  Created by Ayyappa on 28/03/24.

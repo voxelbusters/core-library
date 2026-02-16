@@ -1,5 +1,5 @@
 //
-//  DecimalExtensions.swift
+//  NPDecimalExtensions.swift
 //  VBCoreLibrary
 //
 //  Created by Ayyappa Reddy Janga on 10/05/24.

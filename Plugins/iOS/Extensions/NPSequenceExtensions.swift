@@ -1,5 +1,5 @@
 //
-//  SequenceExtensions.swift
+//  NPSequenceExtensions.swift
 //  VBCoreLibrary
 //
 //  Created by Ayyappa on 05/04/24.

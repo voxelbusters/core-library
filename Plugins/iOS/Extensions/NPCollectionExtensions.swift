@@ -1,5 +1,5 @@
 //
-//  CollectionExtensions.swift
+//  NPCollectionExtensions.swift
 //  VBCoreLibrary
 //
 //  Created by Ayyappa on 22/05/24.
