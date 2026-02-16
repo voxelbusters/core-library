@@ -40,6 +40,14 @@ namespace VoxelBusters.CoreLibrary.Frameworks.PluginProductFramework
 
         public PluginProductDescriptor Descriptor => m_descriptor;
 
+        /// <summary>
+        /// Gets all feature settings stored in this product settings asset.
+        /// </summary>
+        public IReadOnlyList<FeatureSettings> GetAllFeatureSettings()
+        {
+            return m_featureSettings;
+        }
+
         public FeatureSettings GetFeatureSettings(string featureCodeName)
         {
             if (string.IsNullOrEmpty(featureCodeName))
