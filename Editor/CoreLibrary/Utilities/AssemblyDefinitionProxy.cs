@@ -38,7 +38,11 @@ namespace VoxelBusters.CoreLibrary.Editor
         public void ExcludeAllPlatforms()
         {
             AssemblyDefinitionPlatform[] platforms = CompilationPipeline.GetAssemblyDefinitionPlatforms();
+            #if UNITY_6_0_OR_NEWER
+            m_data.excludePlatforms = platforms.Where(platform => !platform.HasSubtarget).Select(platform => platform.Name).ToArray();
+            #else
             m_data.excludePlatforms = platforms.Select(platform => platform.Name).ToArray();
+            #endif
             m_data.includePlatforms = new string[0];
         }
 
