@@ -84,9 +84,18 @@ namespace VoxelBusters.CoreLibrary
 
         private string GetPersistentDataPathInternal()
         {
+            #if UNITY_TVOS
+            return IOServices.CombinePath(Marshal.PtrToStringAnsi(UnityCachesDir()), m_persistentDataRelativePath);
+            #endif
+
             return IOServices.CombinePath(Application.persistentDataPath, m_persistentDataRelativePath);
         }
 
         #endregion
     }
+
+    #if UNITY_TVOS
+    [DllImport("__Internal")]
+    private static extern IntPtr UnityCachesDir();
+    #endif
 }

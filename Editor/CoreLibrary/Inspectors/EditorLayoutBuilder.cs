@@ -8,6 +8,12 @@ namespace VoxelBusters.CoreLibrary.Editor
 {
     public class EditorLayoutBuilder
     {
+        #region Static events
+
+        public static event Action<SerializedProperty, Rect> OnPropertyFieldDrawn;
+
+        #endregion
+
         #region Fields
 
         private     SerializedObject            m_serializedObject;
@@ -138,6 +144,7 @@ namespace VoxelBusters.CoreLibrary.Editor
                     {
                         EditorGUILayout.PropertyField(eachChildProperty, true);
                     }
+                    NotifyPropertyFieldDrawn(eachChildProperty, GUILayoutUtility.GetLastRect());
                 });
                 EditorGUIUtility.labelWidth = oldLabelWidth;
             }
@@ -149,6 +156,15 @@ namespace VoxelBusters.CoreLibrary.Editor
                 }
             }
             EditorGUILayout.EndVertical();
+        }
+
+        private static void NotifyPropertyFieldDrawn(SerializedProperty property, Rect rect)
+        {
+            if (Event.current.type != EventType.Repaint)
+            {
+                return;
+            }
+            OnPropertyFieldDrawn?.Invoke(property.Copy(), rect);
         }
 
         private static void IterateThroughValidChildren(SerializedProperty property, string[] ignoreProperties, Action<SerializedProperty> callbackOnEachChild)
@@ -200,6 +216,40 @@ namespace VoxelBusters.CoreLibrary.Editor
             }
             m_serializedObject.ApplyModifiedProperties();
             m_serializedObject.Update();
+        }
+
+        public bool SelectTab(string tab)
+        {
+            if (string.IsNullOrEmpty(tab) || Array.IndexOf(m_tabs, tab) < 0)
+            {
+                return false;
+            }
+
+            if (!string.Equals(m_selectedTab, tab))
+            {
+                SetSelectedTab(tab);
+            }
+            return true;
+        }
+
+        public bool FocusSection(EditorSectionInfo section)
+        {
+            if (section == null)
+            {
+                return SetFocusSection(null);
+            }
+
+            if ((m_selectedTabSections == null) || (Array.IndexOf(m_selectedTabSections, section) < 0))
+            {
+                return false;
+            }
+
+            if (m_focusSection == section)
+            {
+                return true;
+            }
+
+            return SetFocusSection(section);
         }
 
         public void DrawSection(EditorSectionInfo section,
