@@ -12,12 +12,17 @@ namespace VoxelBusters.CoreLibrary
 
         void Awake()
         {
-            #if !UNITY_EDITOR
-                Destroy(gameObject);
-            #else
+            if (Application.isEditor)
+            {
                 if (!m_allowInEditorRuntime)
+                {
                     Destroy(gameObject);
-            #endif
+                }
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }
